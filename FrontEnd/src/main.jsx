@@ -20,8 +20,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route index element={<HomePage />} />
         <Route path="cadastro" element={<CadastroPage />} />
         <Route path="login" element={<LoginPage />} />
-        <Route path="uashboardPage" element={<DashboardPage />} />
-        <Route path="urotectedRoute" element={<ProtectedRoute />} />
+        <Route path="dashboardPage" element={<DashboardPage />} />
+        <Route path="protectedRoute" element={<ProtectedRoute />} />
         <Route path="usermanagemenetpage" element={<UserManagementPage />} />
         </Route>
       </Routes>
