@@ -4,7 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="44fd2081-2861-4db7-90c5-55ec49450054" name="Changes" comment="" />
+    <list default="true" id="44fd2081-2861-4db7-90c5-55ec49450054" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/FrontEnd/src/components/ProductCard/ProductCard.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FrontEnd/src/components/ProductCard/ProductCard.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FrontEnd/src/components/Header/Carousel.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FrontEnd/src/components/Header/Carousel.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FrontEnd/src/components/Header/Header.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/FrontEnd/src/components/Header/Header.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FrontEnd/src/pages/public/HomePage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/FrontEnd/src/pages/public/HomePage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FrontEnd/src/pages/public/css/HomePage.css" beforeDir="false" afterPath="$PROJECT_DIR$/FrontEnd/src/pages/public/css/HomePage.css" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,9 +29,9 @@
       </MavenGeneralSettings>
     </option>
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 1
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
   <component name="ProjectId" id="31tWqjMxaxb56MryKOz3AiVlybc" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -36,7 +45,7 @@
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/felipe/Documents/GitHub/LifeBF"
+    "last_opened_file_path": "C:/Users/famaro/OneDrive - WAN-TI/Documentos/GitHub/Canek"
   }
 }]]></component>
   <component name="RecentsManager">

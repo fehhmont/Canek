@@ -23,7 +23,7 @@ function Header() {
                             <ShoppingBag className="h-6 w-6" />
                         </div>
                         <h1 className="logo-text">
-                            MugStore
+                            CaneK
                         </h1>
                     </div>
 
@@ -48,9 +48,9 @@ function Header() {
                         <button className="nav-button">
                             Crie sua conta
                         </button>
-                        <button className="nav-button">
-                            Entre
-                        </button>
+                        <Link to="/login" className="nav-button">
+                           Entre
+                        </Link>
                         <button className="nav-button">
                             Compras
                         </button>
