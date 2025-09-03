@@ -14,4 +14,4 @@ kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
 
 Como funcionaá a execução do frot-end:
 
-    Clonaremos o projeto e em seguida rodaremos o comando no terminal NPM INSTALL. Em seguida NPM run dev
+    Clonaremos o projeto e em seguida rodaremos o comando no terminal NPM INSTALL. Em seguida NPM run dev"'
