@@ -5,14 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="44fd2081-2861-4db7-90c5-55ec49450054" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/FrontEnd/src/components/ProductCard/ProductCard.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FrontEnd/src/components/ProductCard/ProductCard.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FrontEnd/src/components/Header/Carousel.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/FrontEnd/src/components/Header/Carousel.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/FrontEnd/src/components/Header/Header.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/FrontEnd/src/components/Header/Header.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FrontEnd/src/pages/public/HomePage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/FrontEnd/src/pages/public/HomePage.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FrontEnd/src/pages/public/css/HomePage.css" beforeDir="false" afterPath="$PROJECT_DIR$/FrontEnd/src/pages/public/css/HomePage.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,28 +32,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/famaro/OneDrive - WAN-TI/Documentos/GitHub/Canek"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/famaro/OneDrive - WAN-TI/Documentos/GitHub/Canek&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\felipe\Documents\GitHub\Canek\BackEnd" />
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="JetRunConfigurationType">
-      <module name="Canek" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
       <module name="Canek" />
       <option name="filePath" />
