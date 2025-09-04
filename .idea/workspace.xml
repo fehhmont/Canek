@@ -5,14 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="44fd2081-2861-4db7-90c5-55ec49450054" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/FrontEnd/src/components/ProductCard/ProductCard.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FrontEnd/src/components/ProductCard/ProductCard.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FrontEnd/src/components/Header/Carousel.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/FrontEnd/src/components/Header/Carousel.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/FrontEnd/src/components/Header/Header.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/FrontEnd/src/components/Header/Header.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FrontEnd/src/pages/public/HomePage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/FrontEnd/src/pages/public/HomePage.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FrontEnd/src/pages/public/css/HomePage.css" beforeDir="false" afterPath="$PROJECT_DIR$/FrontEnd/src/pages/public/css/HomePage.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BackEnd/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/BackEnd/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BackEnd/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/BackEnd/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,26 +40,14 @@
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/famaro/OneDrive - WAN-TI/Documentos/GitHub/Canek"
+    "last_opened_file_path": "C:/Users/felipe/Documents/GitHub/Canek",
+    "settings.editor.selected.configurable": "preferences.keymap"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\felipe\Documents\GitHub\Canek\BackEnd" />
     </key>
-  </component>
-  <component name="RunManager">
-    <configuration default="true" type="JetRunConfigurationType">
-      <module name="Canek" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="Canek" />
-      <option name="filePath" />
-      <method v="2" />
-    </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
