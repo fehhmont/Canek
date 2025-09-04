@@ -31,3 +31,5 @@ build/
 
 ### VS Code ###
 .vscode/
+# Ignora arquivos e pastas de configuração de IDEs
+.idea/
