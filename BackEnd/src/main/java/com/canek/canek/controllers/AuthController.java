@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/auth")
@@ -68,4 +71,11 @@ public class AuthController {
 
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/findAll")
+    public ResponseEntity<java.util.List<Usuario>> findAllUsers() {
+        java.util.List<Usuario> users = usuarioRepository.findAll();
+        return ResponseEntity.ok(users);
+    }
+    
 }

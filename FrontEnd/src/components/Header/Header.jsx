@@ -6,7 +6,7 @@ import { useAuth } from '../AuthContext.jsx';
 
 function Header() {
     const [searchTerm, setSearchTerm] = useState('');
-    const [cartItemCount, setCartItemCount] = useState(0); // Exemplo, você pode conectar ao estado real do carrinho
+    const [cartItemCount, setCartItemCount] = useState(0); 
     const { isAuthenticated, logout } = useAuth();
 
     const onSearchChange = (value) => {
