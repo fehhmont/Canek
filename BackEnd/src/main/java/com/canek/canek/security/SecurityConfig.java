@@ -33,6 +33,7 @@ public class SecurityConfig {
                         // Permite acesso público aos endpoints de login e cadastro
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/cadastro").permitAll()
+                        
                         // Qualquer outra requisição exigirá autenticação
                         .anyRequest().authenticated()
                 )

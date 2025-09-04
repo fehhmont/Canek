@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 
-// --- ANOTAÇÕES DA CLASSE ---
+
 
 @Entity(name = "Usuario") // 1. Indica que esta classe é uma entidade JPA
 @Table(name = "usuarios")  // 2. Mapeia esta classe para a tabela "usuarios" no banco
@@ -22,27 +22,27 @@ import java.util.List;
 @AllArgsConstructor        // 5. Lombok: Gera um construtor com todos os argumentos
 public class Usuario implements UserDetails { // 6. Implementa UserDetails para integração com Spring Security
 
-    // --- ATRIBUTOS (CAMPOS) DA CLASSE ---
+   
 
-    @Id // 7. Indica que este campo é a chave primária (Primary Key)
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // 8. Configura a geração automática do ID (AUTO_INCREMENT)
+    @Id 
+    @GeneratedValue(strategy = GenerationType.IDENTITY) 
     private Long id;
 
-    // 9. Mapeia o atributo para a coluna "nome_completo" e define que não pode ser nulo
+    
     @Column(name = "nome_completo", nullable = false)
     private String nomeCompleto;
 
     @Column(unique = true, length = 14)
     private String cpf;
 
-    // 10. Mapeia para a coluna "email", define que não pode ser nulo e deve ser único
+    
     @Column(nullable = false, unique = true)
     private String email;
 
     @Column(name = "senha_hash", nullable = false)
     private String senhaHash;
 
-    private String telefone; // Se o nome do atributo for igual ao da coluna, o @Column é opcional
+    private String telefone; 
 
     @Column(name = "tipo_usuario")
     private String tipoUsuario;
@@ -50,7 +50,7 @@ public class Usuario implements UserDetails { // 6. Implementa UserDetails para 
     @Column(name = "data_cadastro", updatable = false)
     private Timestamp dataCadastro;
 
-    // 11. Método executado antes de salvar a entidade pela primeira vez
+    
     @PrePersist
     protected void onCreate() {
         dataCadastro = new Timestamp(System.currentTimeMillis());
@@ -59,13 +59,10 @@ public class Usuario implements UserDetails { // 6. Implementa UserDetails para 
         }
     }
 
-    // --- MÉTODOS DA INTERFACE UserDetails (para o Spring Security) ---
-    // 12. Estes métodos são um "contrato" com o Spring Security
-
+    
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Define as permissões/cargos (Roles) do usuário.
-        // Para simplificar, estamos dando a permissão 'ROLE_USER' para todos.
+        
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 

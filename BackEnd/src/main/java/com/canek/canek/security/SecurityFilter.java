@@ -21,7 +21,7 @@ import java.io.IOException;
 public class SecurityFilter extends OncePerRequestFilter {
 
     @Autowired
-    TokenService tokenService; // Agora o Spring vai injetar a nossa classe corretamente
+    TokenService tokenService; 
 
     @Autowired
     UsuarioRepository usuarioRepository;
@@ -30,7 +30,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var token = this.recoverToken(request);
         if (token != null) {
-            // A chamada ao método validarToken agora vai funcionar
+            
             var email = tokenService.validarToken(token);
             UserDetails user = usuarioRepository.findByEmail(email);
             

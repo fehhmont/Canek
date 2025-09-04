@@ -48,8 +48,9 @@ public class AuthController {
     @PostMapping("/cadastro")
     public ResponseEntity<Void> cadastrar(@RequestBody @Valid CadastroUsuarioDTO data) {
         if (this.usuarioRepository.findByEmail(data.email()) != null) {
-            // Retorna 'Bad Request' se o email já existir.
+            
             return ResponseEntity.badRequest().build();
+            //caso email já exista
         }
 
         // Criptografa a senha antes de salvar
@@ -61,7 +62,7 @@ public class AuthController {
         novoUsuario.setEmail(data.email());
         novoUsuario.setSenhaHash(senhaCriptografada);
         novoUsuario.setTelefone(data.telefone());
-        // O tipo e a data de cadastro são definidos na entidade.
+        
 
         this.usuarioRepository.save(novoUsuario);
 
