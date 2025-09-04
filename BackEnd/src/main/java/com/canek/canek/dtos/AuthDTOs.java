@@ -15,6 +15,8 @@ public class AuthDTOs {
         @Email(message = "Formato de email inválido")
         String email,
         
+        @NotBlank String cpf,
+
         @NotBlank(message = "A senha é obrigatória")
         @Size(min = 6, message = "A senha deve ter no mínimo 6 caracteres")
         String senha,
@@ -30,5 +32,5 @@ public class AuthDTOs {
         String senha
     ) {}
 
-    public record LoginResponseDTO(String token) {}
+    public record LoginResponseDTO(String token, String tipoUsuario) {}
 }

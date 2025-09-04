@@ -77,9 +77,16 @@
 }
 
 .nav-section {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem; /* Este 'gap' separa os botões */
+}
+
+/* Adicionando um 'gap' também para a navegação interna */
+.navigation {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 }
 
 .nav-button {

@@ -35,10 +35,14 @@ public class AuthController {
     public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid LoginDTO data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.senha());
         var auth = this.authenticationManager.authenticate(usernamePassword);
+
+        var usuario = (Usuario) auth.getPrincipal();
         
         var token = tokenService.gerarToken((Usuario) auth.getPrincipal());
 
-        return ResponseEntity.ok(new LoginResponseDTO(token));
+        var tipoUsuario = usuario.getTipoUsuario();
+
+        return ResponseEntity.ok(new LoginResponseDTO(token, tipoUsuario));
     }
 
     @PostMapping("/cadastro")
@@ -53,6 +57,7 @@ public class AuthController {
         
         Usuario novoUsuario = new Usuario();
         novoUsuario.setNomeCompleto(data.nomeCompleto());
+        novoUsuario.setCpf(data.cpf());
         novoUsuario.setEmail(data.email());
         novoUsuario.setSenhaHash(senhaCriptografada);
         novoUsuario.setTelefone(data.telefone());

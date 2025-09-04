@@ -1,14 +1,14 @@
-import React, { useState } from "react"; // 1. Importe o useState
+import React, { useState } from "react";
 import './Header.css';
-import { Search, User, ShoppingBag, ShoppingCart } from 'lucide-react';
+import { Search, ShoppingBag, ShoppingCart } from 'lucide-react';
 import { Link } from "react-router-dom";
+import { useAuth } from '../AuthContext.jsx';
 
 function Header() {
-    // 2. Declare as variáveis de estado com useState
     const [searchTerm, setSearchTerm] = useState('');
-    const [cartItemCount, setCartItemCount] = useState(0);
+    const [cartItemCount, setCartItemCount] = useState(0); // Exemplo, você pode conectar ao estado real do carrinho
+    const { isAuthenticated, logout } = useAuth();
 
-    // Defina a função para atualizar o termo de pesquisa
     const onSearchChange = (value) => {
         setSearchTerm(value);
     };
@@ -35,28 +35,39 @@ function Header() {
                             </div>
                             <input
                                 type="text"
-                                value={searchTerm} // Use a variável de estado
-                                onChange={(e) => onSearchChange(e.target.value)} // Use a função para atualizar o estado
+                                value={searchTerm}
+                                onChange={(e) => onSearchChange(e.target.value)}
                                 className="search-input"
                                 placeholder="Pesquisar canecas..."
                             />
                         </div>
                     </div>
 
-                    {/* Menu de Usuário */}
+                    {/* Navegação e Carrinho */}
                     <div className="nav-section">
-                        <button className="nav-button">
-                            Crie sua conta
-                        </button>
-                        <Link to="/login" className="nav-button">
-                           Entre
-                        </Link>
-                        <button className="nav-button">
-                            Compras
-                        </button>
+                        <nav className="navigation">
+                            {isAuthenticated ? (
+                                // Se o usuário ESTÁ logado
+                                <>
+                                    <Link to="/minha-conta" className="nav-button">Minha Conta</Link>
+                                    <button onClick={logout} className="nav-button">Sair</button>
+                                </>
+                            ) : (
+                                // Se o usuário NÃO ESTÁ logado
+                                <>
+                                    <Link to="/cadastro" className="nav-button">
+                                        Crie sua conta
+                                    </Link>
+                                    <Link to="/login" className="nav-button">
+                                        Login
+                                    </Link>
+                                </>
+                            )}
+                        </nav>
+
                         <button className="cart-button">
                             <ShoppingCart className="h-6 w-6" />
-                            {cartItemCount > 0 && ( // Use a variável de estado
+                            {cartItemCount > 0 && (
                                 <span className="cart-badge">
                                     {cartItemCount}
                                 </span>

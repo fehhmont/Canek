@@ -32,6 +32,9 @@ public class Usuario implements UserDetails { // 6. Implementa UserDetails para 
     @Column(name = "nome_completo", nullable = false)
     private String nomeCompleto;
 
+    @Column(unique = true, length = 14)
+    private String cpf;
+
     // 10. Mapeia para a coluna "email", define que não pode ser nulo e deve ser único
     @Column(nullable = false, unique = true)
     private String email;

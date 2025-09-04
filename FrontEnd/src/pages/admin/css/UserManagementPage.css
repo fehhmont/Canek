@@ -1,0 +1,240 @@
+/* Layout Geral e Card */
+.page-container {
+  padding: 1.5rem; /* Reduzi um pouco o padding para dar mais espaço ao card */
+  background-color: #f3f4f6;
+  min-height: 100vh; /* ALTERAÇÃO: Garante que o contêiner ocupe no mínimo 100% da altura da tela */
+  display: flex; /* ALTERAÇÃO: Habilita flexbox para controlar o alinhamento do filho */
+  flex-direction: column; /* ALTERAÇÃO: Organiza os itens em coluna */
+}
+
+.container {
+  /* ALTERAÇÃO: Removido o max-width e a margem automática para que ocupe todo o espaço */
+  width: 100%; 
+  flex-grow: 1; /* ALTERAÇÃO: Permite que o container cresça e ocupe o espaço vertical disponível */
+  display: flex; /* ALTERAÇÃO: Habilita flexbox para controlar o card interno */
+  flex-direction: column;
+}
+
+.card {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  overflow: hidden; 
+  flex-grow: 1; /* ALTERAÇÃO: Faz o card expandir para preencher a altura do .container */
+  display: flex; /* ALTERAÇÃO: Habilita flexbox para o layout interno do card */
+  flex-direction: column; /* ALTERAÇÃO: Organiza o header e content em coluna */
+}
+
+.card-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  /* O header terá altura automática baseada no seu conteúdo */
+}
+
+.card-content {
+  padding: 1.5rem;
+  flex-grow: 1; /* ALTERAÇÃO: Faz a área de conteúdo ocupar todo o espaço vertical restante no card */
+  overflow-y: auto; /* ALTERAÇÃO: Adiciona uma barra de rolagem APENAS se a tabela for muito grande */
+}
+
+/* O restante do seu CSS continua igual... */
+
+/* Cabeçalho da Página (Header) */
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* Espaço entre o ícone e o título */
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.back-button {
+  padding: 0.5rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.back-button:hover {
+  background-color: #f3f4f6;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem; /* Espaço entre ícone e texto do botão */
+  padding: 0.65rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  border: none;
+  background-color: #52658F;
+  color: white;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+/* Estilos de Ícones */
+.primary-color {
+  color: #52658F; /* Cor principal do tema */
+}
+.icon-xs { width: 1rem; height: 1rem; }
+.icon-sm { width: 1.25rem; height: 1.25rem; }
+.icon-md { width: 1.5rem; height: 1.5rem; }
+
+
+/* Seção de Busca */
+.search-section {
+    margin-bottom: 1.5rem; /* Espaço entre a busca e a tabela */
+}
+
+.search-container {
+  position: relative;
+  max-width: 400px; /* Limita a largura do campo de busca */
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.5rem; /* Espaço para o ícone */
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgb(59 130 246 / 0.2);
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  width: 1.25rem; /* Tamanho do ícone de busca */
+  height: 1.25rem;
+}
+
+/* Tabela de Dados */
+.table-container {
+  overflow-x: auto; /* Permite rolagem horizontal em telas pequenas */
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.data-table th {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background-color: #f9fafb;
+}
+
+.data-table td {
+  padding: 1rem 1.5rem;
+  font-size: 0.875rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.data-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.font-medium {
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.text-gray {
+  color: #6b7280;
+}
+
+
+/* Badges de Status e Botões de Ação */
+.status-badge {
+  display: inline-flex;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  line-height: 1.25;
+}
+
+.status-admin {
+  background-color: #fef3c7; /* Amarelo */
+  color: #92400e;
+}
+
+.status-active {
+  background-color: #dcfce7; /* Verde */
+  color: #166534;
+}
+
+.status-inactive {
+  background-color: #fee2e2; /* Vermelho */
+  color: #991b1b;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.action-btn {
+  padding: 0.5rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-btn.view {
+  background-color: #eff6ff;
+  color: #2563eb;
+}
+.action-btn.view:hover {
+  background-color: #dbeafe;
+}
+
+.action-btn.edit {
+  background-color: #f0fdf4;
+  color: #16a34a;
+}
+.action-btn.edit:hover {
+  background-color: #dcfce7;
+}
+
+.action-btn.delete {
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+.action-btn.delete:hover {
+  background-color: #fee2e2;
+}

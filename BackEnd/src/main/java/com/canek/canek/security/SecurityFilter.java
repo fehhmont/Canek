@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-// CORREÇÃO: A importação foi trocada para a nossa classe TokenService
+
 import com.canek.canek.security.TokenService;
 
 import java.io.IOException;
