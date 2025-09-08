@@ -1,0 +1,126 @@
+.cadastro-bg {
+  min-height: 100vh;
+  background: #ededf0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 48px;
+}
+
+.cadastro-header {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  background: #fff;
+  border: 2px solid #52658F;
+  border-radius: 0 0 8px 8px;
+  padding: 18px 32px 18px 18px;
+  box-sizing: border-box;
+}
+
+.cadastro-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cadastro-header-title {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #000;
+}
+
+.cadastro-header-btn {
+  background: none;
+  border: none;
+  color: #52658F;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.cadastro-header-btn:hover {
+  color: #2d3952;
+}
+
+.cadastro-card {
+  background: #fff;
+  padding: 32px 40px;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  min-width: 600px;
+  max-width: 900px;
+  width: 100%;
+}
+
+.cadastro-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 32px;
+}
+
+.cadastro-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cadastro-label {
+  color: #000;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.cadastro-input {
+  padding: 10px 12px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #fafbfc;
+  color: #000;
+}
+
+.cadastro-input:disabled {
+  background: #f3f3f3;
+}
+
+.cadastro-error {
+  color: #d32f2f;
+  font-size: 0.95em;
+  margin-top: 2px;
+}
+
+.cadastro-btn {
+  background: #52658F;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 0;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 24px;
+  width: 100%;
+  transition: background 0.2s;
+}
+
+.cadastro-btn:disabled {
+  background: #b0b8c9;
+  cursor: not-allowed;
+}
+
+.cadastro-link {
+  color: #52658F;
+  text-align: center;
+  margin-top: 16px;
+  display: block;
+  text-decoration: none;
+  font-weight: 500;
+}
