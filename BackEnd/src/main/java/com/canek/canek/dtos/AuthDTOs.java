@@ -1,6 +1,10 @@
 package com.canek.canek.dtos;
 
 
+import org.hibernate.validator.constraints.br.CPF;
+
+
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -15,10 +19,11 @@ public class AuthDTOs {
         @Email(message = "Formato de email inválido")
         String email,
         
+        @CPF
         @NotBlank String cpf,
 
         @NotBlank(message = "A senha é obrigatória")
-        @Size(min = 6, message = "A senha deve ter no mínimo 6 caracteres")
+        //@Size(min = 6, message = "A senha deve ter no mínimo 6 caracteres")
         String senha,
         
         String telefone

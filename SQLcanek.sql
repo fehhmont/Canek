@@ -6,6 +6,7 @@ CREATE TABLE usuarios (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     nome_completo VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
+    cpf VARCHAR(14) NOT NULL,
     senha_hash VARCHAR(255) NOT NULL,
     telefone VARCHAR(20),
     tipo_usuario VARCHAR(50) DEFAULT 'cliente',
