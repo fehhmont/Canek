@@ -37,5 +37,5 @@ public class AuthDTOs {
         String senha
     ) {}
 
-    public record LoginResponseDTO(String token, String tipoUsuario) {}
+   public record LoginResponseDTO(String token, String tipoUsuario) {}
 }

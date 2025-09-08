@@ -43,9 +43,9 @@ public class AuthController {
         
         var token = tokenService.gerarToken((Usuario) auth.getPrincipal());
 
-        var tipoUsuario = usuario.getTipoUsuario();
+       var tipoUsuario = usuario.getTipoUsuario();
 
-        return ResponseEntity.ok(new LoginResponseDTO(token, tipoUsuario));
+       return ResponseEntity.ok(new LoginResponseDTO(token, tipoUsuario));
     }
 
     @PostMapping("/cadastro")
