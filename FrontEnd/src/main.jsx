@@ -12,9 +12,10 @@ import { AuthProvider } from './components/AuthContext';
 
 // Importa todas as suas páginas
 import HomePage from './pages/public/HomePage';
-import LoginPage from './pages/public/LoginPage';
+import LoginPageBackOffice from './pages/public/LoginPageBackOffice';
 import CadastroPage from './pages/public/CadastroPage';
 import DashboardPage from './pages/private/DashboardPage';
+import LoginPage from './pages/public/LoginPage';
 import UserManagementPage from './pages/admin/UserManagementPage';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -34,7 +35,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             
             {/* Rotas Públicas (filhas do layout) */}
             <Route index element={<HomePage />} />
-            <Route path="login" element={<LoginPage />} />
+            <Route path="LoginPageBackOffice" element={<LoginPageBackOffice />} />
+            <Route path="loginPage" element={<LoginPage />} />
             <Route path="cadastro" element={<CadastroPage />} />
 
             {/* Rotas Protegidas (também filhas do layout) */}

@@ -30,10 +30,12 @@ public class SecurityConfig {
                 // Define a política de sessão como STATELESS, essencial para APIs REST
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        // Permite acesso público aos endpoints de login e cadastro
-                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                       .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/administrador/login").permitAll()
+
+                        // Libera as rotas de CADASTRO para ambos
                         .requestMatchers(HttpMethod.POST, "/auth/cadastro").permitAll()
-                        
+                        .requestMatchers(HttpMethod.POST, "/auth/administrador/cadastro").permitAll()
                         // Qualquer outra requisição exigirá autenticação
                         .anyRequest().authenticated()
                 )

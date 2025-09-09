@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Mail, Lock } from 'lucide-react';
 import { useAuth } from '../../components/AuthContext.jsx';
-import './css/LoginPage.css';
+import './css/LoginPageBackOffice.css';
 
 function LoginPage() {
     const [email, setEmail] = useState('');
@@ -41,9 +41,9 @@ function LoginPage() {
 
     return (
         <div className="login-bg">
-            <h1 className="login-title-big">Canek</h1>
+            <h1 className="login-title-big">Acesso ao Backoffice</h1>
             <p className="login-subtitle-center">
-                Entre com suas credenciais 
+                Entre com suas credenciais para acessar o sistema
             </p>
             <div className="login-card">
                 <form onSubmit={handleSubmit}>
