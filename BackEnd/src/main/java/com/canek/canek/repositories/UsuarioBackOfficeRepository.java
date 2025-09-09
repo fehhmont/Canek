@@ -9,5 +9,8 @@ import org.springframework.stereotype.Repository;
 public interface UsuarioBackOfficeRepository extends JpaRepository<Administrador, Long> {
 
     Administrador findByEmail(String email);
+    Administrador findById(long id);
+    Administrador save(Administrador admin);
+    
 
 }

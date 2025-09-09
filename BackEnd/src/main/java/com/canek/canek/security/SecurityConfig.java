@@ -24,13 +24,13 @@ public class SecurityConfig {
     @Autowired
     private SecurityFilter securityFilter;
 
-    // Injeta os dois serviços de autenticação
+    // Injeta os dois serviços de autenticação que você tem
     @Autowired
     @Qualifier("authorizationService") // Nome padrão do bean para o serviço de Usuario
     private UserDetailsService usuarioAuthService;
 
     @Autowired
-    @Qualifier("administradorAuthService") // Nome do bean do novo serviço de Administrador
+    @Qualifier("administradorAuthService") // Nome do bean para o serviço de Administrador
     private UserDetailsService administradorAuthService;
 
     @Bean
@@ -39,17 +39,19 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
+                        // Libera as rotas públicas de login e cadastro para ambos os tipos de usuário
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/administrador/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/cadastro").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/administrador/cadastro").permitAll()
+                        // Exige autenticação para todas as outras rotas
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
     
-    // Cria um "especialista" em autenticar Usuários
+    // Cria um "provedor" que sabe como autenticar Usuários (consultando a tabela usuarios)
     @Bean
     public DaoAuthenticationProvider usuarioAuthenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -58,7 +60,7 @@ public class SecurityConfig {
         return provider;
     }
 
-    // Cria um "especialista" em autenticar Administradores
+    // Cria um "provedor" que sabe como autenticar Administradores (consultando a tabela administradores)
     @Bean
     public DaoAuthenticationProvider administradorAuthenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -67,7 +69,7 @@ public class SecurityConfig {
         return provider;
     }
 
-    // Cria o Gerente de Autenticação que conhece os dois "especialistas"
+    // Cria o Gerente de Autenticação que usa os dois provedores acima
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder =

@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
@@ -38,13 +37,13 @@ public class Administrador implements UserDetails {
     private Cargo cargo;
 
     @Column(name = "data_criacao", updatable = false)
-    private Timestamp dataCriacao; // Corrigido de dataCadastro para dataCriacao
-
+    private Timestamp dataCriacao;
 
     // --- MÉTODOS UserDetails IMPLEMENTADOS CORRETAMENTE ---
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        // Gera a permissão (Role) com base no cargo
         return List.of(new SimpleGrantedAuthority("ROLE_" + this.cargo.name()));
     }
 
@@ -56,28 +55,20 @@ public class Administrador implements UserDetails {
 
     @Override
     public String getUsername() {
-        // CORRIGIDO: Deve retornar o email (que usamos para login)
+        // CORRIGIDO: Deve retornar o email (que usamos como username para login)
         return this.email;
     }
 
     // CORRIGIDO: Os métodos abaixo devem retornar 'true' para indicar que a conta está ativa
     @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+    public boolean isAccountNonExpired() { return true; }
 
     @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+    public boolean isAccountNonLocked() { return true; }
 
     @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
+    public boolean isCredentialsNonExpired() { return true; }
 
     @Override
-    public boolean isEnabled() {
-        return true;
-    }
+    public boolean isEnabled() { return true; }
 }

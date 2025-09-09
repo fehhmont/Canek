@@ -1,4 +1,3 @@
-// Arquivo: src/main/java/com/canek/canek/services/AdministradorAuthService.java
 package com.canek.canek.services;
 
 import com.canek.canek.repositories.UsuarioBackOfficeRepository;
@@ -8,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service("administradorAuthService") // Dê um nome explícito ao bean
 public class AdministradorAuthService implements UserDetailsService {
 
     @Autowired

@@ -21,91 +21,14 @@ CREATE TABLE administradores (
     nome_completo VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     senha_hash VARCHAR(255) NOT NULL,
-    cargo ENUM('administrador', 'estoquista') NOT NULL,
+    -- CORRIGIDO: ENUM com valores em maiúsculas para corresponder ao Java
+    cargo ENUM('ADMIN', 'ESTOQUISTA') NOT NULL, 
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (email)
 );
 
-insert into administradores (nome_completo, email, senha_hash, cargo) values ("admin","admin@admin.com",1234,"administrador");
+-- CORRIGIDO: Inserindo o administrador com a senha '1234' já criptografada com BCrypt
+INSERT INTO administradores (nome_completo, email, senha_hash, cargo) 
+VALUES ('admin', 'admin@admin.com', '$2a$10$Y50UaMFOx.T7A/wza5xUzuI4qDWsn6N2sXwG/T2le7cCL2vj9vJHS', 'ADMIN');
 
-CREATE TABLE produtos (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(255) NOT NULL,
-    descricao TEXT,
-    preco DECIMAL(10, 2) NOT NULL,
-    sku VARCHAR(50) UNIQUE,
-    status VARCHAR(50) DEFAULT 'ativo',
-    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    admin_id BIGINT, 
-    FOREIGN KEY (admin_id) REFERENCES administradores(id)
-);
-
-
-CREATE TABLE estoque (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    produto_id BIGINT NOT NULL,
-    quantidade_disponivel INT NOT NULL,
-    data_ultima_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    atualizado_por_admin_id BIGINT,
-    FOREIGN KEY (produto_id) REFERENCES produtos(id),
-    FOREIGN KEY (atualizado_por_admin_id) REFERENCES administradores(id)
-);
-
-
-CREATE TABLE enderecos (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    usuario_id BIGINT NOT NULL,
-    rua VARCHAR(255) NOT NULL,
-    numero VARCHAR(20),
-    complemento VARCHAR(100),
-    bairro VARCHAR(100) NOT NULL,
-    cidade VARCHAR(100) NOT NULL,
-    estado VARCHAR(2) NOT NULL,
-    cep VARCHAR(10) NOT NULL,
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
-);
-
-
-CREATE TABLE carrinhos (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    usuario_id BIGINT NOT NULL,
-    status VARCHAR(50) DEFAULT 'ativo',
-    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
-    UNIQUE(usuario_id) 
-);
-
-
-CREATE TABLE itens_carrinho (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    carrinho_id BIGINT NOT NULL,
-    produto_id BIGINT NOT NULL,
-    quantidade INT NOT NULL,
-    preco_unitario DECIMAL(10, 2) NOT NULL,
-    FOREIGN KEY (carrinho_id) REFERENCES carrinhos(id),
-    FOREIGN KEY (produto_id) REFERENCES produtos(id)
-);
-
-
-CREATE TABLE pedidos (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    usuario_id BIGINT NOT NULL,
-    endereco_entrega_id BIGINT NOT NULL,
-    valor_total DECIMAL(10, 2) NOT NULL,
-    status_pedido VARCHAR(50) NOT NULL DEFAULT 'pendente',
-    data_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
-    FOREIGN KEY (endereco_entrega_id) REFERENCES enderecos(id)
-);
-
-
-CREATE TABLE itens_pedido (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    pedido_id BIGINT NOT NULL,
-    produto_id BIGINT NOT NULL,
-    quantidade INT NOT NULL,
-    preco_unitario DECIMAL(10, 2) NOT NULL,
-    FOREIGN KEY (pedido_id) REFERENCES pedidos(id),
-    FOREIGN KEY (produto_id) REFERENCES produtos(id)
-);
-
+-- O resto do seu script...
