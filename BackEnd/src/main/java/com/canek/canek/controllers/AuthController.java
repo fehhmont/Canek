@@ -1,25 +1,17 @@
 package com.canek.canek.controllers;
 
-
-import com.canek.canek.dtos.AuthDTOs.CadastroUsuarioDTO;
-import com.canek.canek.dtos.AuthDTOs.LoginDTO;
-import com.canek.canek.dtos.AuthDTOs.LoginResponseDTO;
+import com.canek.canek.dtos.AuthDTOs.*;
 import com.canek.canek.models.Usuario;
-import com.canek.canek.repositories.UsuarioRepository;
 import com.canek.canek.security.TokenService;
+import com.canek.canek.services.UsuarioService; // Importe o novo serviço
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
-
-
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/auth")
@@ -29,7 +21,7 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private UsuarioService usuarioService; // Agora usamos o serviço
 
     @Autowired
     private TokenService tokenService;
@@ -38,44 +30,25 @@ public class AuthController {
     public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid LoginDTO data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.senha());
         var auth = this.authenticationManager.authenticate(usernamePassword);
-
         var usuario = (Usuario) auth.getPrincipal();
-        
-        var token = tokenService.gerarToken((Usuario) auth.getPrincipal());
-
-       var tipoUsuario = usuario.getTipoUsuario();
-
-       return ResponseEntity.ok(new LoginResponseDTO(token, tipoUsuario));
+        var token = tokenService.gerarToken(usuario);
+        return ResponseEntity.ok(new LoginResponseDTO(token, usuario.getTipoUsuario()));
     }
 
     @PostMapping("/cadastro")
     public ResponseEntity<Void> cadastrar(@RequestBody @Valid CadastroUsuarioDTO data) {
-        if (this.usuarioRepository.findByEmail(data.email()) != null) {
-            
-            return ResponseEntity.badRequest().build();
-            //caso email já exista
+        try {
+            // A lógica agora é delegada para o serviço, que usa o PasswordEncoder central
+            usuarioService.cadastrar(data);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
-
-        // Criptografa a senha antes de salvar
-        String senhaCriptografada = new BCryptPasswordEncoder().encode(data.senha());
-        
-        Usuario novoUsuario = new Usuario();
-        novoUsuario.setNomeCompleto(data.nomeCompleto());
-        novoUsuario.setCpf(data.cpf());
-        novoUsuario.setEmail(data.email());
-        novoUsuario.setSenhaHash(senhaCriptografada);
-        novoUsuario.setTelefone(data.telefone());
-        
-
-        this.usuarioRepository.save(novoUsuario);
-
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/findAll")
-    public ResponseEntity<java.util.List<Usuario>> findAllUsers() {
-        java.util.List<Usuario> users = usuarioRepository.findAll();
-        return ResponseEntity.ok(users);
     }
     
+    @GetMapping("/findAll")
+    public ResponseEntity<List<Usuario>> findAllUsers() {
+        // Lembre-se que este endpoint expõe a senha hash. O ideal é usar um DTO.
+        return ResponseEntity.ok(usuarioService.listarTodos());
+    }
 }
