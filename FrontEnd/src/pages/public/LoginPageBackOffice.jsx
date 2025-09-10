@@ -3,7 +3,7 @@ import { Mail, Lock } from 'lucide-react';
 import { useAuth } from '../../components/AuthContext.jsx';
 import './css/LoginPageBackOffice.css';
 
-function LoginPage() {
+function LoginPageBackOffice() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [mensagemErro, setMensagemErro] = useState('');
@@ -27,7 +27,8 @@ function LoginPage() {
 
             if (response.ok) {
                 const data = await response.json();
-                auth.login(data.token, data.cargo); 
+                // CORREÇÃO: Passa um objeto para a função login
+                auth.login({ token: data.token, cargo: data.cargo }); 
             } else {
                 const erroTexto = await response.text();
                 setMensagemErro(erroTexto || "Email ou senha inválidos.");
@@ -89,4 +90,4 @@ function LoginPage() {
     );
 }
 
-export default LoginPage;
+export default LoginPageBackOffice;

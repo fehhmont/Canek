@@ -27,7 +27,8 @@ function LoginPage() {
 
             if (response.ok) {
                 const data = await response.json();
-                auth.login(data.token, data.tipoUsuario); 
+                // CORREÇÃO: Passa um objeto para a função login
+                auth.login({ token: data.token, tipoUsuario: data.tipoUsuario }); 
             } else {
                 const erroTexto = await response.text();
                 setMensagemErro(erroTexto || "Email ou senha inválidos.");

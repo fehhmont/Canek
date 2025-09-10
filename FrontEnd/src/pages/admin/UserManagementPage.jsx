@@ -1,4 +1,4 @@
-// Arquivo: src/pages/admin/UserManagementPage.jsx
+// Arquivo: src/pages/admin/UserManagementPage.jsx (CORRIGIDO)
 
 import React, { useState, useEffect } from "react";
 import { ArrowLeft, Users, Plus, Search, Eye, Edit, Trash2 } from 'lucide-react';
@@ -8,13 +8,11 @@ import './css/UserManagementPage.css';
 function UserManagementPage() {
     const navigate = useNavigate();
 
-    // 1. Estados para os dados, carregamento e erros
-    const [users, setUsers] = useState([]); // Armazena a lista de usuários vinda da API
-    const [loading, setLoading] = useState(true); // Controla a exibição da mensagem "Carregando..."
-    const [error, setError] = useState(null); // Armazena mensagens de erro
+    const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
 
-    // 2. useEffect para buscar os dados na API quando a página carrega
     useEffect(() => {
         const fetchUsers = async () => {
             try {
@@ -23,62 +21,63 @@ function UserManagementPage() {
                     throw new Error("Token de autenticação не найден. Por favor, faça o login novamente.");
                 }
 
-                // Faz a chamada para a API usando o token de autorização
-                const response = await fetch("http://localhost:8080/auth/findAll", {
+                // Endpoint correto para buscar administradores
+                const response = await fetch("http://localhost:8080/auth/administrador/findAll", {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
 
                 if (!response.ok) {
-                    // Se a resposta não for OK (ex: 403 Forbidden), lança um erro
                     throw new Error('Falha ao buscar usuários. Verifique suas permissões.');
                 }
 
                 const dataFromApi = await response.json();
 
                 // 3. Mapeia os dados brutos da API para o formato que a nossa tabela precisa
-                const formattedUsers = dataFromApi.map(user => ({
-                    id: user.id,
-                    name: user.nomeCompleto,
-                    email: user.email,
-                    // Capitaliza a primeira letra do tipo de usuário (ex: "admin" -> "Admin")
-                    role: user.tipoUsuario.charAt(0).toUpperCase() + user.tipoUsuario.slice(1),
-                    status: user.tipoUsuario === 'admin' ? 'Administrador' : 'Ativo', // Lógica de exemplo para o status
-                    // Formata a data para o padrão brasileiro
-                    lastLogin: new Date(user.dataCadastro).toLocaleDateString('pt-BR')
-                }));
+                const formattedUsers = dataFromApi.map(user => {
+                    // CORREÇÃO: Usar 'tipoUsuarioOuCargo' em vez de 'cargo'
+                    const role = user.tipoUsuarioOuCargo || ''; // Garante que role seja uma string
+                    const roleFormatted = role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
 
-                setUsers(formattedUsers); // Guarda os usuários formatados no estado
+                    return {
+                        id: user.id,
+                        name: user.nomeCompleto,
+                        email: user.email,
+                        role: roleFormatted,
+                        status: role === 'ADMIN' ? 'Administrador' : 'Ativo', // Lógica de status baseada na role
+                        // CORREÇÃO: A propriedade correta é 'dataCadastro' (conforme DTO)
+                        lastLogin: new Date(user.dataCadastro).toLocaleDateString('pt-BR')
+                    };
+                });
+
+                setUsers(formattedUsers);
             } catch (err) {
-                setError(err.message); // Guarda a mensagem de erro no estado
+                setError(err.message);
             } finally {
-                setLoading(false); // Garante que o estado de carregamento termine, com sucesso ou erro
+                setLoading(false);
             }
         };
 
         fetchUsers();
-    }, []); // O array de dependências vazio [] faz com que o useEffect rode apenas uma vez, quando o componente é montado.
+    }, []);
 
-    // Função de logout (sem alterações)
     const handleLogout = () => {
         localStorage.removeItem('userToken');
+        localStorage.removeItem('userData'); // Limpar também os dados do usuário
         navigate('/');
     };
 
-    // Filtro (agora funciona com os dados da API)
     const filteredUsers = users.filter(user =>
-        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchTerm.toLowerCase())
+        (user.name && user.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (user.email && user.email.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
-    // Função para classes de status (ajustada para usar o `role`)
     const getStatusClass = (role) => {
         if (role === 'Admin') return 'status-admin';
-        return 'status-active'; // Para 'Cliente', 'Estoquista', etc.
+        return 'status-active';
     };
 
-    // 4. Renderização condicional para feedback de carregamento e erro
     if (loading) {
         return <div className="page-container"><div className="card"><p>Carregando usuários...</p></div></div>;
     }
@@ -87,7 +86,6 @@ function UserManagementPage() {
         return <div className="page-container"><div className="card"><p style={{ color: 'red' }}>Erro: {error}</p></div></div>;
     }
 
-    // JSX principal (a estrutura continua a mesma, mas agora os dados são dinâmicos)
     return (
         <div className="page-container">
             <div className="container">
@@ -142,7 +140,7 @@ function UserManagementPage() {
                                             <td className="text-gray">{user.role}</td>
                                             <td>
                                                 <span className={`status-badge ${getStatusClass(user.role)}`}>
-                                                    {user.role}
+                                                    {user.status}
                                                 </span>
                                             </td>
                                             <td className="text-gray">{user.lastLogin}</td>
