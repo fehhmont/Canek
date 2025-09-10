@@ -58,7 +58,7 @@ function Header() {
                                     <Link to="/cadastro" className="nav-button">
                                         Crie sua conta
                                     </Link>
-                                    <Link to="/login" className="nav-button">
+                                    <Link to="/loginPage" className="nav-button">
                                         Login
                                     </Link>
                                 </>

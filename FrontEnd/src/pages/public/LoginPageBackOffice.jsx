@@ -19,7 +19,7 @@ function LoginPage() {
         const dadosLogin = { email, senha: password };
 
         try {
-            const response = await fetch("http://localhost:8080/auth/login", {
+            const response = await fetch("http://localhost:8080/auth/administrador/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(dadosLogin),
@@ -27,7 +27,7 @@ function LoginPage() {
 
             if (response.ok) {
                 const data = await response.json();
-                auth.login(data.token, data.tipoUsuario); 
+                auth.login(data.token, data.cargo); 
             } else {
                 const erroTexto = await response.text();
                 setMensagemErro(erroTexto || "Email ou senha inválidos.");

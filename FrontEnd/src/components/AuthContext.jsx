@@ -2,42 +2,52 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // 1. Cria o Contexto
-// O contexto é como um "armazém global" para o estado de autenticação.
 const AuthContext = createContext(null);
 
 // 2. Cria o Componente Provedor
-// Este componente irá "envolver" sua aplicação, disponibilizando o estado e as funções de autenticação para todos os componentes filhos.
 export const AuthProvider = ({ children }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    // Agora, em vez de um simples booleano, o estado pode guardar mais informações do usuário
+    const [user, setUser] = useState(null); 
     const navigate = useNavigate();
 
-    // Este `useEffect` é executado apenas uma vez, quando o aplicativo carrega.
-    // Ele verifica se já existe um token no localStorage para manter o usuário logado entre as sessões.
+    // Este `useEffect` verifica se já existem dados do usuário no localStorage 
+    // para manter a sessão ativa ao recarregar a página.
     useEffect(() => {
-        const token = localStorage.getItem('userToken');
-        if (token) {
-            setIsAuthenticated(true);
+        const storedUser = localStorage.getItem('userData');
+        if (storedUser) {
+            // Se encontrou dados, transforma de string para objeto e atualiza o estado
+            setUser(JSON.parse(storedUser));
         }
     }, []);
 
-    // Função para realizar o login
-    const login = (token, tipoUsuario) => {
-        // Salva o token recebido da API no localStorage
-        localStorage.setItem('userToken', token);
-        // Atualiza o estado global para indicar que o usuário está autenticado
-        setIsAuthenticated(true);
+    /**
+     * Função para realizar o login.
+     * Agora ela recebe um objeto 'userData' que deve conter o token e outras informações.
+     * Ex: { token: 'seu-token-jwt', tipoUsuario: 'ADMINISTRADOR', cargo: 'GERENTE_DE_VENDAS' }
+     */
+    const login = (userData) => {
+        // Salva os dados do usuário (convertidos para string) no localStorage
+        localStorage.setItem('userData', JSON.stringify(userData));
+        // Atualiza o estado global com todas as informações do usuário
+        setUser(userData);
 
-        // Redireciona o usuário com base no seu tipo, conforme definido na API
-        switch (tipoUsuario) {
-            case 'admin':
-                navigate("/UserManagementPage");
+        // O redirecionamento pode agora usar tanto o tipoUsuario quanto o cargo
+        const { tipoUsuario, cargo } = userData;
+
+        switch (userData) {
+            case 'ADMINISTRADOR':
+                // Você pode ter lógicas mais complexas aqui usando o cargo
+                 navigate("/UserManagementPage");
                 break;
+            
             case 'cliente':
                 navigate("/"); // Redireciona clientes para a HomePage
                 break;
-            case 'estoquista':
-                navigate("/EstoquePage"); // Exemplo para estoquista
+            
+            case 'ESTOQUISTA':
+                navigate("/UserManagementPage"); // Exemplo para estoquista
                 break;
+                
             default:
                 // Se o tipo for desconhecido, envia para a página inicial por segurança
                 navigate("/");
@@ -47,17 +57,19 @@ export const AuthProvider = ({ children }) => {
 
     // Função para realizar o logout
     const logout = () => {
-        // Remove o token do localStorage
-        localStorage.removeItem('userToken');
-        // Atualiza o estado para indicar que o usuário não está mais autenticado
-        setIsAuthenticated(false);
+        // Remove todos os dados do usuário do localStorage
+        localStorage.removeItem('userData');
+        // Limpa o estado global do usuário
+        setUser(null);
         // Redireciona o usuário para a página inicial/login
-        navigate('/'); 
+        navigate('/');
     };
 
-    // Objeto contendo o estado e as funções que queremos disponibilizar para a aplicação
+    // O objeto 'value' agora disponibiliza mais informações para a aplicação.
+    // O 'isAuthenticated' agora é uma verificação derivada: !!user (true se user não for nulo)
     const value = {
-        isAuthenticated,
+        isAuthenticated: !!user, // Um atalho para saber se o usuário está logado
+        user,                     // O objeto completo do usuário (com tipo, cargo, etc.)
         login,
         logout
     };
@@ -65,10 +77,8 @@ export const AuthProvider = ({ children }) => {
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-// 3. Cria um Hook customizado
-// Este hook `useAuth` é um atalho para que outros componentes possam acessar facilmente o contexto
-// sem precisar importar `useContext` e `AuthContext` toda vez.
+// 3. Hook customizado (continua o mesmo)
+// Este hook `useAuth` facilita o acesso ao contexto em outros componentes.
 export const useAuth = () => {
     return useContext(AuthContext);
 };
-
