@@ -81,151 +81,30 @@
             z-index: -1;
         }
 
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            color: white;
-            padding: 1.5rem 0;
-            box-shadow: var(--shadow-medium);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(45deg, 
-                rgba(255, 255, 255, 0.1) 0%, 
-                transparent 50%, 
-                rgba(255, 255, 255, 0.05) 100%);
-            z-index: 1;
-        }
-
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-            z-index: 2;
-        }
-
-        .logo-section {
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-size: 1.75rem;
-            font-weight: 700;
-        }
-
-        .logo i {
-            font-size: 2rem;
-            background: linear-gradient(45deg, #fff, #e3f2fd);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .logo-subtitle {
-            font-size: 0.875rem;
-            opacity: 0.9;
-            font-weight: 300;
-            margin-left: 2.75rem;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .user-avatar {
-            font-size: 2.5rem;
-            opacity: 0.9;
-        }
-
-        .user-details {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-        }
-
-        .user-name {
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        .user-role {
-            font-size: 0.875rem;
-            opacity: 0.8;
-            font-weight: 300;
-        }
 
         /* Main Container */
         .container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
             padding: 2rem;
             animation: fadeInUp 0.8s ease-out;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* Welcome Section */
         .welcome-section {
+            text-align: center;
             margin-bottom: 3rem;
         }
 
-        .welcome-box {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.9) 0%, 
-                rgba(255, 255, 255, 0.7) 100%);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(74, 107, 175, 0.1);
-            border-radius: var(--border-radius-large);
-            padding: 2.5rem;
-            box-shadow: var(--shadow-medium);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .welcome-box::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
-        }
-
-        .welcome-content {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-        }
-
-        .welcome-icon {
-            font-size: 4rem;
-            color: var(--primary-color);
-            opacity: 0.8;
-        }
-
-        .welcome-text h1 {
-            font-size: 2.25rem;
+        .welcome-title {
+            font-size: 2.5rem;
             font-weight: 600;
+            color: var(--text-primary);
             margin-bottom: 0.5rem;
-            line-height: 1.2;
         }
 
         .highlight {
@@ -238,138 +117,20 @@
 
         .welcome-subtitle {
             color: var(--text-secondary);
-            font-size: 0.95rem;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-
-        .welcome-description {
-            color: var(--text-light);
             font-size: 1.1rem;
-            font-weight: 300;
-        }
-
-        /* Stats Section */
-        .stats-section {
-            margin-bottom: 3rem;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .stat-card {
-            background: var(--surface-color);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            box-shadow: var(--shadow-light);
-            border: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
-            transform: translateX(-100%);
-            transition: transform 0.6s ease;
-        }
-
-        .stat-card:hover::before {
-            transform: translateX(100%);
-        }
-
-        .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-medium);
-        }
-
-        .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: white;
-            position: relative;
-        }
-
-        .stat-icon.products {
-            background: linear-gradient(45deg, #3498db, #2980b9);
-        }
-
-        .stat-icon.users {
-            background: linear-gradient(45deg, #27ae60, #229954);
-        }
-
-        .stat-icon.orders {
-            background: linear-gradient(45deg, #e74c3c, #c0392b);
-        }
-
-        .stat-content {
-            flex: 1;
-        }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            line-height: 1;
-        }
-
-        .stat-label {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-weight: 400;
         }
 
         /* Actions Section */
         .actions-section {
-            margin-bottom: 2rem;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 1.75rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 2rem;
-            position: relative;
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -0.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
-            border-radius: 2px;
+            width: 100%;
         }
 
         .button-container {
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
-            max-width: 800px;
-            margin: 0 auto;
+            width: 100%;
         }
 
         .nav-button {
@@ -472,81 +233,6 @@
             transform: translateX(5px);
         }
 
-        /* Footer */
-        .footer {
-            background: var(--surface-color);
-            border-top: 1px solid var(--border-color);
-            padding: 2rem 0;
-            margin-top: 4rem;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .footer-left {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .footer-logo {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--primary-color);
-        }
-
-        .footer-text {
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-        }
-
-        .footer-right {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 0.75rem;
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 2rem;
-        }
-
-        .footer-link {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.875rem;
-            transition: var(--transition);
-        }
-
-        .footer-link:hover {
-            color: var(--primary-color);
-        }
-
-        .footer-status {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.8rem;
-            color: var(--text-light);
-        }
-
-        .status-indicator {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--success-color);
-            animation: pulse 2s infinite;
-        }
 
         /* Loading Overlay */
         .loading-overlay {
@@ -613,31 +299,12 @@
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 1rem;
-                text-align: center;
-            }
-            
-            .user-details {
-                align-items: center;
-            }
-            
             .container {
                 padding: 1rem;
             }
             
-            .welcome-content {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .welcome-text h1 {
-                font-size: 1.75rem;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
+            .welcome-title {
+                font-size: 2rem;
             }
             
             .nav-button {
@@ -647,34 +314,15 @@
             .button-content {
                 margin-right: 1rem;
             }
-            
-            .footer-content {
-                flex-direction: column;
-                gap: 1.5rem;
-                text-align: center;
-            }
-            
-            .footer-right {
-                align-items: center;
-            }
-            
-            .footer-links {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
         }
 
         @media (max-width: 480px) {
-            .welcome-box {
-                padding: 1.5rem;
+            .welcome-title {
+                font-size: 1.75rem;
             }
             
-            .welcome-icon {
-                font-size: 3rem;
-            }
-            
-            .welcome-text h1 {
-                font-size: 1.5rem;
+            .welcome-subtitle {
+                font-size: 1rem;
             }
             
             .nav-button {
@@ -690,14 +338,6 @@
             .button-title {
                 font-size: 1.1rem;
             }
-            
-            .stats-grid {
-                gap: 1rem;
-            }
-            
-            .stat-card {
-                padding: 1rem;
-            }
         }
 
         /* Accessibility */
@@ -711,8 +351,6 @@
 
         /* Print Styles */
         @media print {
-            .header,
-            .footer,
             .nav-button {
                 background: white !important;
                 color: black !important;
@@ -731,84 +369,16 @@
     <div class="bg-pattern"></div>
     <div class="bg-gradient"></div>
     
-    <!-- Header -->
-    <header class="header">
-        <div class="header-content">
-            <div class="logo-section">
-                <div class="logo">
-                    <i class="fas fa-chart-line"></i>
-                    <span>CaneK</span>
-                </div>
-                <div class="logo-subtitle">Sistema de Gestão Empresarial</div>
-            </div>
-            <div class="user-info">
-                <div class="user-avatar">
-                    <i class="fas fa-user-circle"></i>
-                </div>
-                <div class="user-details">
-                    <span class="user-name">João Silva</span>
-                    <span class="user-role">Gerente de Operações</span>
-                </div>
-            </div>
-        </div>
-    </header>
-
     <!-- Main Container -->
     <div class="container">
         <!-- Welcome Section -->
         <div class="welcome-section">
-            <div class="welcome-box">
-                <div class="welcome-content">
-                    <div class="welcome-icon">
-                        <i class="fas fa-tachometer-alt"></i>
-                    </div>
-                    <div class="welcome-text">
-                        <h1>Bem-vindo ao Dashboard, <span class="highlight" id="username">João Silva</span>!</h1>
-                        <p class="welcome-subtitle">Último acesso: <span id="last-login">10/09/2025 às 11:15</span></p>
-                        <p class="welcome-description">Gerencie sua empresa com eficiência e controle total</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Stats Cards -->
-        <div class="stats-section">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon products">
-                        <i class="fas fa-box-open"></i>
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-number" id="products-count">0</div>
-                        <div class="stat-label">Produtos</div>
-                    </div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon users">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-number" id="users-count">0</div>
-                        <div class="stat-label">Usuários</div>
-                    </div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon orders">
-                        <i class="fas fa-clipboard-list"></i>
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-number" id="orders-count">0</div>
-                        <div class="stat-label">Pedidos</div>
-                    </div>
-                </div>
-            </div>
+            <h1 class="welcome-title">Bem-vindo, <span class="highlight">João Silva</span>!</h1>
+            <p class="welcome-subtitle">O que você gostaria de fazer hoje?</p>
         </div>
         
         <!-- Action Buttons -->
         <div class="actions-section">
-            <h2 class="section-title">O que você gostaria de fazer hoje?</h2>
             <div class="button-container">
                 <button class="nav-button products-btn" onclick="navigateTo('produtos.html')" data-tooltip="Visualizar e gerenciar produtos">
                     <div class="button-icon">
@@ -851,30 +421,6 @@
             </div>
         </div>
     </div>
-    
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-left">
-                <div class="footer-logo">
-                    <i class="fas fa-chart-line"></i>
-                    <span>CaneK</span>
-                </div>
-                <p class="footer-text">© 2023 CaneK - Sistema de Gestão Empresarial</p>
-            </div>
-            <div class="footer-right">
-                <div class="footer-links">
-                    <a href="#" class="footer-link">Suporte</a>
-                    <a href="#" class="footer-link">Documentação</a>
-                    <a href="#" class="footer-link">Privacidade</a>
-                </div>
-                <div class="footer-status">
-                    <span class="status-indicator"></span>
-                    <span>Sistema Online</span>
-                </div>
-            </div>
-        </div>
-    </footer>
 
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
@@ -887,12 +433,7 @@
     <script>
         // DOM Elements
         const loadingOverlay = document.getElementById('loadingOverlay');
-        const statsNumbers = document.querySelectorAll('.stat-number');
         const navButtons = document.querySelectorAll('.nav-button');
-
-        // Configuration
-        const ANIMATION_DURATION = 2000;
-        const STATS_ANIMATION_DELAY = 500;
 
         // Initialize application when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
@@ -903,19 +444,11 @@
          * Initialize the application
          */
         function initializeApp() {
-            // Animate stats cards on load
-            setTimeout(() => {
-                animateStats();
-            }, STATS_ANIMATION_DELAY);
-            
             // Setup button interactions
             setupButtonInteractions();
             
             // Setup tooltips
             setupTooltips();
-            
-            // Update user session info
-            updateSessionInfo();
             
             // Setup keyboard navigation
             setupKeyboardNavigation();
@@ -923,51 +456,6 @@
             console.log('CaneK Dashboard inicializado com sucesso');
         }
 
-        /**
-         * Animate statistics numbers with counting effect
-         */
-        function animateStats() {
-            const stats = [
-                { element: document.getElementById('products-count'), target: 247 },
-                { element: document.getElementById('users-count'), target: 89 },
-                { element: document.getElementById('orders-count'), target: 156 }
-            ];
-            
-            stats.forEach((stat, index) => {
-                if (stat.element) {
-                    setTimeout(() => {
-                        animateNumber(stat.element, 0, stat.target, ANIMATION_DURATION);
-                        stat.element.style.animation = 'countUp 0.6s ease-out';
-                    }, index * 200);
-                }
-            });
-        }
-
-        /**
-         * Animate number counting from start to end
-         */
-        function animateNumber(element, start, end, duration) {
-            const startTime = performance.now();
-            
-            function updateNumber(currentTime) {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                
-                // Easing function for smooth animation
-                const easeOutQuart = 1 - Math.pow(1 - progress, 4);
-                const current = Math.floor(start + (end - start) * easeOutQuart);
-                
-                element.textContent = current.toLocaleString('pt-BR');
-                
-                if (progress < 1) {
-                    requestAnimationFrame(updateNumber);
-                } else {
-                    element.textContent = end.toLocaleString('pt-BR');
-                }
-            }
-            
-            requestAnimationFrame(updateNumber);
-        }
 
         /**
          * Setup button interactions and effects
@@ -1142,13 +630,6 @@
                 minute: '2-digit'
             });
             
-            // Update last login display
-            const lastLoginElement = document.getElementById('last-login');
-            if (lastLoginElement) {
-                const today = now.toLocaleDateString('pt-BR');
-                lastLoginElement.textContent = `${today} às ${timeString}`;
-            }
-            
             console.log(`Última atividade: ${timeString}`);
         }
 
@@ -1211,8 +692,7 @@
         window.CaneKDashboard = {
             navigateTo,
             showLoading,
-            hideLoading,
-            animateStats
+            hideLoading
         };
     </script>
 </body>
