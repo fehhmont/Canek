@@ -18,6 +18,7 @@ import DashboardPage from './pages/private/DashboardPage';
 import LoginPage from './pages/public/LoginPage';
 import UserManagementPage from './pages/admin/UserManagementPage';
 import ProtectedRoute from './components/ProtectedRoute';
+import AdminDashboardPage from './pages/admin/AdminDashboardPage'; 
 
 // Importa o CSS global
 import './index.css';
@@ -42,6 +43,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             {/* Rotas Protegidas (também filhas do layout) */}
             <Route element={<ProtectedRoute />}>
               <Route path="DashboardPage" element={<DashboardPage />} />
+              <Route path="AdminDashboardPage" element={<AdminDashboardPage />} />
               <Route path="UserManagementPage" element={<UserManagementPage />} />
             </Route>
 

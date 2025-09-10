@@ -10,6 +10,7 @@ import com.canek.canek.repositories.UsuarioBackOfficeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,5 +52,16 @@ public class AdministradorService {
         }
 
         return repository.save(novoAdmin);
+    }
+
+    public Administrador alterarStatus(Long id) {
+        
+        Administrador admin = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Administrador com ID " + id + " não encontrado."));
+
+        admin.setStatus(!admin.getStatus());
+
+       
+        return repository.save(admin);
     }
 }

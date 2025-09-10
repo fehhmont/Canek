@@ -39,7 +39,11 @@ public class Administrador implements UserDetails {
     @Column(name = "data_criacao", updatable = false)
     private Timestamp dataCriacao;
 
-    // --- MÉTODOS UserDetails IMPLEMENTADOS CORRETAMENTE ---
+    @Column(name = "status")
+    private Boolean status = true;
+
+ 
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -70,5 +74,7 @@ public class Administrador implements UserDetails {
     public boolean isCredentialsNonExpired() { return true; }
 
     @Override
-    public boolean isEnabled() { return true; }
+    public boolean isEnabled() { return this.status != null && this.status; }
+
+    
 }

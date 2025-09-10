@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
         switch (role) {
             case 'ADMIN':
             case 'ESTOQUISTA':
-                navigate("/UserManagementPage");
+                navigate("/AdminDashboardPage");
                 break;
             case 'cliente':
                 navigate("/");

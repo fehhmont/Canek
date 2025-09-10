@@ -14,7 +14,8 @@ public record DadosUsuarioDTO(
     String email,
     String cpf,
     String telefone,
-    String tipoUsuarioOuCargo, // Um campo genérico para ambos
+    String tipoUsuarioOuCargo,
+    Boolean status, // Um campo genérico para ambos
     Timestamp dataCadastro
 ) {
     // Construtor "de fábrica" para converter uma Entidade Usuario para este DTO
@@ -26,6 +27,7 @@ public record DadosUsuarioDTO(
             usuario.getCpf(),
             usuario.getTelefone(),
             usuario.getTipoUsuario(),
+            null,
             usuario.getDataCadastro()
         );
     }
@@ -39,6 +41,7 @@ public record DadosUsuarioDTO(
             null, // Admin não tem CPF
             null, // Admin não tem telefone
             admin.getCargo().name(), // Pega o nome do Enum (ex: "ADMIN")
+            admin.isEnabled(),
             admin.getDataCriacao()
         );
     }

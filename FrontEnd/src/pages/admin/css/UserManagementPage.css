@@ -238,3 +238,14 @@
 .action-btn.delete:hover {
   background-color: #fee2e2;
 }
+
+.status-active {
+  background-color: #dcfce7; /* Verde */
+  color: #166534;
+}
+
+/* ADICIONE ESTA CLASSE */
+.status-inactive {
+  background-color: #fee2e2; /* Vermelho */
+  color: #991b1b;
+}

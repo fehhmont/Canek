@@ -54,4 +54,14 @@ public class AdministradorAuthController {
         List<DadosUsuarioDTO> usuarios = adminService.listarTodos();
         return ResponseEntity.ok(usuarios);
     }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<Void> alterarStatusAdministrador(@PathVariable Long id) {
+        try {
+            adminService.alterarStatus(id);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

@@ -11,6 +11,7 @@ CREATE TABLE usuarios (
     senha_hash VARCHAR(255) NOT NULL,
     telefone VARCHAR(20),
     tipo_usuario VARCHAR(50) DEFAULT 'cliente',
+    status BOOLEAN DEFAULT TRUE,
     data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (email),
     UNIQUE (cpf)
@@ -21,13 +22,11 @@ CREATE TABLE administradores (
     nome_completo VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     senha_hash VARCHAR(255) NOT NULL,
-    cargo ENUM('ADMIN', 'ESTOQUISTA') NOT NULL, 
+    cargo ENUM('ADMIN', 'ESTOQUISTA') NOT NULL,
+    status BOOLEAN DEFAULT TRUE, 
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (email)
 );
-INSERT INTO administradores (nome_completo, email, senha_hash, cargo) 
-VALUES ('admin', 'admin@admin.com', '$2a$10$Y50UaMFOx.T7A/wza5xUzuI4qDWsn6N2sXwG/T2le7cCL2vj9vJHS', 'ADMIN');
-
 
 CREATE TABLE produtos (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
