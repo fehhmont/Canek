@@ -38,7 +38,7 @@ function CadastroPage() {
                 const erroTexto = await response.text();
                 setMensagemApi(erroTexto || "Ocorreu um erro ao cadastrar.");
             }
-        } catch (error) {
+        } catch {
             setMensagemApi("Não foi possível conectar ao servidor.");
         }
     };
