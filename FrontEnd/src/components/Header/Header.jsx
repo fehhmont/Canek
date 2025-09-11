@@ -55,10 +55,10 @@ function Header() {
                             ) : (
                                 // Se o usuário NÃO ESTÁ logado
                                 <>
-                                    <Link to="/cadastro" className="nav-button">
+                                    <Link to="/CadastroPage" className="nav-button">
                                         Crie sua conta
                                     </Link>
-                                    <Link to="/loginPage" className="nav-button">
+                                    <Link to="/LoginPage" className="nav-button">
                                         Login
                                     </Link>
                                 </>

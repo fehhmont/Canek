@@ -36,9 +36,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             
             {/* Rotas Públicas (filhas do layout) */}
             <Route index element={<HomePage />} />
-            <Route path="backoffice" element={<LoginPageBackOffice />} />
-            <Route path="login" element={<LoginPage />} />
-            <Route path="cadastro" element={<CadastroPage />} />
+            <Route path="LoginPageBackOffice" element={<LoginPageBackOffice />} />
+            <Route path="LoginPage" element={<LoginPage />} />
+            <Route path="CadastroPage" element={<CadastroPage />} />
 
             {/* Rotas Protegidas (também filhas do layout) */}
             <Route element={<ProtectedRoute />}>
