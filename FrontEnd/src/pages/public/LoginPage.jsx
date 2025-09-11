@@ -32,7 +32,7 @@ function LoginPage() {
                 const erroTexto = await response.text();
                 setMensagemErro(erroTexto || "Email ou senha inválidos.");
             }
-        } catch (error) {
+        } catch {
             setMensagemErro("Não foi possível conectar ao servidor.");
         } finally {
             setCarregando(false);
