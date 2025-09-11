@@ -5,12 +5,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { cadastroSchema } from "../../utils/validationSchemas.js";
 import './css/CadastroPage.css';
 
-// Ícones SVG inline
+// Ícone de seta para voltar
 const ArrowLeft = () => (
-  <svg width="22" height="22" fill="none" stroke="#52658F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-);
-const LogoutIcon = () => (
-  <svg width="20" height="20" fill="none" stroke="#52658F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+  <svg width="28" height="28" fill="none" stroke="#52658F" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{display: 'block'}}><polyline points="18 24 8 14 18 4"/></svg>
 );
 
 function CadastroPage() {
@@ -46,25 +43,15 @@ function CadastroPage() {
         }
     };
 
-    function handleSair() {
-      // Aqui você pode limpar o token, se houver, e redirecionar para login
-      navigate("/login");
-    }
-
     return (
       <div className="cadastro-bg">
-        <div className="cadastro-header">
-          <div className="cadastro-header-left">
-            <button className="cadastro-header-btn" onClick={() => navigate("/login")} title="Voltar para login">
-              <ArrowLeft />
-            </button>
-            <span className="cadastro-header-title">Cadastrar Novo Usuário</span>
-          </div>
-          <button className="cadastro-header-btn" onClick={handleSair} title="Sair">
-            <LogoutIcon />
-            Sair
-          </button>
-        </div>
+        <button className="cadastro-back-btn" onClick={() => navigate("/login")} title="Voltar para login">
+          <ArrowLeft />
+        </button>
+        <h1 className="cadastro-title-big">Cadastrar Novo Usuário</h1>
+        <p className="cadastro-subtitle-center">
+          Preencha os campos abaixo para criar sua conta
+        </p>
         <div className="cadastro-card">
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="cadastro-form-grid">
