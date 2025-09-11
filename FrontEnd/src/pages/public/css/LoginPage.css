@@ -7,91 +7,6 @@
   justify-content: center;
 }
 
-.login-header {
-  width: 100%;
-  max-width: 400px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-bottom: 32px;
-  gap: 4px;
-}
-
-.login-title {
-  font-size: 1.6rem;
-  font-weight: bold;
-  color: #000;
-}
-
-.login-subtitle {
-  font-size: 1rem;
-  color: #222;
-  margin-bottom: 2px;
-}
-
-.login-card {
-  background: #fff;
-  padding: 32px 32px 24px 32px;
-  border-radius: 16px;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
-  min-width: 340px;
-  max-width: 400px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.login-icon {
-  color: #52658F;
-  margin-bottom: 8px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 12px;
-}
-
-.login-input {
-  padding: 10px 12px;
-  border: 1px solid #bbb;
-  border-radius: 6px;
-  font-size: 1rem;
-  background: #fafbfc;
-  color: #000;
-}
-
-.login-input:disabled {
-  background: #f3f3f3;
-}
-
-.login-button {
-  background: #52658F;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 12px 0;
-  font-size: 1.1rem;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 8px;
-  width: 100%;
-  transition: background 0.2s;
-}
-
-.login-button:disabled {
-  background: #b0b8c9;
-  cursor: not-allowed;
-}
-
-.login-error {
-  color: #d32f2f;
-  font-size: 0.98em;
-  margin: 0 0 8px 0;
-  text-align: center;
-}
 .login-title-big {
   font-size: 3rem;
   font-weight: bold;
@@ -107,6 +22,27 @@
   color: #222;
   font-size: 1rem;
   margin-bottom: 32px;
+}
+
+.login-card {
+  background: #fff;
+  padding: 32px 32px 24px 32px;
+  border-radius: 24px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  min-width: 340px;
+  max-width: 440px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-bottom: 40px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
 }
 
 .login-label {
@@ -139,18 +75,15 @@
   width: 100%;
 }
 
-.login-card {
-  background: #fff;
-  padding: 32px 32px 24px 32px;
-  border-radius: 24px;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
-  min-width: 340px;
-  max-width: 440px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  margin-bottom: 40px;
+.login-input:disabled {
+  background: #f3f3f3;
+}
+
+.login-error {
+  color: #d32f2f;
+  font-size: 0.98em;
+  margin: 0 0 8px 0;
+  text-align: center;
 }
 
 .login-button {

@@ -27,8 +27,7 @@ function LoginPage() {
 
             if (response.ok) {
                 const data = await response.json();
-                // CORREÇÃO: Passa um objeto para a função login
-                auth.login({ token: data.token, tipoUsuario: data.tipoUsuario }); 
+                auth.login(data.token, data.tipoUsuario); 
             } else {
                 const erroTexto = await response.text();
                 setMensagemErro(erroTexto || "Email ou senha inválidos.");
@@ -42,9 +41,9 @@ function LoginPage() {
 
     return (
         <div className="login-bg">
-            <h1 className="login-title-big">Canek</h1>
+            <h1 className="login-title-big">Acesso ao Sistema</h1>
             <p className="login-subtitle-center">
-                Entre com suas credenciais 
+                Entre com suas credenciais para acessar sua conta
             </p>
             <div className="login-card">
                 <form onSubmit={handleSubmit}>
