@@ -3,14 +3,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-
-// Importa o componente de Layout
 import App from './App';
-
-// Importa o provedor de autenticação
 import { AuthProvider } from './components/AuthContext';
 
-// Importa todas as suas páginas
+// Importe o novo componente
+import AdminRoute from './components/AdminRoute'; // <-- ADICIONE ESTA LINHA
+
+// Suas outras importações...
 import HomePage from './pages/public/HomePage';
 import LoginPageBackOffice from './pages/public/LoginPageBackOffice';
 import CadastroPage from './pages/public/CadastroPage';
@@ -18,9 +17,11 @@ import DashboardPage from './pages/private/DashboardPage';
 import LoginPage from './pages/public/LoginPage';
 import UserManagementPage from './pages/admin/UserManagementPage';
 import ProtectedRoute from './components/ProtectedRoute';
-import AdminDashboardPage from './pages/admin/AdminDashboardPage'; 
+import AdminDashboardPage from './pages/admin/AdminDashboardPage';
+import CadastroPageAdmin from './pages/admin/CadastroPageAdmin';
+import EditAdminPage from './pages/admin/EditAdminPage';
 
-// Importa o CSS global
+
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -28,23 +29,26 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          {/* Esta é a Rota de Layout. Ela diz: "Para qualquer URL que comece com '/', 
-            renderize o componente App. As rotas filhas serão renderizadas
-            dentro do <Outlet /> do App."
-          */}
           <Route path="/" element={<App />}>
             
-            {/* Rotas Públicas (filhas do layout) */}
+            {/* Rotas Públicas */}
             <Route index element={<HomePage />} />
             <Route path="LoginPageBackOffice" element={<LoginPageBackOffice />} />
             <Route path="LoginPage" element={<LoginPage />} />
             <Route path="CadastroPage" element={<CadastroPage />} />
 
-            {/* Rotas Protegidas (também filhas do layout) */}
+            {/* Rotas Protegidas para QUALQUER usuário logado */}
             <Route element={<ProtectedRoute />}>
               <Route path="DashboardPage" element={<DashboardPage />} />
+              {/* Adicione aqui outras páginas que clientes logados podem ver */}
+            </Route>
+
+            {/* ROTAS PROTEGIDAS APENAS PARA ADMINS E ESTOQUISTAS */}
+            <Route element={<AdminRoute />}>
               <Route path="AdminDashboardPage" element={<AdminDashboardPage />} />
               <Route path="UserManagementPage" element={<UserManagementPage />} />
+              <Route path="UserManagementPage/new" element={<CadastroPageAdmin />} />
+              <Route path="UserManagementPage/edit/:userId" element={<EditAdminPage />} />
             </Route>
 
             {/* Rota para páginas não encontradas */}

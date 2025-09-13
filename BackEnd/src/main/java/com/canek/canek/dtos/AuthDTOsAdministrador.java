@@ -33,4 +33,16 @@ public class AuthDTOsAdministrador {
 
     public record LoginResponseAdministradorDTO(String token, String cargo) {}
 
+    public record AtualizacaoAdministradorDTO(
+        @NotBlank(message = "O nome completo é obrigatório")
+        String nomeCompleto,
+
+        @NotBlank(message = "O email é obrigatório")
+        @Email(message = "Formato de email inválido")
+        String email,
+
+        @NotBlank(message = "O cargo é obrigatório")
+        String cargo
+    ) {}
+
 }

@@ -1,12 +1,11 @@
-// Arquivo: src/main/java/com/canek/canek/controllers/AdministradorAuthController.java
-
 package com.canek.canek.controllers;
 
 import com.canek.canek.dtos.AuthDTOsAdministrador.*;
-import com.canek.canek.dtos.DadosUsuarioDTO; // Importe o DTO de resposta
+import com.canek.canek.dtos.DadosUsuarioDTO;
 import com.canek.canek.models.Administrador;
 import com.canek.canek.security.TokenService;
 import com.canek.canek.services.AdministradorService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +29,7 @@ public class AdministradorAuthController {
     private TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseAdministradorDTO> login(@RequestBody LoginAdministradorDTO data) {
+    public ResponseEntity<LoginResponseAdministradorDTO> login(@RequestBody @Valid LoginAdministradorDTO data) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.senha());
         var auth = this.authenticationManager.authenticate(usernamePassword);
         var administrador = (Administrador) auth.getPrincipal();
@@ -39,7 +38,7 @@ public class AdministradorAuthController {
     }
 
     @PostMapping("/cadastro")
-    public ResponseEntity<Void> cadastrar(@RequestBody CadastroAdministradorDTO data) {
+    public ResponseEntity<Void> cadastrar(@RequestBody @Valid CadastroAdministradorDTO data) {
         try {
             adminService.cadastrar(data);
             return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -48,11 +47,21 @@ public class AdministradorAuthController {
         }
     }
 
-    // O endpoint agora retorna o tipo correto: List<DadosUsuarioDTO>
     @GetMapping("/findAll")
     public ResponseEntity<List<DadosUsuarioDTO>> findAll() {
         List<DadosUsuarioDTO> usuarios = adminService.listarTodos();
         return ResponseEntity.ok(usuarios);
+    }
+
+    // --- CORREÇÃO APLICADA AQUI ---
+    @GetMapping("/{id}")
+    public ResponseEntity<DadosUsuarioDTO> findById(@PathVariable Long id) {
+        try {
+            Administrador admin = adminService.findById(id);
+            return ResponseEntity.ok(DadosUsuarioDTO.fromAdministrador(admin));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/{id}/status")
@@ -62,6 +71,18 @@ public class AdministradorAuthController {
             return ResponseEntity.ok().build();
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    // --- CORREÇÃO APLICADA AQUI ---
+    @PutMapping("/{id}")
+    public ResponseEntity<DadosUsuarioDTO> atualizarAdministrador(@PathVariable Long id, @RequestBody @Valid AtualizacaoAdministradorDTO data) {
+        try {
+            Administrador adminAtualizado = adminService.atualizar(id, data);
+            return ResponseEntity.ok(DadosUsuarioDTO.fromAdministrador(adminAtualizado));
+        } catch (RuntimeException e) {
+            // Se o usuário não for encontrado ou o email já existir, retorna erro
+            return ResponseEntity.badRequest().build(); // Simplificado
         }
     }
 }

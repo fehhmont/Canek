@@ -2,15 +2,19 @@
 
 package com.canek.canek.services;
 
+import com.canek.canek.dtos.AuthDTOsAdministrador.AtualizacaoAdministradorDTO;
 import com.canek.canek.dtos.AuthDTOsAdministrador.CadastroAdministradorDTO;
 import com.canek.canek.dtos.DadosUsuarioDTO; // Importe o novo DTO
 import com.canek.canek.models.Administrador;
 import com.canek.canek.models.enums.Cargo;
 import com.canek.canek.repositories.UsuarioBackOfficeRepository;
+
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -63,5 +67,35 @@ public class AdministradorService {
 
        
         return repository.save(admin);
+    }
+
+    public Administrador atualizar(Long id, AtualizacaoAdministradorDTO data) {
+        // 1. Busca o administrador no banco de dados
+        Administrador admin = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Administrador com ID " + id + " não encontrado."));
+
+        // 2. Verifica se o email foi alterado e se o novo email já está em uso
+        if (!admin.getEmail().equals(data.email())) {
+            if (repository.findByEmail(data.email()) != null) {
+                throw new RuntimeException("O email informado já está em uso por outro usuário.");
+            }
+        }
+        
+        // 3. Atualiza os dados do objeto com as informações do DTO
+        admin.setNomeCompleto(data.nomeCompleto());
+        admin.setEmail(data.email());
+        try {
+            admin.setCargo(Cargo.valueOf(data.cargo().toUpperCase()));
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Cargo inválido: " + data.cargo());
+        }
+
+        // 4. Salva as alterações no banco de dados
+        return repository.save(admin);
+    }
+
+    public Administrador findById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Administrador com ID " + id + " não encontrado."));
     }
 }

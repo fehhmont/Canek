@@ -58,6 +58,9 @@ function Header() {
                                     <Link to="/CadastroPage" className="nav-button">
                                         Crie sua conta
                                     </Link>
+                                    <Link to="/LoginPageBackOffice" className="nav-button">
+                                        Login BackOffice
+                                    </Link>
                                     <Link to="/LoginPage" className="nav-button">
                                         Login
                                     </Link>

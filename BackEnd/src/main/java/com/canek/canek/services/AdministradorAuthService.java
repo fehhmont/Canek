@@ -1,5 +1,8 @@
 package com.canek.canek.services;
 
+import com.canek.canek.dtos.AuthDTOsAdministrador.AtualizacaoAdministradorDTO;
+import com.canek.canek.models.Administrador;
+import com.canek.canek.models.enums.Cargo;
 import com.canek.canek.repositories.UsuarioBackOfficeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,4 +24,5 @@ public class AdministradorAuthService implements UserDetailsService {
         }
         return admin;
     }
+
 }

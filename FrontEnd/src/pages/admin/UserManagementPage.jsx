@@ -1,8 +1,7 @@
-// Arquivo: src/pages/admin/UserManagementPage.jsx (CORRIGIDO)
+// Arquivo: src/pages/admin/UserManagementPage.jsx (CORRIGIDO E REFATORADO)
 
 import React, { useState, useEffect } from "react";
-// CORREÇÃO 1: Adicionar ToggleLeft e ToggleRight à importação
-import { ArrowLeft, Users, Plus, Search, Eye, Edit, Trash2, ToggleLeft, ToggleRight } from 'lucide-react';
+import { ArrowLeft, Users, Plus, Search, Eye, Edit, ToggleLeft, ToggleRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import './css/UserManagementPage.css';
 
@@ -27,14 +26,12 @@ function UserManagementPage() {
 
                 const dataFromApi = await response.json();
 
-                // CORREÇÃO 2: Simplificar a formatação dos dados
                 const formattedUsers = dataFromApi.map(user => ({
                     id: user.id,
                     name: user.nomeCompleto,
                     email: user.email,
                     role: user.tipoUsuarioOuCargo.charAt(0).toUpperCase() + user.tipoUsuarioOuCargo.slice(1).toLowerCase(),
-                    // Manter o campo 'ativo' como booleano (true/false)
-                    ativo: user.status, 
+                    ativo: user.status,
                     lastLogin: new Date(user.dataCadastro).toLocaleDateString('pt-BR')
                 }));
                 setUsers(formattedUsers);
@@ -71,7 +68,6 @@ function UserManagementPage() {
         navigate('/');
     };
 
-    // CORREÇÃO 3: Esta função agora recebe o booleano 'ativo' diretamente
     const getStatusClass = (ativo) => (ativo ? 'status-active' : 'status-inactive');
 
     const filteredUsers = users.filter(user =>
@@ -91,7 +87,11 @@ function UserManagementPage() {
                             <button onClick={() => navigate(-1)} className="back-button"><ArrowLeft className="icon-sm" /></button>
                             <div className="header-title"><Users className="icon-md primary-color" /><h1 className="page-title">Gerenciamento de Admins</h1></div>
                             <button onClick={handleLogout}>Sair</button>
-                            <button className="btn-primary"><Plus className="icon-sm" /> Adicionar Admin</button>
+                            
+                            {/* --- BOTÃO CORRIGIDO --- */}
+                            <button onClick={() => navigate('/UserManagementPage/new')} className="btn-primary">
+                                <Plus className="icon-sm" /> Adicionar Admin
+                            </button>
                         </div>
                     </div>
                     <div className="card-content">
@@ -114,13 +114,17 @@ function UserManagementPage() {
                                             <td className="font-medium">{user.name}</td>
                                             <td className="text-gray">{user.email}</td>
                                             <td className="text-gray">{user.role}</td>
-                                            {/* CORREÇÃO 4: A lógica de exibição agora está correta */}
                                             <td><span className={`status-badge ${getStatusClass(user.ativo)}`}>{user.ativo ? 'Ativo' : 'Inativo'}</span></td>
                                             <td className="text-gray">{user.lastLogin}</td>
                                             <td>
                                                 <div className="action-buttons">
                                                     <button className="action-btn view" title="Visualizar"><Eye className="icon-xs" /></button>
-                                                    <button className="action-btn edit" title="Editar"><Edit className="icon-xs" /></button>
+                                                    
+                                                    {/* --- BOTÃO DE EDITAR (JÁ CORRIGIDO ANTERIORMENTE) --- */}
+                                                    <button onClick={() => navigate(`/UserManagementPage/edit/${user.id}`)} className="action-btn edit" title="Editar">
+                                                        <Edit className="icon-xs" />
+                                                    </button>
+
                                                     <button onClick={() => handleToggleStatus(user.id, user.ativo)} className={`action-btn ${user.ativo ? 'delete' : 'edit'}`} title={user.ativo ? 'Inativar' : 'Ativar'}>
                                                         {user.ativo ? <ToggleLeft className="icon-xs" /> : <ToggleRight className="icon-xs" />}
                                                     </button>
