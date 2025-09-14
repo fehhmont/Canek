@@ -2,6 +2,8 @@ package com.canek.canek.dtos;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+
 import com.canek.canek.models.Produto;
 
 import jakarta.validation.constraints.NotBlank;
@@ -21,8 +23,9 @@ public record ProdutoDTO(
       @NotBlank( message = "o estoque do produto é obrigatório")
       int estoque,
       @NotBlank( message = "A avaliação do produto é obrigatório")
-     BigDecimal avaliacao
+     BigDecimal avaliacao,
     
+     List<ImagemProdutoDTO> imagens
 
 
 ) {
@@ -31,10 +34,11 @@ public record ProdutoDTO(
         return new ProdutoDTO(
             produto.getId(),
             produto.getNome(),
-            produto.getDscDetalhada(),
+            produto.getDescricao(),
             produto.getPreco(),
             produto.getEstoque(),
-            produto.getAvaliacao()
+            produto.getAvaliacao(),
+            produto.getImagens().stream().map(ImagemProdutoDTO::fromImagemProduto).toList()
        
         );
 

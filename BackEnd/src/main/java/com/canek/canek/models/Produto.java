@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "Produto") // 1. Define esta classe como uma Entidade JPA.
 @Table(name = "produtos") // 2. Mapeia esta entidade para a tabela "produtos" no banco de dados.
@@ -26,8 +28,8 @@ public class Produto {
     private BigDecimal avaliacao;
 
     
-    @Column(name = "descricao_detalhada", columnDefinition = "TEXT", updatable = false) // 10. Mapeia para a coluna "data_criacao" e impede atualizações.
-    private String dscDetalhada;
+    @Column(name = "descricao_detalhada", columnDefinition = "TEXT") // 10. Mapeia para a coluna "data_criacao" e impede atualizações.
+    private String descricao;
 
 
     @Column(nullable = false, precision = 10, scale = 2) // 9. Define a precisão para valores monetários.
@@ -36,6 +38,7 @@ public class Produto {
     @Column(nullable = false, name = "qtd_estoque") // 11. Garante que o estoque não pode ser nulo.
     private int estoque;
 
-    
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ImagemProduto> imagens = new ArrayList<>();
  
 }
