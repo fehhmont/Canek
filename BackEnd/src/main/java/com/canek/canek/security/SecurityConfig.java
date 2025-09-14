@@ -35,20 +35,29 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity
-                .csrf(csrf -> csrf.disable())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorize -> authorize
-                        // Libera as rotas públicas de login e cadastro para ambos os tipos de usuário
-                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/administrador/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/cadastro").permitAll()
-                    
-                        // Exige autenticação para todas as outras rotas
-                        .anyRequest().authenticated()
-                )
-                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
+    return httpSecurity
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(authorize -> authorize
+                    // 1. Libera as rotas públicas de login e cadastro de clientes
+                    .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/auth/cadastro").permitAll()
+
+                    // 2. Libera APENAS o login de administrador para ser público
+                    .requestMatchers(HttpMethod.POST, "/auth/administrador/login").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/auth/administrador/cadastro").permitAll()
+
+                    // 3. CORREÇÃO: Adiciona a regra que protege TODAS as outras rotas de administrador
+                    .requestMatchers("/auth/administrador/**").hasAnyRole("ADMIN", "ESTOQUISTA")
+
+                    // 4. Mantém a regra que protege as rotas de produto
+                    .requestMatchers("/auth/produto/**").hasAnyRole("ADMIN", "ESTOQUISTA")
+
+                    // 5. Exige autenticação para qualquer outra rota que não corresponda às regras acima
+                    .anyRequest().authenticated()
+            )
+            .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+            .build();
     }
     
     // Cria um "provedor" que sabe como autenticar Usuários (consultando a tabela usuarios)
