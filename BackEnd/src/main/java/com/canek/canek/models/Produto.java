@@ -22,23 +22,20 @@ public class Produto {
     @Column(nullable = false) // 8. Garante que o nome não pode ser nulo.
     private String nome;
 
-    @Column(columnDefinition = "TEXT") // Mapeia para o tipo TEXT do SQL.
-    private String descricao;
+    @Column() // Mapeia para o tipo TEXT do SQL.
+    private BigDecimal avaliacao;
+
+    
+    @Column(name = "descricao_detalhada", columnDefinition = "TEXT", updatable = false) // 10. Mapeia para a coluna "data_criacao" e impede atualizações.
+    private String dscDetalhada;
+
 
     @Column(nullable = false, precision = 10, scale = 2) // 9. Define a precisão para valores monetários.
     private BigDecimal preco;
 
-    @Column(unique = true, length = 50) // Garante que o SKU seja único.
-    private String sku;
+    @Column(nullable = false, name = "qtd_estoque") // 11. Garante que o estoque não pode ser nulo.
+    private int estoque;
 
-    @Column(length = 50)
-    private String status;
-
-    @Column(name = "data_criacao", updatable = false) // 10. Mapeia para a coluna "data_criacao" e impede atualizações.
-    private LocalDateTime dataCriacao;
-
-    @PrePersist // 11. Método que é executado automaticamente ANTES de um novo produto ser salvo.
-    protected void onCreate() {
-        dataCriacao = LocalDateTime.now(); // Define a data de criação no momento em que o objeto é persistido.
-    }
+    
+ 
 }
