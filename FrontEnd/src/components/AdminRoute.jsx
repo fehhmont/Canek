@@ -3,18 +3,20 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 
 const AdminRoute = () => {
-    const { isAuthenticated, user } = useAuth();
+    const { isAuthenticated, user, loading } = useAuth(); // <-- 1. Obter o estado de loading
 
-    // 1. Verifica se o usuário está autenticado
+    // 2. Se estiver carregando, exibe uma mensagem ou componente de loading
+    if (loading) {
+        return <div>Carregando...</div>; // Ou um spinner/componente de sua preferência
+    }
+
+    // 3. Após o carregamento, executa a lógica de verificação
     if (!isAuthenticated) {
-        // Se não estiver, redireciona para a página inicial
         return <Navigate to="/" replace />;
     }
 
-    // 2. Verifica se o usuário tem o cargo de ADMIN ou ESTOQUISTA
     const isAdminOrStocker = user?.cargo === 'ADMIN' || user?.cargo === 'ESTOQUISTA';
 
-    // 3. Se for admin ou estoquista, permite o acesso à rota. Caso contrário, redireciona.
     return isAdminOrStocker ? <Outlet /> : <Navigate to="/" replace />;
 };
 

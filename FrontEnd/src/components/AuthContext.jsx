@@ -5,26 +5,34 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true); // <-- 1. Adicionar estado de loading
     const navigate = useNavigate();
 
     useEffect(() => {
-        const storedToken = localStorage.getItem('userToken');
-        const storedUser = localStorage.getItem('userData');
-        if (storedToken && storedUser) {
-            setUser(JSON.parse(storedUser));
+        try {
+            const storedToken = localStorage.getItem('userToken');
+            const storedUser = localStorage.getItem('userData');
+            if (storedToken && storedUser) {
+                setUser(JSON.parse(storedUser));
+            }
+        } catch (error) {
+            console.error("Falha ao carregar dados do usuário:", error);
+            // Limpa em caso de dados corrompidos
+            localStorage.removeItem('userToken');
+            localStorage.removeItem('userData');
+            setUser(null);
+        } finally {
+            setLoading(false); // <-- 2. Finaliza o carregamento após a verificação
         }
     }, []);
 
     const login = (userData) => {
-        // Armazena o token e os dados do usuário no localStorage
         localStorage.setItem('userToken', userData.token);
         localStorage.setItem('userData', JSON.stringify(userData));
         setUser(userData);
 
-        // Define a "role" com base no 'cargo' (para admin) ou 'tipoUsuario' (para cliente)
         const role = userData.cargo || userData.tipoUsuario;
 
-        // Redireciona com base na role
         switch (role) {
             case 'ADMIN':
             case 'ESTOQUISTA':
@@ -34,14 +42,12 @@ export const AuthProvider = ({ children }) => {
                 navigate("/");
                 break;
             default:
-                // Se a role for desconhecida, redireciona para a home como padrão
                 navigate("/");
                 break;
         }
     };
 
     const logout = () => {
-        // Limpa o localStorage e o estado
         localStorage.removeItem('userToken');
         localStorage.removeItem('userData');
         setUser(null);
@@ -51,6 +57,7 @@ export const AuthProvider = ({ children }) => {
     const value = {
         isAuthenticated: !!user,
         user,
+        loading, // <-- 3. Expor o estado de loading
         login,
         logout
     };
