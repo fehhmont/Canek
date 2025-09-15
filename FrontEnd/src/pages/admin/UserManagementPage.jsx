@@ -5,6 +5,9 @@ import { ArrowLeft, Users, Plus, Search, Eye, Edit, ToggleLeft, ToggleRight } fr
 import { useNavigate } from 'react-router-dom';
 import './css/UserManagementPage.css';
 
+// --- 1. IMPORTE O NOVO COMPONENTE SPINNER ---
+import LoadingSpinner from '../../components/common/LoadingSpinner';
+
 function UserManagementPage() {
     const navigate = useNavigate();
     const [users, setUsers] = useState([]);
@@ -12,8 +15,11 @@ function UserManagementPage() {
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
 
+    // ... (toda a sua lógica de fetch e handlers permanece a mesma) ...
     useEffect(() => {
         const fetchUsers = async () => {
+            // Adiciona um pequeno atraso para que o spinner seja visível (bom para testes)
+            await new Promise(resolve => setTimeout(resolve, 500)); 
             try {
                 const token = localStorage.getItem('userToken');
                 if (!token) throw new Error("Token não encontrado.");
@@ -21,11 +27,9 @@ function UserManagementPage() {
                 const response = await fetch("http://localhost:8080/auth/administrador/findAll", {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
-
+                // ... resto da função fetch
                 if (!response.ok) throw new Error('Falha ao buscar usuários.');
-
                 const dataFromApi = await response.json();
-
                 const formattedUsers = dataFromApi.map(user => ({
                     id: user.id,
                     name: user.nomeCompleto,
@@ -46,16 +50,13 @@ function UserManagementPage() {
 
     const handleToggleStatus = async (userId, currentStatus) => {
         if (!window.confirm(`Deseja ${currentStatus ? "inativar" : "ativar"} este administrador?`)) return;
-
         try {
             const token = localStorage.getItem('userToken');
             const response = await fetch(`http://localhost:8080/auth/administrador/${userId}/status`, {
                 method: 'PUT',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-
             if (!response.ok) throw new Error("Falha ao alterar o status.");
-
             setUsers(users.map(u => u.id === userId ? { ...u, ativo: !u.ativo } : u));
         } catch (err) {
             setError(err.message);
@@ -69,18 +70,32 @@ function UserManagementPage() {
     };
 
     const getStatusClass = (ativo) => (ativo ? 'status-active' : 'status-inactive');
-
     const filteredUsers = users.filter(user =>
         (user.name && user.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
         (user.email && user.email.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
-    if (loading) return <div className="page-container"><div className="card"><p>Carregando...</p></div></div>;
+
+    // --- 2. SUBSTITUA O TEXTO PELO COMPONENTE SPINNER ---
+    if (loading) {
+        return (
+            <div className="page-container">
+                <div className="container">
+                    <div className="card" style={{ justifyContent: 'center', alignItems: 'center' }}>
+                        <LoadingSpinner message="Buscando administradores..." />
+                    </div>
+                </div>
+            </div>
+        );
+    }
+    
     if (error) return <div className="page-container"><div className="card"><p style={{ color: 'red' }}>Erro: {error}</p></div></div>;
 
+    // --- O restante do seu return permanece o mesmo ---
     return (
         <div className="page-container">
-            <div className="container">
+            {/* ... seu código JSX ... */}
+             <div className="container">
                 <div className="card">
                     <div className="card-header">
                         <div className="header-content">

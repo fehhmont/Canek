@@ -7,6 +7,7 @@ import com.canek.canek.security.TokenService;
 import com.canek.canek.services.AdministradorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,6 +21,7 @@ import java.util.List;
 public class AdministradorAuthController {
 
     @Autowired
+    @Qualifier("adminAuthenticationManager") // Nome do bean definido na configuração de segurança
     private AuthenticationManager authenticationManager;
     
     @Autowired
@@ -34,7 +36,12 @@ public class AdministradorAuthController {
         var auth = this.authenticationManager.authenticate(usernamePassword);
         var administrador = (Administrador) auth.getPrincipal();
         var token = tokenService.gerarToken(administrador);
+        if (administrador == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
         return ResponseEntity.ok(new LoginResponseAdministradorDTO(token, administrador.getCargo().toString()));
+
+       
     }
 
     @PostMapping("/cadastro")

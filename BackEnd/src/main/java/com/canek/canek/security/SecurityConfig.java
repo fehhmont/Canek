@@ -4,8 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -66,6 +68,8 @@ public class SecurityConfig {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(usuarioAuthService);
         provider.setPasswordEncoder(passwordEncoder());
+        provider.setHideUserNotFoundExceptions(false);
+        
         return provider;
     }
 
@@ -75,17 +79,24 @@ public class SecurityConfig {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(administradorAuthService);
         provider.setPasswordEncoder(passwordEncoder());
+        provider.setHideUserNotFoundExceptions(false);
         return provider;
     }
 
     // Cria o Gerente de Autenticação que usa os dois provedores acima
+     @Bean
+     @Primary
+    public AuthenticationManager userAuthenticationManager() {
+        return new ProviderManager(usuarioAuthenticationProvider());
+    }
+
+    /**
+     * Cria um AuthenticationManager que usa SOMENTE o provedor de autenticação de administradores.
+     * Damos a ele o nome de "adminAuthenticationManager".
+     */
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder =
-                http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.authenticationProvider(usuarioAuthenticationProvider());
-        authenticationManagerBuilder.authenticationProvider(administradorAuthenticationProvider());
-        return authenticationManagerBuilder.build();
+    public AuthenticationManager adminAuthenticationManager() {
+        return new ProviderManager(administradorAuthenticationProvider());
     }
 
     // Define um bean único para o PasswordEncoder, que será usado em toda a aplicação

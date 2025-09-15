@@ -6,6 +6,7 @@ import com.canek.canek.security.TokenService;
 import com.canek.canek.services.UsuarioService; // Importe o novo serviço
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +19,7 @@ import java.util.List;
 public class AuthController {
 
     @Autowired
+    @Qualifier("userAuthenticationManager") // Nome do bean definido na configuração de segurança
     private AuthenticationManager authenticationManager;
 
     @Autowired
@@ -32,6 +34,9 @@ public class AuthController {
         var auth = this.authenticationManager.authenticate(usernamePassword);
         var usuario = (Usuario) auth.getPrincipal();
         var token = tokenService.gerarToken(usuario);
+        if ( usuario == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
         return ResponseEntity.ok(new LoginResponseDTO(token, usuario.getTipoUsuario()));
     }
 
