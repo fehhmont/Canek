@@ -50,24 +50,27 @@ function CadastroProductPage() {
 
             // 1. Envia a imagem para o seu backend local
             const uploadResponse = await fetch("http://localhost:8080/auth/upload", {
-                method: "POST",
-                headers: { "Authorization": `Bearer ${token}` },
-                body: formData,
-            });
+    method: "POST",
+    headers: { "Authorization": `Bearer ${token}` },
+    body: formData,
+});
 
-            if (!uploadResponse.ok) throw new Error("Falha no upload da imagem.");
+if (!uploadResponse.ok) throw new Error("Falha no upload da imagem.");
 
-            const uploadResult = await uploadResponse.json();
-            const imageUrl = uploadResult.url;
+const uploadResult = await uploadResponse.json();
 
-            // 2. Prepara os dados do produto com a URL retornada pelo backend
-            const productData = {
-                ...data,
-                imagens: [{
-                    caminhoImagem: imageUrl,
-                    principal: true
-                }]
-            };
+// --- CORREÇÃO APLICADA AQUI ---
+// Extrai apenas o caminho da URL completa retornada pelo backend
+const imageUrl = new URL(uploadResult.url).pathname;
+
+// 2. Prepara os dados do produto com o caminho da imagem
+const productData = {
+    ...data,
+    imagens: [{
+        caminhoImagem: imageUrl, // Agora vai salvar ex: /uploads/imagem.jpg
+        principal: true
+    }]
+};
             
             // 3. Cadastra o produto
             const productResponse = await fetch("http://localhost:8080/auth/produto/cadastrar", {

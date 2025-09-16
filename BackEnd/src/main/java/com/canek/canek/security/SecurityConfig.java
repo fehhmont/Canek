@@ -52,8 +52,8 @@ public class SecurityConfig {
                     // --- 2. ROTAS DE ADMINISTRADOR (Acesso restrito) ---
                     // Qualquer outra requisição para estas rotas exigirá um dos cargos.
                     .requestMatchers("/auth/administrador/**").hasAnyRole("ADMIN", "ESTOQUISTA")
-                    .requestMatchers("/auth/produto/**").hasAnyRole("ADMIN", "ESTOQUISTA")
-                    .requestMatchers("/auth/upload/**").hasAnyRole("ADMIN", "ESTOQUISTA")
+                    .requestMatchers("/auth/produto/**").permitAll()
+                    .requestMatchers("/auth/upload/**").permitAll()
                     
                     // --- 3. REGRA FINAL ---
                     // Qualquer outra rota não definida acima exige, no mínimo, um token válido.
