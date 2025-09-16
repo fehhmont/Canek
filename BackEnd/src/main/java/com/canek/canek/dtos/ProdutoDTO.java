@@ -1,48 +1,43 @@
 package com.canek.canek.dtos;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
-
 import com.canek.canek.models.Produto;
-
 import jakarta.validation.constraints.NotBlank;
-
+import jakarta.validation.constraints.NotNull; // Importe a anotação correta
 
 public record ProdutoDTO(
-
-
     Long id,
 
-    @NotBlank( message = "O nome do produto é obrigatório")
+    @NotBlank(message = "O nome do produto é obrigatório")
     String nome,
-    @NotBlank( message = "a descrição o produto é obrigatório")
+
+    @NotBlank(message = "A descrição do produto é obrigatória")
     String descricao,
-      @NotBlank( message = "O preço do produto é obrigatório")
+
+    // --- CORREÇÃO APLICADA AQUI ---
+    @NotNull(message = "O preço do produto é obrigatório")
     BigDecimal preco,
-      @NotBlank( message = "o estoque do produto é obrigatório")
-      int estoque,
-      @NotBlank( message = "A avaliação do produto é obrigatório")
-     BigDecimal avaliacao,
+
+    // --- E AQUI ---
+    @NotNull(message = "O estoque do produto é obrigatório")
+    Integer estoque, // Usar Integer permite a verificação de nulo
+
+    // --- E AQUI (AVALIAÇÃO PODE SER NULA) ---
+    BigDecimal avaliacao,
     
-     List<ImagemProdutoDTO> imagens
-
-
+    List<ImagemProdutoDTO> imagens
 ) {
-
-      public static ProdutoDTO fromProduto(Produto produto) {
+    public static ProdutoDTO fromProduto(Produto produto) {
+        // A conversão para DTO precisa de alguns ajustes para evitar erros se os campos forem nulos
         return new ProdutoDTO(
             produto.getId(),
             produto.getNome(),
-            produto.getDescricao(),
+            produto.getDescricao(), // No seu modelo, o campo é 'descricao'
             produto.getPreco(),
             produto.getEstoque(),
             produto.getAvaliacao(),
-            produto.getImagens().stream().map(ImagemProdutoDTO::fromImagemProduto).toList()
-       
+            produto.getImagens() != null ? produto.getImagens().stream().map(ImagemProdutoDTO::fromImagemProduto).toList() : List.of()
         );
-
-      }
-
-
-} 
+    }
+}

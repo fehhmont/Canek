@@ -41,21 +41,22 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorize -> authorize
-                    // 1. Libera as rotas públicas de login e cadastro de clientes
+                    // --- 1. ROTAS PÚBLICAS (Acesso sem token) ---
+                    // Estas são as regras mais específicas para acesso público e são avaliadas primeiro.
                     .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                     .requestMatchers(HttpMethod.POST, "/auth/cadastro").permitAll()
-
-                    // 2. Libera APENAS o login de administrador para ser público
                     .requestMatchers(HttpMethod.POST, "/auth/administrador/login").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/auth/administrador/cadastro").permitAll()
-                    .requestMatchers(HttpMethod.GET, "auth/produto/listar").permitAll()
-                    // 3. CORREÇÃO: Adiciona a regra que protege TODAS as outras rotas de administrador
+                    .requestMatchers(HttpMethod.GET, "/auth/produto/listar").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
+
+                    // --- 2. ROTAS DE ADMINISTRADOR (Acesso restrito) ---
+                    // Qualquer outra requisição para estas rotas exigirá um dos cargos.
                     .requestMatchers("/auth/administrador/**").hasAnyRole("ADMIN", "ESTOQUISTA")
-
-                    // 4. Mantém a regra que protege as rotas de produto
                     .requestMatchers("/auth/produto/**").hasAnyRole("ADMIN", "ESTOQUISTA")
-
-                    // 5. Exige autenticação para qualquer outra rota que não corresponda às regras acima
+                    .requestMatchers("/auth/upload/**").hasAnyRole("ADMIN", "ESTOQUISTA")
+                    
+                    // --- 3. REGRA FINAL ---
+                    // Qualquer outra rota não definida acima exige, no mínimo, um token válido.
                     .anyRequest().authenticated()
             )
             .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
