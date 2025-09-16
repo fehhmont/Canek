@@ -48,7 +48,7 @@ public class SecurityConfig {
                     // 2. Libera APENAS o login de administrador para ser público
                     .requestMatchers(HttpMethod.POST, "/auth/administrador/login").permitAll()
                     .requestMatchers(HttpMethod.POST, "/auth/administrador/cadastro").permitAll()
-
+                    .requestMatchers(HttpMethod.GET, "auth/produto/listar").permitAll()
                     // 3. CORREÇÃO: Adiciona a regra que protege TODAS as outras rotas de administrador
                     .requestMatchers("/auth/administrador/**").hasAnyRole("ADMIN", "ESTOQUISTA")
 

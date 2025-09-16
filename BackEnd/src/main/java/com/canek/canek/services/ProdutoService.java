@@ -43,18 +43,32 @@ public class ProdutoService {
 
 
      public Produto atualizarProduto(Long id, Produto produtoAtualizado) {
+    return produtoRepository.findById(id).map(produto -> {
+        // 1. Atualiza os dados do produto encontrado
+        produto.setNome(produtoAtualizado.getNome());
+        produto.setAvaliacao(produtoAtualizado.getAvaliacao());
+        produto.setDescricao(produtoAtualizado.getDescricao());
+        produto.setPreco(produtoAtualizado.getPreco());
+        produto.setEstoque(produtoAtualizado.getEstoque());
 
-        return produtoRepository.findById(id).map(produto -> {
-            produto.setNome(produtoAtualizado.getNome());
-            produto.setAvaliacao(produtoAtualizado.getAvaliacao());
-            produto.setDescricao(produtoAtualizado.getDescricao());
-            produto.setPreco(produtoAtualizado.getPreco());
-            produto.setEstoque(produtoAtualizado.getEstoque());
-            produto.setImagens(produtoAtualizado.getImagens());
-            return produtoRepository.save(produto);
-        }).orElseThrow(() -> new RuntimeException("Produto não encontrado com id: " + id));
+        // 2. Limpa a lista de imagens antigas.
+        // Se a sua relação @OneToMany tiver `orphanRemoval = true`,
+        // as imagens antigas serão excluídas do banco.
+        produto.getImagens().clear();
 
-    }
+        // 3. Percorre as novas imagens e as associa a este produto
+        if (produtoAtualizado.getImagens() != null) {
+            for (ImagemProduto novaImagem : produtoAtualizado.getImagens()) {
+                novaImagem.setProduto(produto); // <-- Esta é a linha mais importante da correção!
+                produto.getImagens().add(novaImagem);
+            }
+        }
+        
+        // 4. Salva o produto com as informações e imagens atualizadas
+        return produtoRepository.save(produto);
+        
+    }).orElseThrow(() -> new RuntimeException("Produto não encontrado com id: " + id));
+}
     
     public List<Produto> listarTodos() {
         return produtoRepository.findAll();
