@@ -21,6 +21,8 @@ import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import CadastroPageAdmin from './pages/admin/CadastroPageAdmin';
 import EditAdminPage from './pages/admin/EditAdminPage';
 import CadastroProductPage from './pages/admin/CadastroProductPage';
+import GerenciarProductPage from './pages/admin/GerenciarProductPage';
+
 
 
 import './index.css';
@@ -51,6 +53,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               <Route path="UserManagementPage/new" element={<CadastroPageAdmin />} />
               <Route path="UserManagementPage/edit/:userId" element={<EditAdminPage />} />
               <Route path="CadastroProductPage" element={<CadastroProductPage />} />
+              <Route path="GerenciarProductPage" element={<GerenciarProductPage />} />
+
             </Route>
 
             {/* Rota para páginas não encontradas */}

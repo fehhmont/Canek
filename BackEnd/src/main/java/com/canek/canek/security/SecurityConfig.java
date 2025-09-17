@@ -46,6 +46,7 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                     .requestMatchers(HttpMethod.POST, "/auth/cadastro").permitAll()
                     .requestMatchers(HttpMethod.POST, "/auth/administrador/login").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/auth/administrador/cadastro").permitAll()
                     .requestMatchers(HttpMethod.GET, "/auth/produto/listar").permitAll()
                     .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
 
