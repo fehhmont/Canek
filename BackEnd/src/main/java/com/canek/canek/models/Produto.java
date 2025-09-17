@@ -40,5 +40,8 @@ public class Produto {
 
     @OneToMany(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ImagemProduto> imagens = new ArrayList<>();
+
+     @Column(name = "status")
+    private Boolean status = true;
  
 }

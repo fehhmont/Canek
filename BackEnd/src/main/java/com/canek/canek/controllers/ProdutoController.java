@@ -9,12 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors; // Import necessário
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
+
+import com. canek.canek.models.ImagemProduto ;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import com. canek.canek.models.ImagemProduto ;
+
 
 
 
@@ -89,5 +88,23 @@ public class ProdutoController {
       List<ProdutoDTO> dtos = produtos.stream().map(ProdutoDTO::fromProduto).toList();
       return ResponseEntity.ok(dtos);
   }
+
+  @GetMapping("/listarTodosAtivos/true")
+    public ResponseEntity<List<ProdutoDTO>> listarProdutosAtivos(@RequestParam Boolean status) {    
+        List<Produto> produtos = produtoService.listarPorStatus(true);
+        List<ProdutoDTO> dtos = produtos.stream().map(ProdutoDTO::fromProduto).toList();
+        return ResponseEntity.ok(dtos); 
+    }
+
+
+     @PutMapping("/{id}/status")
+    public ResponseEntity<Void> alterarStatusAdministrador(@PathVariable Long id) {
+        try {
+            produtoService.alterarStatus(id);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
     
 }

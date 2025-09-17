@@ -47,6 +47,7 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.POST, "/auth/cadastro").permitAll()
                     .requestMatchers(HttpMethod.POST, "/auth/administrador/login").permitAll()
                     .requestMatchers(HttpMethod.GET, "/auth/produto/listar").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/auth/produto/listarTodosAtivos/true").permitAll()
                     .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
 
                     // --- 2. ROTAS DE ADMINISTRADOR (Acesso restrito) ---

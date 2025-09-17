@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.canek.canek.repositories.ImagemProdutoRepository;
 import com.canek.canek.repositories.ProdutoRepository;
 import com.canek.canek.models.Produto;
+import com.canek.canek.models.Administrador;
 import com.canek.canek.models.ImagemProduto;
 import java.util.List;
 
@@ -76,5 +77,21 @@ public class ProdutoService {
 
     public List<Produto> listarPorNome(String nome) {
         return produtoRepository.findByNomeContainingIgnoreCase(nome);
+    }
+
+    public List<Produto> listarPorStatus(Boolean status) {
+        return produtoRepository.findByStatus(status);
+    }
+
+
+       public Produto alterarStatus(Long id) {
+        
+        Produto prod = produtoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Administrador com ID " + id + " não encontrado."));
+
+        prod.setStatus(!prod.getStatus());
+
+       
+        return produtoRepository.save(prod);
     }
 }
