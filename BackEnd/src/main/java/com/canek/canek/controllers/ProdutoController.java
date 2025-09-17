@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.stream.Collectors; // Import necessário
 
 import com. canek.canek.models.ImagemProduto ;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 
@@ -98,7 +96,7 @@ public class ProdutoController {
 
 
      @PutMapping("/{id}/status")
-    public ResponseEntity<Void> alterarStatusAdministrador(@PathVariable Long id) {
+    public ResponseEntity<Void> alterarStatusProduto(@PathVariable Long id) {
         try {
             produtoService.alterarStatus(id);
             return ResponseEntity.ok().build();

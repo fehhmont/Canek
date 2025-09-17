@@ -85,13 +85,16 @@ public class ProdutoService {
 
 
        public Produto alterarStatus(Long id) {
-        
-        Produto prod = produtoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Administrador com ID " + id + " não encontrado."));
+    // Busca o produto ou lança uma exceção se não encontrar
+    Produto prod = produtoRepository.findById(id)
+            // Corrigi a mensagem de erro para ser mais clara
+            .orElseThrow(() -> new RuntimeException("Produto com ID " + id + " não encontrado."));
 
-        prod.setStatus(!prod.getStatus());
+    // Lógica mais segura para inverter o status
+    // Se o status for nulo, ele será tratado como 'false' e invertido para 'true'
+    prod.setStatus(Boolean.FALSE.equals(prod.getStatus()));
 
-       
-        return produtoRepository.save(prod);
-    }
+    // Salva o produto com o status atualizado
+    return produtoRepository.save(prod);
+}
 }

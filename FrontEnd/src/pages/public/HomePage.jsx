@@ -87,6 +87,11 @@ function HomePage() {
                     </p>
                 </div>
 
+
+
+
+
+
                 {loading && <p style={{ textAlign: 'center' }}>Carregando produtos...</p>}
                 {error && <p style={{ color: 'red', textAlign: 'center' }}>Erro: {error}</p>}
                 
