@@ -104,7 +104,7 @@ class NavigationSystem {
 
     // Indicador visual de seção ativa
     addActiveNavIndicator() {
-        const sections = ['#home', '#catalogo', '#personalize', '#sobre', '#contato'];
+        const sections = ['#home', '#personalize', '#sobre', '#contato'];
         
         window.addEventListener('scroll', () => {
             const scrollPosition = window.scrollY + 120;
