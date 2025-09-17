@@ -77,9 +77,25 @@ body {
 }
 
 .navbar .container {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr; /* Cria 3 colunas: esquerda, centro (auto), direita */
     align-items: center;
+    width: 100%;
+}
+
+.navbar .logo {
+    grid-column: 1; /* Coloca o logo na primeira coluna */
+    justify-self: start; /* Alinha à esquerda */
+}
+
+.navbar .desktop-nav {
+    grid-column: 2; /* Coloca a navegação na segunda (centro) */
+    justify-self: center; /* Centraliza horizontalmente */
+}
+
+.navbar .nav-icons {
+    grid-column: 3; /* Coloca os ícones na terceira coluna */
+    justify-self: end; /* Alinha à direita */
 }
 
 .nav-icons {
