@@ -35,7 +35,8 @@ CREATE TABLE produtos (
     avaliacao DECIMAL(3, 1),
     descricao_detalhada TEXT,
     preco DECIMAL(10, 2) NOT NULL,
-    qtd_estoque INT NOT NULL
+    qtd_estoque INT NOT NULL,
+    status BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE produto_imagens (
