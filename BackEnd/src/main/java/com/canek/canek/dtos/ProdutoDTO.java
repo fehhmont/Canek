@@ -25,7 +25,9 @@ public record ProdutoDTO(
 
     // --- E AQUI (AVALIAÇÃO PODE SER NULA) ---
     BigDecimal avaliacao,
-    
+
+    boolean status,
+
     List<ImagemProdutoDTO> imagens
 ) {
     public static ProdutoDTO fromProduto(Produto produto) {
@@ -37,6 +39,7 @@ public record ProdutoDTO(
             produto.getPreco(),
             produto.getEstoque(),
             produto.getAvaliacao(),
+            produto.getStatus(),
             produto.getImagens() != null ? produto.getImagens().stream().map(ImagemProdutoDTO::fromImagemProduto).toList() : List.of()
         );
     }

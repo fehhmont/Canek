@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.canek.canek.repositories.ImagemProdutoRepository;
 import com.canek.canek.repositories.ProdutoRepository;
 import com.canek.canek.models.Produto;
+import com.canek.canek.models.Administrador;
 import com.canek.canek.models.ImagemProduto;
 import java.util.List;
 
@@ -77,4 +78,23 @@ public class ProdutoService {
     public List<Produto> listarPorNome(String nome) {
         return produtoRepository.findByNomeContainingIgnoreCase(nome);
     }
+
+    public List<Produto> listarPorStatus(Boolean status) {
+        return produtoRepository.findByStatus(status);
+    }
+
+
+       public Produto alterarStatus(Long id) {
+    // Busca o produto ou lança uma exceção se não encontrar
+    Produto prod = produtoRepository.findById(id)
+            // Corrigi a mensagem de erro para ser mais clara
+            .orElseThrow(() -> new RuntimeException("Produto com ID " + id + " não encontrado."));
+
+    // Lógica mais segura para inverter o status
+    // Se o status for nulo, ele será tratado como 'false' e invertido para 'true'
+    prod.setStatus(Boolean.FALSE.equals(prod.getStatus()));
+
+    // Salva o produto com o status atualizado
+    return produtoRepository.save(prod);
+}
 }
