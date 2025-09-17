@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CaneK - Canecas Personalizadas</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="container">
+            <a href="#home" class="logo">CaneK</a>
+            <nav class="desktop-nav">
+                <ul>
+                    <li><a href="#home" class="nav-link">Home</a></li>
+                    <li><a href="#catalogo" class="nav-link">Catálogo</a></li>
+                    <li><a href="#personalize" class="nav-link">Personalize</a></li>
+                    <li><a href="#sobre" class="nav-link">Sobre</a></li>
+                    <li><a href="#contato" class="nav-link">Contato</a></li>
+                </ul>
+            </nav>
+            <div class="nav-icons">
+                <a href="#carrinho" id="cart-icon">
+                    <i class="ph-shopping-cart"></i>
+                    <span class="cart-count" id="cart-count">0</span>
+                </a>
+                <a href="#perfil"><i class="ph-user"></i></a>
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+        
+        <nav class="mobile-menu" id="mobile-menu">
+            <div class="mobile-menu-content">
+                <ul>
+                    <li><a href="#home" class="nav-link">Home</a></li>
+                    <li><a href="#catalogo" class="nav-link">Catálogo</a></li>
+                    <li><a href="#personalize" class="nav-link">Personalize</a></li>
+                    <li><a href="#sobre" class="nav-link">Sobre</a></li>
+                    <li><a href="#contato" class="nav-link">Contato</a></li>
+                </ul>
+                <div class="mobile-menu-footer">
+                    <a href="#carrinho" class="btn-primary">
+                        <i class="ph-shopping-cart"></i> Carrinho (<span id="mobile-cart-count">0</span>)
+                    </a>
+                    <a href="#perfil" class="btn-secondary">
+                        <i class="ph-user"></i> Minha Conta
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero-section" id="home">
+            <div class="hero-overlay"></div>
+            <div class="container hero-content">
+                <h1 class="hero-title">Canecas únicas, com o seu estilo.</h1>
+                <p class="hero-subtitle">Crie, personalize e receba onde estiver. Simples e rápido.</p>
+                <div class="hero-cta">
+                    <a href="#personalize" class="btn-primary">Criar minha Caneca</a>
+                    <a href="#catalogo" class="btn-secondary">Ver Catálogo</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="container vitral-container" id="catalogo">
+            <h2 class="section-title">Inspire-se com nossos designs</h2>
+            <div class="product-grid-mosaic">
+                <div class="card-caneca card-horizontal" style="--bg-color: #dddbf1;" data-product-id="caneca-0" data-product-index="0">
+                    <img src="https://via.placeholder.com/400x400/dddbf1/000000?text=Gamer" alt="Caneca Gamer">
+                </div>
+                <div class="card-caneca" style="--bg-color: #fce1e4;" data-product-id="caneca-1" data-product-index="1">
+                    <img src="https://via.placeholder.com/400x400/fce1e4/000000?text=Coração" alt="Caneca Coração">
+                </div>
+                <div class="card-caneca card-vertical" style="--bg-color: #d9f2e6;" data-product-id="caneca-2" data-product-index="2">
+                    <img src="https://via.placeholder.com/400x400/d9f2e6/000000?text=Natureza" alt="Caneca Natureza">
+                </div>
+                <div class="card-caneca" style="--bg-color: #fcf4dd;" data-product-id="caneca-3" data-product-index="3">
+                    <img src="https://via.placeholder.com/400x400/fcf4dd/000000?text=Trabalho" alt="Caneca Trabalho">
+                </div>
+                 <div class="card-caneca" style="--bg-color: #e4f1fe;" data-product-id="caneca-4" data-product-index="4">
+                    <img src="https://via.placeholder.com/400x400/e4f1fe/000000?text=Feliz" alt="Caneca Feliz">
+                </div>
+                <div class="card-caneca" style="--bg-color: #d7e5f0;" data-product-id="caneca-5" data-product-index="5">
+                    <img src="https://via.placeholder.com/400x400/d7e5f0/000000?text=Diamante" alt="Caneca Diamante">
+                </div>
+                 <div class="card-caneca" style="--bg-color: #fcf4dd;" data-product-id="caneca-6" data-product-index="6">
+                    <img src="https://via.placeholder.com/400x400/fcf4dd/000000?text=Troféu" alt="Caneca Troféu">
+                </div>
+                 <div class="card-caneca card-horizontal" style="--bg-color: #fde2e4;" data-product-id="caneca-7" data-product-index="7">
+                     <img src="https://via.placeholder.com/400x400/fde2e4/000000?text=LOVE" alt="Caneca LOVE">
+                </div>
+                 <div class="card-caneca" style="--bg-color: #fcf4dd;" data-product-id="caneca-8" data-product-index="8">
+                    <img src="https://via.placeholder.com/400x400/fcf4dd/000000?text=Paz" alt="Caneca Paz">
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="personalize">
+            <div class="container">
+                <h2 class="section-title">Personalize sua Caneca</h2>
+                <p class="section-subtitle">Crie uma caneca única com seu próprio design!</p>
+                
+                <div class="customization-container">
+                    <div class="customization-preview">
+                        <div class="mug-preview">
+                            <div class="mug-body">
+                                <div class="mug-handle"></div>
+                                <div class="mug-design-area">
+                                    <div class="custom-text" id="preview-text">SEU TEXTO</div>
+                                    <div class="custom-emoji" id="preview-emoji">☕</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="preview-info">
+                            <h3 id="custom-mug-name">Caneca Personalizada</h3>
+                            <p class="custom-price" id="custom-price">R$ 45,90</p>
+                            <button class="btn btn-primary" id="add-custom-cart">
+                                <i class="ph-shopping-cart"></i>
+                                Adicionar ao Carrinho
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="customization-controls">
+                        <div class="control-group">
+                            <label for="custom-text-input">Seu Texto</label>
+                            <input type="text" id="custom-text-input" placeholder="Digite seu texto aqui..." maxlength="25">
+                            <small>Máximo 25 caracteres</small>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label>Cor da Caneca</label>
+                            <div class="color-options">
+                                <button class="color-option active" data-color="#ffffff" data-name="Branca" style="background: #ffffff;"></button>
+                                <button class="color-option" data-color="#f8f9fa" data-name="Cinza Claro" style="background: #f8f9fa;"></button>
+                                <button class="color-option" data-color="#343a40" data-name="Preta" style="background: #343a40;"></button>
+                                <button class="color-option" data-color="#dc3545" data-name="Vermelha" style="background: #dc3545;"></button>
+                                <button class="color-option" data-color="#007bff" data-name="Azul" style="background: #007bff;"></button>
+                                <button class="color-option" data-color="#28a745" data-name="Verde" style="background: #28a745;"></button>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label>Cor do Texto</label>
+                            <div class="color-options">
+                                <button class="text-color-option active" data-text-color="#000000" data-name="Preto" style="background: #000000;"></button>
+                                <button class="text-color-option" data-text-color="#ffffff" data-name="Branco" style="background: #ffffff;"></button>
+                                <button class="text-color-option" data-text-color="#dc3545" data-name="Vermelho" style="background: #dc3545;"></button>
+                                <button class="text-color-option" data-text-color="#007bff" data-name="Azul" style="background: #007bff;"></button>
+                                <button class="text-color-option" data-text-color="#28a745" data-name="Verde" style="background: #28a745;"></button>
+                                <button class="text-color-option" data-text-color="#ffc107" data-name="Amarelo" style="background: #ffc107;"></button>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label>Emoji (Opcional)</label>
+                            <div class="emoji-options">
+                                <button class="emoji-option active" data-emoji="☕">☕</button>
+                                <button class="emoji-option" data-emoji="❤️">❤️</button>
+                                <button class="emoji-option" data-emoji="😄">😄</button>
+                                <button class="emoji-option" data-emoji="🎉">🎉</button>
+                                <button class="emoji-option" data-emoji="⭐">⭐</button>
+                                <button class="emoji-option" data-emoji="🌟">🌟</button>
+                                <button class="emoji-option" data-emoji="🏆">🏆</button>
+                                <button class="emoji-option" data-emoji="💎">💎</button>
+                                <button class="emoji-option" data-emoji="">Nenhum</button>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label>Estilo do Texto</label>
+                            <div class="style-options">
+                                <button class="style-option active" data-style="normal">Normal</button>
+                                <button class="style-option" data-style="bold">Negrito</button>
+                                <button class="style-option" data-style="italic">Itálico</button>
+                                <button class="style-option" data-style="uppercase">MAIÚSCULA</button>
+                            </div>
+                        </div>
+                                                
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="sobre">
+            <div class="container">
+                <h2 class="section-title">Sobre a CaneK</h2>
+                <p class="section-subtitle">Especialistas em canecas personalizadas de alta qualidade.</p>
+            </div>
+        </section>
+
+        <section class="section" id="contato">
+            <div class="container">
+                <h2 class="section-title">Entre em Contato</h2>
+                <p class="section-subtitle">Tem alguma dúvida? Estamos aqui para ajudar!</p>
+            </div>
+        </section>
+        
+    </main>
+    
+    <script src="script.js"></script>
+</body>
+</html>
