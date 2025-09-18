@@ -165,7 +165,7 @@ function CadastroProductPage() {
                                 <span>Clique para adicionar imagens</span>
                             </div>
                         </div>
-                        <input type="file" id="imageInput" className="file-input" accept="image/*" multiple onChange={handleImageChange} />
+                        <input type="file" id="imageInput" className="file-input" accept="image/*" multiple="true" onChange={handleImageChange} />
                         
                         {/* Lista de Imagens Adicionadas */}
                         <div className="image-list">
