@@ -1,15 +1,10 @@
-// Arquivo: src/main.jsx
-
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import App from './App';
 import { AuthProvider } from './components/AuthContext';
+import AdminRoute from './components/AdminRoute';
 
-// Importe o novo componente
-import AdminRoute from './components/AdminRoute'; // <-- ADICIONE ESTA LINHA
-
-// Suas outras importações...
 import HomePage from './pages/public/HomePage';
 import LoginPageBackOffice from './pages/public/LoginPageBackOffice';
 import CadastroPage from './pages/public/CadastroPage';
@@ -20,10 +15,8 @@ import ProtectedRoute from './components/ProtectedRoute';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import CadastroPageAdmin from './pages/admin/CadastroPageAdmin';
 import EditAdminPage from './pages/admin/EditAdminPage';
-import CadastroProductPage from './pages/admin/CadastroProductPage';
 import GerenciarProductPage from './pages/admin/GerenciarProductPage';
-
-
+import ProductFormPage from './pages/admin/ProductFormPage'; // Importe o novo componente
 
 import './index.css';
 
@@ -43,7 +36,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             {/* Rotas Protegidas para QUALQUER usuário logado */}
             <Route element={<ProtectedRoute />}>
               <Route path="DashboardPage" element={<DashboardPage />} />
-              {/* Adicione aqui outras páginas que clientes logados podem ver */}
             </Route>
 
             {/* ROTAS PROTEGIDAS APENAS PARA ADMINS E ESTOQUISTAS */}
@@ -52,9 +44,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               <Route path="UserManagementPage" element={<UserManagementPage />} />
               <Route path="UserManagementPage/new" element={<CadastroPageAdmin />} />
               <Route path="UserManagementPage/edit/:userId" element={<EditAdminPage />} />
-              <Route path="CadastroProductPage" element={<CadastroProductPage />} />
               <Route path="GerenciarProductPage" element={<GerenciarProductPage />} />
+              <Route path="ProductFormPage" element={<ProductFormPage />} />
 
+              {/* Novas rotas para criar e editar produtos */}
+              <Route path="product/new" element={<ProductFormPage />} />
+              <Route path="product/edit/:productId" element={<ProductFormPage />} />
             </Route>
 
             {/* Rota para páginas não encontradas */}

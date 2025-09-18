@@ -16,7 +16,7 @@ function HomePage() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch("http://localhost:8080/auth/produto/listar");
+                const response = await fetch("http://localhost:8080/auth/produto/listarTodosAtivos/true?status=true");
                 if (!response.ok) {
                     throw new Error('Falha ao buscar produtos do servidor.');
                 }

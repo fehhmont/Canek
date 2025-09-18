@@ -141,9 +141,9 @@
 
 /* Seção de Botões */
 .buttons-section {
-    grid-column: 1 / -1; /* Ocupa as duas colunas */
+    grid-column: 1 / -1;
     display: flex;
-    justify-content: flex-end; /* Alinha à direita */
+    justify-content: flex-end;
     gap: 1rem;
     margin-top: 1.5rem;
     padding-top: 1.5rem;
@@ -187,4 +187,104 @@
 .btn:disabled {
     background: #d1d5db;
     cursor: not-allowed;
+}
+
+/* Estilos para a lista de imagens */
+.image-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+    width: 100%;
+}
+
+.image-list-item {
+    position: relative;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 100px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: border-color 0.2s;
+}
+
+.image-list-item[data-principal="true"] {
+    border-color: #52658F;
+}
+
+.image-list-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-list-item .image-actions {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.image-list-item .action-btn-principal,
+.image-list-item .action-btn-remove {
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+    padding: 0; /* Garante que não haja padding extra */
+}
+
+/* --- CORREÇÃO APLICADA AQUI --- */
+/* Garante que o ícone SVG dentro do botão seja exibido corretamente */
+.image-list-item .action-btn-principal svg,
+.image-list-item .action-btn-remove svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+}
+/* --- FIM DA CORREÇÃO --- */
+
+
+.image-list-item .action-btn-principal:hover:not(:disabled) {
+    background-color: #007bff;
+    transform: scale(1.1);
+}
+
+.image-list-item .action-btn-remove:hover {
+    background-color: #dc3545;
+    transform: scale(1.1);
+}
+
+.image-list-item .action-btn-principal:disabled {
+    background-color: #ffc107;
+    cursor: default;
+}
+
+/* Mensagem da API */
+.api-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    font-weight: 500;
+    margin-top: 1rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+}
+
+.api-message.success {
+    color: #155724;
+    background-color: #d4edda;
+}
+
+.api-message.error {
+    color: #721c24;
+    background-color: #f8d7da;
 }

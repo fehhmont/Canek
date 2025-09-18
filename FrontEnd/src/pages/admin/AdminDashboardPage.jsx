@@ -11,7 +11,10 @@ function AdminDashboardPage() {
     const { user } = useAuth();
     
     // Extrai o primeiro nome para uma saudação mais pessoal
-    const firstName = user?.name?.split(' ')[0] || 'Admin';
+    const firstName = user?.nomeCompleto?.split(' ')[0] || 'Admin';
+
+    // Verifica se o usuário é um Administrador
+    const isAdmin = user?.cargo === 'ADMIN';
 
     return (
         <>
@@ -33,27 +36,29 @@ function AdminDashboardPage() {
                     <div className="actions-section">
                         <div className="button-container">
                             
-                            {/* Botão para Gerenciar Usuários */}
-                            <Link to="/UserManagementPage" className="nav-button users-btn">
-                                <div className="button-icon">
-                                    <Users size={24} />
-                                </div>
-                                <div className="button-content">
-                                    <span className="button-title">Gerenciar Admins  </span>
-                                    <span className="button-description">Administre contas e permissões</span>
-                                </div>
-                                <div className="button-arrow">
-                                    <ChevronRight size={20} />
-                                </div>
-                            </Link>
+                            {/* Botão para Gerenciar Usuários (SÓ APARECE PARA ADMIN) */}
+                            {isAdmin && (
+                                <Link to="/UserManagementPage" className="nav-button users-btn">
+                                    <div className="button-icon">
+                                        <Users size={24} />
+                                    </div>
+                                    <div className="button-content">
+                                        <span className="button-title">Gerenciar Admins</span>
+                                        <span className="button-description">Administre contas e permissões</span>
+                                    </div>
+                                    <div className="button-arrow">
+                                        <ChevronRight size={20} />
+                                    </div>
+                                </Link>
+                            )}
                             
-                            {/* Botão para Gerenciar Produtos (Exemplo) */}
-                            <Link to="/" className="nav-button products-btn">
+                            {/* Botão para Gerenciar Produtos */}
+                            <Link to="/GerenciarProductPage" className="nav-button products-btn">
                                 <div className="button-icon">
                                     <Box size={24} />
                                 </div>
                                 <div className="button-content">
-                                    <span className="button-title">Gerenciar Produtos  </span>
+                                    <span className="button-title">Gerenciar Produtos</span>
                                     <span className="button-description">Visualize e edite seu catálogo</span>
                                 </div>
                                 <div className="button-arrow">
@@ -61,15 +66,14 @@ function AdminDashboardPage() {
                                 </div>
                             </Link>
                             
-                            {/* Botão para Listar Pedidos (Exemplo) */}
+                            {/* Botão para Listar Pedidos */}
                             <Link to="/" className="nav-button orders-btn">
                                 <div className="button-icon">
                                     <ClipboardList size={24} />
                                 </div>
                                 <div className="button-content">
-                                     <Link to="/minha-conta" className="button-title">Listar Pedidos  </Link>
-                                     
-                                    <span className="button-description">Monitore vendas e entregas</span>
+                                     <span className="button-title">Listar Pedidos</span>
+                                     <span className="button-description">Monitore vendas e entregas</span>
                                 </div>
                                 <div className="button-arrow">
                                     <ChevronRight size={20} />

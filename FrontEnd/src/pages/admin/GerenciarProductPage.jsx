@@ -108,7 +108,7 @@ function GerenciarProductPage() {
                             <button onClick={() => navigate(-1)} className="back-button"><ArrowLeft className="icon-sm" /></button>
                             <div className="header-title"><Package className="icon-md primary-color" /><h1 className="page-title">Gerenciamento de Produtos</h1></div>
                             <button onClick={handleLogout}>Sair</button>
-                            <button onClick={() => navigate('/CadastroProductPage')} className="btn-primary">
+                            <button onClick={() => navigate('/ProductFormPage')} className="btn-primary">
                                 <Plus className="icon-sm" /> Adicionar Produto
                             </button>
                         </div>
@@ -138,9 +138,7 @@ function GerenciarProductPage() {
                                             <td>
                                                 <div className="action-buttons">
                                                     <button onClick={() => handleViewProduct(product.id)} className="action-btn view" title="Visualizar"><Eye className="icon-xs" /></button>
-                                                    <button onClick={() => navigate(`/GerenciarProductPage/edit/${product.id}`)} className="action-btn edit" title="Editar">
-                                                        <Edit className="icon-xs" />
-                                                    </button>
+                                                    <button onClick={() => navigate(`/product/edit/${product.id}`)} className="action-btn edit" title="Editar"><Edit className="icon-xs" /></button>
                                                     <button onClick={() => handleToggleStatus(product.id, product.status)} className={`action-btn ${product.status ? 'delete' : 'edit'}`} title={product.status ? 'Inativar' : 'Ativar'}>
                                                         {product.status ? <ToggleLeft className="icon-xs" /> : <ToggleRight className="icon-xs" />}
                                                     </button>
