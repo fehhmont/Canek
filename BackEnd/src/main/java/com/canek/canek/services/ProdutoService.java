@@ -97,4 +97,5 @@ public class ProdutoService {
     // Salva o produto com o status atualizado
     return produtoRepository.save(prod);
 }
+        
 }

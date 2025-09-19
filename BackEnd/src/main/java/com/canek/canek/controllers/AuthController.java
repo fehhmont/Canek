@@ -53,7 +53,7 @@ public class AuthController {
     
     @GetMapping("/findAll")
     public ResponseEntity<List<Usuario>> findAllUsers() {
-        // Lembre-se que este endpoint expõe a senha hash. O ideal é usar um DTO.
+        
         return ResponseEntity.ok(usuarioService.listarTodos());
     }
 }

@@ -20,10 +20,10 @@ import com. canek.canek.models.ImagemProduto ;
 public class ProdutoController {
 
     @Autowired
-    private ProdutoService produtoService; // Usar apenas o serviço
+    private ProdutoService produtoService;
 
    
-    @GetMapping("/listar") // URL mais simples e padronizada
+    @GetMapping("/listar")
     public ResponseEntity<List<ProdutoDTO>> listarTodosProdutos() {
        
         List<Produto> produtos = produtoService.listarTodos();  
@@ -104,5 +104,6 @@ public class ProdutoController {
             return ResponseEntity.notFound().build();
         }
     }
+    
     
 }
