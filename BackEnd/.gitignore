@@ -33,3 +33,32 @@ build/
 .vscode/
 # Ignora arquivos e pastas de configuração de IDEs
 .idea/
+# Arquivos de Log
+logs
+*.log
+
+# Arquivos gerados pelo Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+
+# Arquivos do Maven Wrapper
+.mvn/wrapper/maven-wrapper.jar
+
+# Arquivos de IDEs
+.project
+.classpath
+.settings/
+.springBeans
+.sts4-cache
+
+# Arquivos de upload - NUNCA adicione arquivos de upload ao git
+uploads/
+
+# Outros
+*.class
