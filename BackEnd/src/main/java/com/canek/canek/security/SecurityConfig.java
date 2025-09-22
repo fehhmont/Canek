@@ -50,15 +50,19 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.GET, "/auth/produto/listar").permitAll()
                     .requestMatchers(HttpMethod.GET, "/auth/produto/listarTodosAtivos/true").permitAll()
                     .requestMatchers( "/auth/produto/listarPorNome/{nome}").permitAll()
+                    .requestMatchers(HttpMethod.GET,"/auth/produto/listarTodos").permitAll()
                     
                     .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
 
                     // --- 2. ROTAS DE ADMINISTRADOR (Acesso restrito) ---
                     // Qualquer outra requisição para estas rotas exigirá um dos cargos.
                     
+                    .requestMatchers("/auth/administrador/findAll/").hasAnyRole("ADMIN")
                     .requestMatchers("/auth/administrador/**").hasAnyRole("ADMIN")
                     
                     .requestMatchers("/auth/produto/atualizar/{id}").hasAnyRole("ADMIN", "ESTOQUISTA")
+                    .requestMatchers( "/auth/produto/listarTodosAtivos").hasAnyRole("ADMIN", "ESTOQUISTA")
+                     
                    
                    .requestMatchers("/auth/produto/cadastrar").hasAnyRole("ADMIN")
                      .requestMatchers("/auth/produto/deletar/{id}").hasAnyRole("ADMIN", "ESTOQUISTA")

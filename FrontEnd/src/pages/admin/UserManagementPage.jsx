@@ -1,93 +1,111 @@
-// Arquivo: src/pages/admin/ProductManagementPage.jsx (NOME SUGERIDO)
+// Arquivo: src/pages/admin/UserManagementPage.jsx (CORRIGIDO E REFATORADO)
 
-import React, { useState, useEffect, useCallback } from "react";
-import { ArrowLeft, Package, Plus, Search, Eye, Edit, ToggleLeft, ToggleRight } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { ArrowLeft, Users, Plus, Search, Eye, Edit, ToggleLeft, ToggleRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import './css/UserManagementPage.css'; // Mantenha seu CSS ou renomeie se preferir
+import './css/UserManagementPage.css';
+
+// --- 1. IMPORTE O NOVO COMPONENTE SPINNER ---
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 
-function ProductManagementPage() {
+function UserManagementPage() {
     const navigate = useNavigate();
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(false); // Inicia como false
+    const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
 
-    // Função para buscar produtos, agora separada para ser reutilizável
-    const fetchProducts = useCallback(async (name) => {
-        setLoading(true);
-        setError(null);
-        
-        // Define o endpoint baseado no termo de pesquisa
-        // **IMPORTANTE**: Ajuste o endpoint de "listarTodos" se for diferente
-        const endpoint = name 
-            ? `http://localhost:8080/auth/produto/listarPorNome/${name}` 
-            : `http://localhost:8080/auth/produto/listarTodos`; // Endpoint para buscar todos
+    // ... (toda a sua lógica de fetch e handlers permanece a mesma) ...
+    useEffect(() => {
+        const fetchUsers = async () => {
+            // Adiciona um pequeno atraso para que o spinner seja visível (bom para testes)
+            await new Promise(resolve => setTimeout(resolve, 500)); 
+            try {
+                const token = localStorage.getItem('userToken');
+                if (!token) throw new Error("Token não encontrado.");
 
+                const response = await fetch("http://localhost:8080/auth/administrador/findAll", {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                // ... resto da função fetch
+                if (!response.ok) throw new Error('Falha ao buscar usuários.');
+                const dataFromApi = await response.json();
+                const formattedUsers = dataFromApi.map(user => ({
+                    id: user.id,
+                    name: user.nomeCompleto,
+                    email: user.email,
+                    role: user.tipoUsuarioOuCargo.charAt(0).toUpperCase() + user.tipoUsuarioOuCargo.slice(1).toLowerCase(),
+                    ativo: user.status,
+                    lastLogin: new Date(user.dataCadastro).toLocaleDateString('pt-BR')
+                }));
+                setUsers(formattedUsers);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchUsers();
+    }, []);
+
+    const handleToggleStatus = async (userId, currentStatus) => {
+        if (!window.confirm(`Deseja ${currentStatus ? "inativar" : "ativar"} este administrador?`)) return;
         try {
             const token = localStorage.getItem('userToken');
-            if (!token) throw new Error("Token não encontrado.");
-
-            const response = await fetch(endpoint, {
+            const response = await fetch(`http://localhost:8080/auth/administrador/${userId}/status`, {
+                method: 'PUT',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-            
-            if (!response.ok) throw new Error('Falha ao buscar produtos.');
-            
-            const dataFromApi = await response.json();
-            
-            // **IMPORTANTE**: Ajuste os campos abaixo para corresponder à sua API de produto
-            const formattedProducts = dataFromApi.map(product => ({
-                id: product.id,
-                name: product.nome, // Ex: 'nome' do produto
-                category: product.categoria, // Ex: 'categoria' do produto
-                price: product.preco, // Ex: 'preco' do produto
-                stock: product.estoque, // Ex: 'estoque' do produto
-                ativo: product.status, // Ex: 'status' do produto
-            }));
-
-            setProducts(formattedProducts);
+            if (!response.ok) throw new Error("Falha ao alterar o status.");
+            setUsers(users.map(u => u.id === userId ? { ...u, ativo: !u.ativo } : u));
         } catch (err) {
             setError(err.message);
-            setProducts([]); // Limpa a lista em caso de erro
-        } finally {
-            setLoading(false);
         }
-    }, []); // useCallback para evitar recriação da função
-
-    // useEffect para buscar os dados (pesquisa com debounce)
-    useEffect(() => {
-        // Quando o componente monta, busca todos os produtos
-        if (searchTerm.trim() === '') {
-            fetchProducts(''); // Passa string vazia para buscar todos
-            return;
-        }
-
-        // Configura o debounce para a pesquisa
-        const delayDebounceFn = setTimeout(() => {
-            fetchProducts(searchTerm);
-        }, 500); // Aguarda 500ms após o usuário parar de digitar
-
-        // Função de limpeza: cancela o timeout anterior se o usuário continuar digitando
-        return () => clearTimeout(delayDebounceFn);
-    }, [searchTerm, fetchProducts]); // Executa quando searchTerm ou fetchProducts muda
-
-    // --- Seus outros handlers (handleLogout, handleToggleStatus) iriam aqui ---
-    // Você precisará adaptá-los para a lógica de 'produto' se necessário.
+    };
     
-    // O resto do seu componente JSX, adaptado para produtos
+    const handleLogout = () => {
+        localStorage.removeItem('userToken');
+        localStorage.removeItem('userData');
+        navigate('/');
+    };
+
+    const getStatusClass = (ativo) => (ativo ? 'status-active' : 'status-inactive');
+    const filteredUsers = users.filter(user =>
+        (user.name && user.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (user.email && user.email.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+
+
+    // --- 2. SUBSTITUA O TEXTO PELO COMPONENTE SPINNER ---
+    if (loading) {
+        return (
+            <div className="page-container">
+                <div className="container">
+                    <div className="card" style={{ justifyContent: 'center', alignItems: 'center' }}>
+                        <LoadingSpinner message="Buscando administradores..." />
+                    </div>
+                </div>
+            </div>
+        );
+    }
+    
+    if (error) return <div className="page-container"><div className="card"><p style={{ color: 'red' }}>Erro: {error}</p></div></div>;
+
+    // --- O restante do seu return permanece o mesmo ---
     return (
         <div className="page-container">
-            <div className="container">
+            {/* ... seu código JSX ... */}
+             <div className="container">
                 <div className="card">
                     <div className="card-header">
                         <div className="header-content">
                             <button onClick={() => navigate(-1)} className="back-button"><ArrowLeft className="icon-sm" /></button>
-                            {/* Ícone e título alterados para Produtos */}
-                            <div className="header-title"><Package className="icon-md primary-color" /><h1 className="page-title">Gerenciamento de Produtos</h1></div>
-                            {/* Você pode adicionar o botão de logout de volta se precisar */}
-                            <button onClick={() => navigate('/ProductManagementPage/new')} className="btn-primary">
-                                <Plus className="icon-sm" /> Adicionar Produto
+                            <div className="header-title"><Users className="icon-md primary-color" /><h1 className="page-title">Gerenciamento de Admins</h1></div>
+                            <button onClick={handleLogout}>Sair</button>
+                            
+                            {/* --- BOTÃO CORRIGIDO --- */}
+                            <button onClick={() => navigate('/UserManagementPage/new')} className="btn-primary">
+                                <Plus className="icon-sm" /> Adicionar Admin
                             </button>
                         </div>
                     </div>
@@ -95,59 +113,42 @@ function ProductManagementPage() {
                         <div className="search-section">
                             <div className="search-container">
                                 <Search className="search-icon" />
-                                <input 
-                                    type="text" 
-                                    placeholder="Buscar por nome do produto..." 
-                                    value={searchTerm} 
-                                    onChange={(e) => setSearchTerm(e.target.value)} 
-                                    className="search-input" 
-                                />
+                                <input type="text" placeholder="Buscar por nome ou email..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="search-input" />
                             </div>
                         </div>
                         <div className="table-container">
-                            {loading ? (
-                                <LoadingSpinner message="Buscando produtos..." />
-                            ) : error ? (
-                                <p style={{ color: 'red', textAlign: 'center' }}>Erro: {error}</p>
-                            ) : (
-                                <table className="data-table">
-                                    <thead>
-                                        <tr>
-                                            {/* **IMPORTANTE**: Ajuste os cabeçalhos da tabela */}
-                                            <th>NOME DO PRODUTO</th>
-                                            <th>CATEGORIA</th>
-                                            <th>PREÇO</th>
-                                            <th>ESTOQUE</th>
-                                            <th>STATUS</th>
-                                            <th>AÇÕES</th>
+                            <table className="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>NOME</th><th>EMAIL</th><th>PERFIL</th><th>STATUS</th><th>DATA DE CADASTRO</th><th>AÇÕES</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {filteredUsers.map((user) => (
+                                        <tr key={user.id}>
+                                            <td className="font-medium">{user.name}</td>
+                                            <td className="text-gray">{user.email}</td>
+                                            <td className="text-gray">{user.role}</td>
+                                            <td><span className={`status-badge ${getStatusClass(user.ativo)}`}>{user.ativo ? 'Ativo' : 'Inativo'}</span></td>
+                                            <td className="text-gray">{user.lastLogin}</td>
+                                            <td>
+                                                <div className="action-buttons">
+                                                    <button className="action-btn view" title="Visualizar"><Eye className="icon-xs" /></button>
+                                                    
+                                                    {/* --- BOTÃO DE EDITAR (JÁ CORRIGIDO ANTERIORMENTE) --- */}
+                                                    <button onClick={() => navigate(`/UserManagementPage/edit/${user.id}`)} className="action-btn edit" title="Editar">
+                                                        <Edit className="icon-xs" />
+                                                    </button>
+
+                                                    <button onClick={() => handleToggleStatus(user.id, user.ativo)} className={`action-btn ${user.ativo ? 'delete' : 'edit'}`} title={user.ativo ? 'Inativar' : 'Ativar'}>
+                                                        {user.ativo ? <ToggleLeft className="icon-xs" /> : <ToggleRight className="icon-xs" />}
+                                                    </button>
+                                                </div>
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        {products.length > 0 ? products.map((product) => (
-                                            <tr key={product.id}>
-                                                {/* **IMPORTANTE**: Ajuste os dados das células */}
-                                                <td className="font-medium">{product.name}</td>
-                                                <td className="text-gray">{product.category}</td>
-                                                <td className="text-gray">R$ {product.price?.toFixed(2)}</td>
-                                                <td className="text-gray">{product.stock}</td>
-                                                <td><span className={`status-badge ${product.ativo ? 'status-active' : 'status-inactive'}`}>{product.ativo ? 'Ativo' : 'Inativo'}</span></td>
-                                                <td>
-                                                    <div className="action-buttons">
-                                                        <button className="action-btn view" title="Visualizar"><Eye className="icon-xs" /></button>
-                                                        <button onClick={() => navigate(`/ProductManagementPage/edit/${product.id}`)} className="action-btn edit" title="Editar"><Edit className="icon-xs" /></button>
-                                                        {/* Adapte o botão de status se necessário */}
-                                                        {/* <button onClick={() => handleToggleStatus(product.id, product.ativo)} ... > */}
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        )) : (
-                                            <tr>
-                                                <td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>Nenhum produto encontrado.</td>
-                                            </tr>
-                                        )}
-                                    </tbody>
-                                </table>
-                            )}
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -156,4 +157,4 @@ function ProductManagementPage() {
     );
 }
 
-export default ProductManagementPage;
+export default UserManagementPage;
