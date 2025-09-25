@@ -64,6 +64,9 @@ function Header() {
                                     <Link to="/LoginPage" className="nav-button">
                                         Login
                                     </Link>
+                                    <Link to="/Routers" className="nav-button">
+                                        Rotas
+                                    </Link>
                                 </>
                             )}
                         </nav>
