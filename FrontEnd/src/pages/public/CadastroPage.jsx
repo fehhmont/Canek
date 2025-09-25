@@ -151,7 +151,7 @@ function CadastroPage() {
                   id="senha"
                   {...register("senha")}
                   className="cadastro-input"
-                  placeholder="Mínimo 6 caracteres"
+                  placeholder="senha"
                 />
                 {errors.senha && <p className="cadastro-error">{errors.senha.message}</p>}
               </div>

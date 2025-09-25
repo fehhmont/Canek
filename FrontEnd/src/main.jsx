@@ -16,7 +16,8 @@ import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import CadastroPageAdmin from './pages/admin/CadastroPageAdmin';
 import EditAdminPage from './pages/admin/EditAdminPage';
 import GerenciarProductPage from './pages/admin/GerenciarProductPage';
-import ProductFormPage from './pages/admin/ProductFormPage'; // Importe o novo componente
+import ProductFormPage from './pages/admin/ProductFormPage';
+import Routers from './pages/Routers';
 
 import './index.css';
 
@@ -32,6 +33,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route path="LoginPageBackOffice" element={<LoginPageBackOffice />} />
             <Route path="LoginPage" element={<LoginPage />} />
             <Route path="CadastroPage" element={<CadastroPage />} />
+            <Route path='Routers' element={<Routers />} />
 
             {/* Rotas Protegidas para QUALQUER usuário logado */}
             <Route element={<ProtectedRoute />}>
