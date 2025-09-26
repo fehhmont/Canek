@@ -46,6 +46,7 @@ public class AdministradorService {
         Administrador novoAdmin = new Administrador();
         novoAdmin.setNomeCompleto(data.nomeCompleto());
         novoAdmin.setEmail(data.email());
+        novoAdmin.setCpf(data.cpf());
         novoAdmin.setSenhaHash(senhaCriptografada);
         
         // MUDANÇA: Converte a String do DTO para o tipo Enum
@@ -97,5 +98,9 @@ public class AdministradorService {
     public Administrador findById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Administrador com ID " + id + " não encontrado."));
+    }
+
+    public Administrador findByCpf(String cpf) {
+        return repository.findByCpf(cpf);
     }
 }

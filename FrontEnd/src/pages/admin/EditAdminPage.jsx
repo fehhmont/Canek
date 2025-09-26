@@ -54,6 +54,7 @@ function EditAdminPage() {
                 reset({
                     nomeCompleto: data.nomeCompleto,
                     email: data.email,
+                    cpf: data.cpf, // Adiciona o CPF ao formulário
                     cargo: data.tipoUsuarioOuCargo // O DTO usa este nome de campo
                 });
 
@@ -100,6 +101,18 @@ function EditAdminPage() {
     if (isLoading) {
         return <div className="cadastro-bg"><p>Carregando dados do administrador...</p></div>;
     }
+    const handleCpfChange = (e) => {
+        const input = e.target.value;
+        const digits = input.replace(/\D/g, ''); // Remove tudo que não é dígito
+
+        let masked = '';
+        if (digits.length > 0) masked = digits.substring(0, 3);
+        if (digits.length > 3) masked += `.${digits.substring(3, 6)}`;
+        if (digits.length > 6) masked += `.${digits.substring(6, 9)}`;
+        if (digits.length > 9) masked += `-${digits.substring(9, 11)}`;
+
+        setValue('cpf', masked, { shouldValidate: true });
+    };
 
     return (
         <div className="cadastro-bg">
@@ -123,6 +136,20 @@ function EditAdminPage() {
                         <input type="email" id="email" {...register("email")} className="cadastro-input" />
                         {errors.email && <p className="cadastro-error">{errors.email.message}</p>}
                     </div>
+                    <div className="cadastro-form-group">
+                <label htmlFor="cpf" className="cadastro-label">CPF:</label>
+                <input
+                  type="text"
+                  id="cpf"
+                  {...register("cpf", {
+                      onChange: handleCpfChange // Adiciona nosso manipulador
+                  })}
+                  className="cadastro-input"
+                  {...register("cpf")}
+                  maxLength="14" // Limita o tamanho do campo
+                />
+                {errors.cpf && <p className="cadastro-error">{errors.cpf.message}</p>}
+              </div>
                     <div className="cadastro-form-group">
                         <label htmlFor="cargo" className="cadastro-label">Cargo:</label>
                         <select id="cargo" {...register("cargo")} className="cadastro-input">

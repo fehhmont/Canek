@@ -11,6 +11,7 @@ public interface UsuarioBackOfficeRepository extends JpaRepository<Administrador
     Administrador findByEmail(String email);
     Administrador findById(long id);
     Administrador save(Administrador admin);
+    Administrador findByCpf(String cpf);
     
 
 }

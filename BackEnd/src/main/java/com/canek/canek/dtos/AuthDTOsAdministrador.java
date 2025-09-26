@@ -1,6 +1,8 @@
 package com.canek.canek.dtos;
 
 
+import org.hibernate.validator.constraints.br.CPF;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
@@ -14,6 +16,10 @@ public class AuthDTOsAdministrador {
         @NotBlank(message = "O email é obrigatório")
         @Email(message = "Formato de email inválido")
         String email,
+
+        @CPF
+        @NotBlank(message = "O CPF é obrigatório")
+        String cpf,
 
         @NotBlank(message = "A senha é obrigatória")
         // @Size(min = 6, message = "A senha deve ter no mínimo 6 caracteres")
@@ -42,7 +48,13 @@ public class AuthDTOsAdministrador {
         String email,
 
         @NotBlank(message = "O cargo é obrigatório")
-        String cargo
+        String cargo,
+
+        @NotBlank(message = "O CPF é obrigatório")
+        String cpf,
+
+        @NotBlank(message = "A senha é obrigatória")
+        String senha
     ) {}
 
 }

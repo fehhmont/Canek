@@ -38,7 +38,7 @@ public record DadosUsuarioDTO(
             admin.getId(),
             admin.getNomeCompleto(),
             admin.getEmail(),
-            null, // Admin não tem CPF
+            admin.getCpf(),
             null, // Admin não tem telefone
             admin.getCargo().name(), // Pega o nome do Enum (ex: "ADMIN")
             admin.isEnabled(),

@@ -82,6 +82,7 @@ public class AdministradorAuthController {
     }
 
     // --- CORREÇÃO APLICADA AQUI ---
+    // Atualizar administrador
     @PutMapping("/{id}")
     public ResponseEntity<DadosUsuarioDTO> atualizarAdministrador(@PathVariable Long id, @RequestBody @Valid AtualizacaoAdministradorDTO data) {
         try {

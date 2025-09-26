@@ -29,6 +29,9 @@ public class Administrador implements UserDetails {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @Column(name = "cpf", unique = true, length = 14)
+    private String cpf;
+
     @Column(name = "senha_hash", nullable = false)
     private String senhaHash;
 

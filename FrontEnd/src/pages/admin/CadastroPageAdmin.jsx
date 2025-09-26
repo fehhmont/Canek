@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+
 import './css/CadastroPageAdmin.css';
 
 // Ícone de seta para voltar
@@ -14,6 +15,9 @@ const ArrowLeft = () => (
 const adminCadastroSchema = yup.object().shape({
   nomeCompleto: yup.string().required('O nome completo é obrigatório'),
   email: yup.string().email('Digite um email válido').required('O email é obrigatório'),
+  cpf: yup.string()
+    .matches(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, 'Digite um CPF válido no formato 000.000.000-00')
+    .required('O CPF é obrigatório'),
   senha: yup.string().required('A senha é obrigatória'),
   cargo: yup.string().oneOf(['ADMIN', 'ESTOQUISTA'], 'Selecione um cargo válido').required('O cargo é obrigatório'),
 });
@@ -69,6 +73,18 @@ function CadastroPageAdmin() {
             setIsError(true);
         }
     };
+    const handleCpfChange = (e) => {
+        const input = e.target.value;
+        const digits = input.replace(/\D/g, ''); // Remove tudo que não é dígito
+
+        let masked = '';
+        if (digits.length > 0) masked = digits.substring(0, 3);
+        if (digits.length > 3) masked += `.${digits.substring(3, 6)}`;
+        if (digits.length > 6) masked += `.${digits.substring(6, 9)}`;
+        if (digits.length > 9) masked += `-${digits.substring(9, 11)}`;
+
+        setValue('cpf', masked, { shouldValidate: true });
+    };
 
     return (
       <div className="cadastro-bg">
@@ -105,6 +121,20 @@ function CadastroPageAdmin() {
               />
               {errors.email && <p className="cadastro-error">{errors.email.message}</p>}
             </div>
+            <div className="cadastro-form-group">
+                <label htmlFor="cpf" className="cadastro-label">CPF:</label>
+                <input
+                  type="text"
+                  id="cpf"
+                  {...register("cpf", {
+                      onChange: handleCpfChange // Adiciona nosso manipulador
+                  })}
+                  className="cadastro-input"
+                  placeholder="000.000.000-00"
+                  maxLength="14" // Limita o tamanho do campo
+                />
+                {errors.cpf && <p className="cadastro-error">{errors.cpf.message}</p>}
+              </div>
 
             <div className="cadastro-form-group">
               <label htmlFor="senha" className="cadastro-label">Senha:</label>
