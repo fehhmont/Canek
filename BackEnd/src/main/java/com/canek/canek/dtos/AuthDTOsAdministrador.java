@@ -50,10 +50,11 @@ public class AuthDTOsAdministrador {
         @NotBlank(message = "O cargo é obrigatório")
         String cargo,
 
+        @CPF
         @NotBlank(message = "O CPF é obrigatório")
         String cpf,
 
-        @NotBlank(message = "A senha é obrigatória")
+        
         String senha
     ) {}
 

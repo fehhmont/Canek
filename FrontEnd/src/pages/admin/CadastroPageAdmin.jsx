@@ -19,6 +19,9 @@ const adminCadastroSchema = yup.object().shape({
     .matches(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, 'Digite um CPF válido no formato 000.000.000-00')
     .required('O CPF é obrigatório'),
   senha: yup.string().required('A senha é obrigatória'),
+  confirmarSenha: yup.string()
+    .oneOf([yup.ref('senha'), null], 'As senhas devem ser iguais')
+    .required('A confirmação de senha é obrigatória'),
   cargo: yup.string().oneOf(['ADMIN', 'ESTOQUISTA'], 'Selecione um cargo válido').required('O cargo é obrigatório'),
 });
 
@@ -32,6 +35,7 @@ function CadastroPageAdmin() {
         register,
         handleSubmit,
         reset, // <--- Adicionado aqui
+        setValue,
         formState: { errors, isSubmitting }
     } = useForm({
         resolver: yupResolver(adminCadastroSchema)
@@ -126,9 +130,8 @@ function CadastroPageAdmin() {
                 <input
                   type="text"
                   id="cpf"
-                  {...register("cpf", {
-                      onChange: handleCpfChange // Adiciona nosso manipulador
-                  })}
+                  {...register("cpf")}
+                  onChange={handleCpfChange}
                   className="cadastro-input"
                   placeholder="000.000.000-00"
                   maxLength="14" // Limita o tamanho do campo
@@ -146,6 +149,18 @@ function CadastroPageAdmin() {
                 placeholder="Crie uma senha forte"
               />
               {errors.senha && <p className="cadastro-error">{errors.senha.message}</p>}
+            </div>
+
+            <div className="cadastro-form-group">
+              <label htmlFor="confirmarSenha" className="cadastro-label">Confirmar Senha:</label>
+              <input
+                type="password"
+                id="confirmarSenha"
+                {...register("confirmarSenha")}
+                className="cadastro-input"
+                placeholder="Repita a senha"
+              />
+              {errors.confirmarSenha && <p className="cadastro-error">{errors.confirmarSenha.message}</p>}
             </div>
 
             <div className="cadastro-form-group">

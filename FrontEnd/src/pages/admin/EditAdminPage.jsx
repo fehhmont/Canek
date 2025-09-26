@@ -15,7 +15,10 @@ const ArrowLeft = () => (
 const adminUpdateSchema = yup.object().shape({
   nomeCompleto: yup.string().required('O nome completo é obrigatório'),
   email: yup.string().email('Digite um email válido').required('O email é obrigatório'),
+  cpf: yup.string().required('O CPF é obrigatório'),
   cargo: yup.string().oneOf(['ADMIN', 'ESTOQUISTA'], 'Selecione um cargo válido').required('O cargo é obrigatório'),
+  senha: yup.string().optional(),
+  confirmarSenha: yup.string().oneOf([yup.ref('senha'), null], 'As senhas devem ser iguais')
 });
 
 function EditAdminPage() {
@@ -29,6 +32,7 @@ function EditAdminPage() {
         register,
         handleSubmit,
         reset, // Usado para preencher o formulário com dados da API
+        setValue,
         formState: { errors, isSubmitting }
     } = useForm({
         resolver: yupResolver(adminUpdateSchema)
@@ -72,6 +76,14 @@ function EditAdminPage() {
     const onSubmit = async (data) => {
         setMensagemApi("");
         setIsError(false);
+
+        const payload = {
+            nomeCompleto: data.nomeCompleto,
+            email: data.email,
+            cpf: data.cpf,
+            cargo: data.cargo,
+            senha: data.senha || null
+        };
         try {
             const token = localStorage.getItem('userToken');
             const response = await fetch(`http://localhost:8080/auth/administrador/${userId}`, {
@@ -80,7 +92,7 @@ function EditAdminPage() {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(data)
+                body: JSON.stringify(payload)
             });
 
             if (response.ok) {
@@ -141,11 +153,9 @@ function EditAdminPage() {
                 <input
                   type="text"
                   id="cpf"
-                  {...register("cpf", {
-                      onChange: handleCpfChange // Adiciona nosso manipulador
-                  })}
-                  className="cadastro-input"
                   {...register("cpf")}
+                  onChange={handleCpfChange}
+                  className="cadastro-input"
                   maxLength="14" // Limita o tamanho do campo
                 />
                 {errors.cpf && <p className="cadastro-error">{errors.cpf.message}</p>}
@@ -158,6 +168,18 @@ function EditAdminPage() {
                             <option value="ESTOQUISTA">ESTOQUISTA</option>
                         </select>
                         {errors.cargo && <p className="cadastro-error">{errors.cargo.message}</p>}
+                    </div>
+
+                    <div className="cadastro-form-group">
+                        <label htmlFor="senha"  className="cadastro-label">Nova Senha (deixe em branco para não alterar):</label>
+                        <input type="password" id="senha" {...register("senha")} className="cadastro-input" />
+                        {errors.senha && <p className="cadastro-error">{errors.senha.message}</p>}
+                    </div>
+
+                    <div className="cadastro-form-group">
+                        <label htmlFor="confirmarSenha"  className="cadastro-label">Confirmar Nova Senha:</label>
+                        <input type="password" id="confirmarSenha" {...register("confirmarSenha")} className="cadastro-input" />
+                        {errors.confirmarSenha && <p className="cadastro-error">{errors.confirmarSenha.message}</p>}
                     </div>
                     
                     {mensagemApi && <p style={{color: isError ? '#d32f2f' : '#27ae60', textAlign: 'center', marginTop: 12, fontWeight: 'bold'}}>{mensagemApi}</p>}

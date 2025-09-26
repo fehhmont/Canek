@@ -85,6 +85,11 @@ public class AdministradorService {
         // 3. Atualiza os dados do objeto com as informações do DTO
         admin.setNomeCompleto(data.nomeCompleto());
         admin.setEmail(data.email());
+        admin.setCpf(data.cpf());
+
+        if (data.senha() != null && !data.senha().isEmpty()) {
+            admin.setSenhaHash(passwordEncoder.encode(data.senha()));
+        }
         try {
             admin.setCargo(Cargo.valueOf(data.cargo().toUpperCase()));
         } catch (IllegalArgumentException e) {
