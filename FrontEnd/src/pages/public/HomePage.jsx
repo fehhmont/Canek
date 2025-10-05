@@ -1,9 +1,7 @@
-// Arquivo: FrontEnd/src/pages/public/HomePage.jsx
-
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Header from '../../components/Header/Header.jsx';
-import ProductCard from '../../components/ProductCard/ProductCard.jsx';
+import { useCart } from '../../components/CartContext.jsx';
 import './css/HomePage.css';
 
 const placeholderImage = "https://via.placeholder.com/300x300.png/000000/FFFFFF?text=Imagem+Indisponivel";
@@ -12,6 +10,8 @@ function HomePage() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { addToCart } = useCart();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -46,9 +46,8 @@ function HomePage() {
         if (currentPage > 1) setCurrentPage(currentPage - 1);
     };
 
-    // --- CORREÇÃO APLICADA AQUI ---
     const formatProductForCard = (product) => {
-        const principalImage = product.imagens.find(img => img.principal) || product.imagens[0];
+        const principalImage = product.imagens?.find(img => img.principal) || product.imagens?.[0];
         const imageUrl = principalImage 
             ? `http://localhost:8080${principalImage.caminhoImagem}` 
             : placeholderImage;
@@ -56,12 +55,21 @@ function HomePage() {
         return {
             id: product.id,
             name: product.nome,
-            price: `R$ ${product.preco.toFixed(2).replace('.', ',')}`,
+            price: product.preco,
             image: imageUrl,
-            description: product.descricao, // <-- Adicionado
-            rating: product.avaliacao      // <-- Adicionado
+            description: product.descricao,
+            rating: product.avaliacao
         };
     };
+
+    function handleComprar(cardProduct) {
+        addToCart({
+            id: cardProduct.id,
+            name: cardProduct.name,
+            price: cardProduct.price,
+        });
+        navigate('/carrinho');
+    }
 
     return (
         <div className="app">
@@ -87,20 +95,29 @@ function HomePage() {
                     </p>
                 </div>
 
-
-
-
-
-
                 {loading && <p style={{ textAlign: 'center' }}>Carregando produtos...</p>}
                 {error && <p style={{ color: 'red', textAlign: 'center' }}>Erro: {error}</p>}
                 
                 {!loading && !error && (
                     <>
                         <div className="product-grid">
-                            {currentProducts.map((product) => (
-                                <ProductCard key={product.id} product={formatProductForCard(product)} />
-                            ))}
+                            {currentProducts.map((product) => {
+                                const cardProduct = formatProductForCard(product);
+                                return (
+                                    <div key={cardProduct.id} className="product-card">
+                                        <img src={cardProduct.image} alt={cardProduct.name} className="product-card-img" />
+                                        <h3 className="product-card-title">{cardProduct.name}</h3>
+                                        <p className="product-card-price">R$ {cardProduct.price.toFixed(2).replace('.', ',')}</p>
+                                        <p className="product-card-desc">{cardProduct.description}</p>
+                                        <Link to={`/produto/${cardProduct.id}`}>
+                                            <button className="product-detail-btn">Detalhe</button>
+                                        </Link>
+                                        <button className="product-buy-btn" onClick={() => handleComprar(cardProduct)}>
+                                            Comprar
+                                        </button>
+                                    </div>
+                                );
+                            })}
                         </div>
 
                         {products.length > productsPerPage && (
