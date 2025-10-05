@@ -8,6 +8,7 @@ import com.canek.canek.models.Produto;
 import com.canek.canek.models.Administrador;
 import com.canek.canek.models.ImagemProduto;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -83,6 +84,9 @@ public class ProdutoService {
         return produtoRepository.findByStatus(status);
     }
 
+    public Optional<Produto> findById(Long id) {
+        return produtoRepository.findById(id);
+    }
 
        public Produto alterarStatus(Long id) {
     // Busca o produto ou lança uma exceção se não encontrar
@@ -96,6 +100,7 @@ public class ProdutoService {
 
     // Salva o produto com o status atualizado
     return produtoRepository.save(prod);
-}
+
         
+}
 }

@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors; // Import necessário
 
 import com. canek.canek.models.ImagemProduto ;
@@ -104,6 +105,14 @@ public class ProdutoController {
             return ResponseEntity.notFound().build();
         }
     }
-    
-    
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProdutoDTO> getProdutoById(@PathVariable Long id) {
+        Optional<Produto> produto = produtoService.findById(id);
+        return produto.map(p -> ResponseEntity.ok(ProdutoDTO.fromProduto(p)))
+                      .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }
+    
+
+
