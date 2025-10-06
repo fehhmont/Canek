@@ -1,40 +1,38 @@
 package com.canek.canek.controllers;
 
+import com.canek.canek.dtos.CepRequestDTO;
+import com.canek.canek.dtos.FreteDTO;
 import com.canek.canek.dtos.ProdutoDTO;
 import com.canek.canek.models.Produto;
-import com.canek.canek.services.ProdutoService; // Apenas o serviço é necessário aqui
+import com.canek.canek.services.ProdutoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors; // Import necessário
+import java.util.stream.Collectors;
 
 import com. canek.canek.models.ImagemProduto ;
-
-
-
 
 @RestController
 @RequestMapping("/auth/produto")
 public class ProdutoController {
 
     @Autowired
-    private ProdutoService produtoService;
+    private ProdutoService produtoService; // Apenas um serviço é necessário agora
 
-   
+    // ... (todos os outros endpoints de produto permanecem iguais)
+
     @GetMapping("/listar")
     public ResponseEntity<List<ProdutoDTO>> listarTodosProdutos() {
-       
-        List<Produto> produtos = produtoService.listarTodos();  
+        List<Produto> produtos = produtoService.listarTodos();
         List<ProdutoDTO> produtoDTOs = produtos.stream()
                                                .map(ProdutoDTO::fromProduto)
-                                               .collect(Collectors.toList()); 
-       
+                                               .collect(Collectors.toList());
         return ResponseEntity.ok(produtoDTOs);
     }
-
     
     @PostMapping("/cadastrar") 
     public ResponseEntity<ProdutoDTO> criarProduto(@RequestBody ProdutoDTO produtoDTO) {
@@ -82,13 +80,13 @@ public class ProdutoController {
     }
 
     @GetMapping("/listarPorNome/{nome}")
-  public ResponseEntity<List<ProdutoDTO>> listarProdutosPorNome(@PathVariable String nome) {
-      List<Produto> produtos = produtoService.listarPorNome(nome);
-      List<ProdutoDTO> dtos = produtos.stream().map(ProdutoDTO::fromProduto).toList();
-      return ResponseEntity.ok(dtos);
-  }
+    public ResponseEntity<List<ProdutoDTO>> listarProdutosPorNome(@PathVariable String nome) {
+        List<Produto> produtos = produtoService.listarPorNome(nome);
+        List<ProdutoDTO> dtos = produtos.stream().map(ProdutoDTO::fromProduto).toList();
+        return ResponseEntity.ok(dtos);
+    }
 
-  @GetMapping("/listarTodosAtivos/true")
+    @GetMapping("/listarTodosAtivos/true")
     public ResponseEntity<List<ProdutoDTO>> listarProdutosAtivos(@RequestParam Boolean status) {    
         List<Produto> produtos = produtoService.listarPorStatus(true);
         List<ProdutoDTO> dtos = produtos.stream().map(ProdutoDTO::fromProduto).toList();
@@ -112,7 +110,11 @@ public class ProdutoController {
         return produto.map(p -> ResponseEntity.ok(ProdutoDTO.fromProduto(p)))
                       .orElseGet(() -> ResponseEntity.notFound().build());
     }
-}
     
-
-
+    
+    @PostMapping("/calcularFrete")
+    public ResponseEntity<List<FreteDTO>> calcularFrete(@Valid @RequestBody CepRequestDTO cepRequest) {
+        List<FreteDTO> opcoes = produtoService.calcularFrete(cepRequest.cep());
+        return ResponseEntity.ok(opcoes);
+    }
+}

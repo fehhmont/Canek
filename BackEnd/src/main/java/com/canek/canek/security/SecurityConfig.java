@@ -53,6 +53,7 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.GET,"/auth/produto/listarTodos").permitAll()
                     .requestMatchers("/auth/produto/{id}").permitAll()
                     .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/auth/produto/calcularFrete").permitAll()
 
                     // --- 2. ROTAS DE ADMINISTRADOR (Acesso restrito) ---
                     // Qualquer outra requisição para estas rotas exigirá um dos cargos.
