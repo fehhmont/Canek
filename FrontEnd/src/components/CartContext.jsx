@@ -1,3 +1,5 @@
+// Arquivo: FrontEnd/src/components/CartContext.jsx
+
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 const CartContext = createContext();
@@ -12,14 +14,13 @@ export function CartProvider({ children }) {
     return saved ? JSON.parse(saved) : [];
   });
   
-  // 1. Adicione o estado para o modal lateral
   const [isSideCartOpen, setIsSideCartOpen] = useState(false);
+  const [shippingCost, setShippingCost] = useState(0); // NOVO: Estado para o custo do frete
 
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  // 2. Crie as funções para controlar o modal
   const openSideCart = () => setIsSideCartOpen(true);
   const closeSideCart = () => setIsSideCartOpen(false);
 
@@ -37,7 +38,6 @@ export function CartProvider({ children }) {
     });
   }
 
-  // ... (o restante das suas funções: updateQuantity, removeFromCart, etc. permanecem iguais)
   function updateQuantity(id, quantity) {
     setCart(prev =>
       prev.map(item =>
@@ -62,15 +62,21 @@ export function CartProvider({ children }) {
 
   function clearCart() {
     setCart([]);
+    setShippingCost(0); // Limpa o frete ao limpar o carrinho
   }
 
   function getSubtotal() {
     return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   }
 
+  // CORRIGIDO: Retorna o valor do estado do frete
   function getFrete() {
-    const subtotal = getSubtotal();
-    return subtotal >= 150 ? 0 : 15;
+    return shippingCost;
+  }
+
+  // NOVO: Função para definir o valor do frete
+  function setShippingOption(cost) {
+    setShippingCost(cost);
   }
 
   function getTotal() {
@@ -89,10 +95,10 @@ export function CartProvider({ children }) {
         getSubtotal,
         getFrete,
         getTotal,
-        // 3. Exponha o estado e as funções no 'value' do provider
         isSideCartOpen,
         openSideCart,
         closeSideCart,
+        setShippingOption, // Expondo a nova função
       }}
     >
       {children}
