@@ -17,7 +17,7 @@
 
 .product-image {
   width: 100%;
-  height: 250px; /* Altura fixa para a imagem */
+  height: 250px; /* <<< ESSA É A REGRA MAIS IMPORTANTE: Altura fixa */
   object-fit: cover; /* Garante que a imagem cubra a área sem distorcer */
 }
 
@@ -27,7 +27,7 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  flex-grow: 1; /* Faz esta div ocupar o espaço restante */
+  flex-grow: 1; 
 }
 
 .product-name {
@@ -36,7 +36,6 @@
   margin-bottom: 0.5rem;
 }
 
-/* --- NOVOS ESTILOS --- */
 .star-rating {
   display: flex;
   gap: 2px;
@@ -47,9 +46,8 @@
   font-size: 0.85rem;
   color: #6c757d;
   margin-bottom: 1rem;
-  flex-grow: 1; /* Empurra o preço e o botão para baixo */
+  flex-grow: 1; 
 }
-/* --- FIM DOS NOVOS ESTILOS --- */
 
 .product-price {
   font-size: 1.25rem;
@@ -58,18 +56,49 @@
   margin-bottom: 1rem;
 }
 
+/* --- ESTILOS ADICIONADOS AQUI --- */
+.product-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    margin-top: auto; /* Garante que os botões fiquem na base do card */
+}
+
+.product-detail-button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #6c757d; /* Cor secundária */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    transition: background-color 0.3s ease;
+}
+
+.product-detail-button:hover {
+    background-color: #5a6268;
+}
+/* --- FIM DOS ESTILOS ADICIONADOS --- */
+
+
 .add-to-cart-button {
   width: 100%;
   padding: 0.75rem;
-  background-color: #52658F; /* Cor do tema do seu projeto */
+  background-color: #52658F;
   color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  margin-top: auto; /* Garante que o botão fique na base do card */
+  /* margin-top: auto; foi movido para .product-actions */
 }
 
 .add-to-cart-button:hover {
-  background-color: #3a5a9f; /* Um tom mais escuro */
+  background-color: #3a5a9f;
 }

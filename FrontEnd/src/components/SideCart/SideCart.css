@@ -1,0 +1,231 @@
+/* Arquivo: FrontEnd/src/components/SideCart/SideCart.css */
+
+.side-cart-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.side-cart-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.side-cart-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  max-width: 400px;
+  height: 100%;
+  background-color: #f4f6f8; /* Cor de fundo mais suave */
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.15);
+  transform: translateX(100%);
+  transition: transform 0.3s ease-out;
+  display: flex;
+  flex-direction: column;
+  color: #333;
+}
+
+.side-cart-panel.show {
+  transform: translateX(0);
+}
+
+.side-cart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  background-color: #fff; /* Fundo branco para o cabeçalho */
+}
+
+.side-cart-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  color: #6b7280;
+}
+
+.side-cart-body {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 1rem; /* Padding geral para o corpo do carrinho */
+}
+
+.empty-message {
+  text-align: center;
+  color: #6b7280;
+  margin-top: 2rem;
+}
+
+/* Novo estilo para o card de cada item do carrinho */
+.cart-item-card {
+  display: flex;
+  align-items: center; /* Alinha verticalmente imagem, texto e botões */
+  gap: 1rem; /* Espaçamento entre os elementos do card */
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); /* Sombra mais suave */
+  padding: 0.75rem; /* Padding interno do card */
+  margin-bottom: 1rem;
+  position: relative; /* Para posicionar o botão X */
+}
+
+.item-image {
+  width: 80px;
+  height: 80px;
+  object-fit: contain; /* Ajusta a imagem dentro da área sem cortar */
+  border-radius: 4px;
+  background-color: #f0f0f0; /* Fundo para imagens transparentes */
+}
+
+/* Novo wrapper para o nome e o preço/quantidade */
+.item-main-info {
+  flex-grow: 1; /* Permite que ocupe o espaço restante */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Espaçamento entre as linhas de cima e de baixo */
+  min-height: 80px; /* Garante que o conteúdo tenha altura mínima da imagem */
+}
+
+.item-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* Alinha o nome e o 'X' ao topo */
+  width: 100%;
+}
+
+.item-name {
+  font-weight: 500; /* Um pouco menos negrito que antes */
+  margin: 0;
+  font-size: 0.95rem; /* Tamanho da fonte do nome */
+  line-height: 1.3;
+  color: #333;
+  flex-grow: 1; /* Permite que o nome ocupe espaço */
+  padding-right: 0.5rem; /* Espaço antes do botão 'X' */
+}
+
+.remove-item-btn {
+  background: none;
+  border: none;
+  color: #ff4d4f; /* Cor vermelha para o 'X' */
+  cursor: pointer;
+  padding: 0; /* Remove padding padrão do botão */
+  font-size: 1.2rem; /* Tamanho do ícone 'X' */
+  margin-left: auto; /* Empurra para a direita */
+}
+
+.remove-item-btn:hover {
+  color: #cc0000;
+}
+
+.item-footer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Alinha os controles de quantidade e o preço */
+  width: 100%;
+  margin-top: 0.5rem; /* Espaço entre o nome e esta linha */
+}
+
+/* Contêiner dos botões de quantidade (o "retângulo" arredondado) */
+.item-quantity-controls {
+  display: flex;
+  align-items: center;
+  border: 1px solid #e0e0e0; /* Borda cinza */
+  border-radius: 8px; /* Bordas arredondadas */
+  overflow: hidden; /* Garante que os botões internos respeitem o border-radius */
+  height: 36px; /* Altura fixa para o contêiner */
+}
+
+.quantity-btn {
+  background-color: #f7f7f7; /* Fundo mais claro */
+  border: none; /* Remove a borda individual dos botões */
+  width: 36px; /* Largura para botões */
+  height: 100%; /* Ocupa a altura total do contêiner */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #555; /* Cor do ícone */
+  transition: background-color 0.2s;
+  padding: 0; /* Remove padding padrão */
+}
+
+.quantity-btn:first-child {
+  border-right: 1px solid #e0e0e0; /* Separador entre '-' e quantidade */
+}
+
+.quantity-btn:last-child {
+  border-left: 1px solid #e0e0e0; /* Separador entre '+' e quantidade */
+}
+
+.quantity-btn:hover:not(:disabled) {
+  background-color: #e8e8e8; /* Fundo mais escuro ao passar o mouse */
+}
+
+.quantity-btn:disabled {
+  background-color: #fdfdfd;
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.item-quantity {
+  font-weight: 500; /* Menos negrito */
+  min-width: 30px; /* Garante espaço para números maiores */
+  text-align: center;
+  font-size: 1rem;
+  color: #333;
+}
+
+.item-price {
+  font-weight: 600; /* Preço total mais negrito */
+  font-size: 1.05rem; /* Tamanho da fonte do preço */
+  color: #333;
+  margin: 0;
+  text-align: right; /* Alinha o preço à direita */
+}
+
+.side-cart-footer {
+  padding: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  background-color: #fff; /* Fundo branco para o rodapé */
+}
+
+.subtotal {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.continue-btn {
+  width: 100%;
+  padding: 1rem;
+  background-color: #52658F;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.continue-btn:hover {
+  background-color: #415172;
+}

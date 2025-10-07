@@ -2,7 +2,6 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 
 const CartContext = createContext();
 
-// eslint-disable-next-line react-refresh/only-export-components
 export function useCart() {
   return useContext(CartContext);
 }
@@ -12,10 +11,17 @@ export function CartProvider({ children }) {
     const saved = localStorage.getItem("cart");
     return saved ? JSON.parse(saved) : [];
   });
+  
+  // 1. Adicione o estado para o modal lateral
+  const [isSideCartOpen, setIsSideCartOpen] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
+
+  // 2. Crie as funções para controlar o modal
+  const openSideCart = () => setIsSideCartOpen(true);
+  const closeSideCart = () => setIsSideCartOpen(false);
 
   function addToCart(product) {
     setCart(prev => {
@@ -31,6 +37,7 @@ export function CartProvider({ children }) {
     });
   }
 
+  // ... (o restante das suas funções: updateQuantity, removeFromCart, etc. permanecem iguais)
   function updateQuantity(id, quantity) {
     setCart(prev =>
       prev.map(item =>
@@ -69,7 +76,7 @@ export function CartProvider({ children }) {
   function getTotal() {
     return getSubtotal() + getFrete();
   }
-
+  
   return (
     <CartContext.Provider
       value={{
@@ -82,6 +89,10 @@ export function CartProvider({ children }) {
         getSubtotal,
         getFrete,
         getTotal,
+        // 3. Exponha o estado e as funções no 'value' do provider
+        isSideCartOpen,
+        openSideCart,
+        closeSideCart,
       }}
     >
       {children}

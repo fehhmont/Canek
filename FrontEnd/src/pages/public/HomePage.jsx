@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Header from '../../components/Header/Header.jsx';
 import { useCart } from '../../components/CartContext.jsx';
+import ProductCard from '../../components/ProductCard/ProductCard.jsx';
 import './css/HomePage.css';
 
 const placeholderImage = "https://via.placeholder.com/300x300.png/000000/FFFFFF?text=Imagem+Indisponivel";
@@ -10,8 +11,7 @@ function HomePage() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const { addToCart } = useCart();
-    const navigate = useNavigate();
+    const { addToCart, openSideCart } = useCart();
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -67,8 +67,9 @@ function HomePage() {
             id: cardProduct.id,
             name: cardProduct.name,
             price: cardProduct.price,
+            image: cardProduct.image
         });
-        navigate('/carrinho');
+        openSideCart(); // Abre o modal lateral ao adicionar um item
     }
 
     return (
@@ -104,18 +105,11 @@ function HomePage() {
                             {currentProducts.map((product) => {
                                 const cardProduct = formatProductForCard(product);
                                 return (
-                                    <div key={cardProduct.id} className="product-card">
-                                        <img src={cardProduct.image} alt={cardProduct.name} className="product-card-img" />
-                                        <h3 className="product-card-title">{cardProduct.name}</h3>
-                                        <p className="product-card-price">R$ {cardProduct.price.toFixed(2).replace('.', ',')}</p>
-                                        <p className="product-card-desc">{cardProduct.description}</p>
-                                        <Link to={`/produto/${cardProduct.id}`}>
-                                            <button className="product-detail-btn">Detalhe</button>
-                                        </Link>
-                                        <button className="product-buy-btn" onClick={() => handleComprar(cardProduct)}>
-                                            Comprar
-                                        </button>
-                                    </div>
+                                    <ProductCard 
+                                        key={cardProduct.id} 
+                                        product={cardProduct}
+                                        onAddToCart={handleComprar}
+                                    />
                                 );
                             })}
                         </div>
