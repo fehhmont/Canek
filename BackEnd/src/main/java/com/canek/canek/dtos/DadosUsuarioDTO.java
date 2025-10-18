@@ -13,7 +13,8 @@ public record DadosUsuarioDTO(
     String nomeCompleto,
     String email,
     String cpf,
-    String telefone,
+    String dataNascimento,
+    String genero,
     String tipoUsuarioOuCargo,
     Boolean status, // Um campo genérico para ambos
     Timestamp dataCadastro
@@ -25,7 +26,8 @@ public record DadosUsuarioDTO(
             usuario.getNomeCompleto(),
             usuario.getEmail(),
             usuario.getCpf(),
-            usuario.getTelefone(),
+            usuario.getDataNascimento(),
+            usuario.getGenero(),
             usuario.getTipoUsuario(),
             null,
             usuario.getDataCadastro()
@@ -39,7 +41,8 @@ public record DadosUsuarioDTO(
             admin.getNomeCompleto(),
             admin.getEmail(),
             admin.getCpf(),
-            null, // Admin não tem telefone
+            null,
+            null,
             admin.getCargo().name(), // Pega o nome do Enum (ex: "ADMIN")
             admin.isEnabled(),
             admin.getDataCriacao()

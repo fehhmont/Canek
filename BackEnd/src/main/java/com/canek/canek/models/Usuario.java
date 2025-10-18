@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
@@ -39,10 +40,14 @@ public class Usuario implements UserDetails { // 6. Implementa UserDetails para 
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(name = "data_nascimento")
+    private String dataNascimento;
+
+    @Column(name = "genero")
+    private String genero;
+
     @Column(name = "senha_hash", nullable = false)
     private String senhaHash;
-
-    private String telefone; 
 
     @Column(name = "tipo_usuario")
     private String tipoUsuario;

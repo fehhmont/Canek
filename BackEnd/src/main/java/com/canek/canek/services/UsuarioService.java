@@ -28,8 +28,10 @@ public class UsuarioService {
         novoUsuario.setNomeCompleto(data.nomeCompleto());
         novoUsuario.setCpf(data.cpf());
         novoUsuario.setEmail(data.email());
+        novoUsuario.setDataNascimento(data.dataNascimento());
+        novoUsuario.setGenero(data.genero());
         novoUsuario.setSenhaHash(senhaCriptografada);
-        novoUsuario.setTelefone(data.telefone());
+        
 
         return repository.save(novoUsuario);
     }
