@@ -27,6 +27,9 @@ public class UsuarioService {
 
     @Autowired
     private EnderecoRepository enderecoRepository;
+
+    @Autowired
+    private CepService cepService;
     
 // ...existing code...
     @Transactional
@@ -96,8 +99,67 @@ public class UsuarioService {
         return salvo;
     }
 
+    public Usuario atualizarUsuario(Usuario usuario) {
+        Usuario existente = repository.findById(usuario.getId())
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+        // Atualiza os campos necessários
+        existente.setNomeCompleto(usuario.getNomeCompleto());
+        existente.setDataNascimento(usuario.getDataNascimento());
+        existente.setGenero(usuario.getGenero());
+        // Salva as alterações
+        return repository.save(existente);
+    }
+
+    
+    @Transactional
+    public Endereco adicionarEndereco(Long usuarioId, EnderecoDTO createDto) {
+        Usuario usuario = repository.findById(usuarioId)
+            .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+
+        // preencher campos faltantes via ViaCEP e obter DTO completo
+        EnderecoDTO dtoPreenchido = cepService.preencherEndereco(
+            new com.canek.canek.dtos.EnderecoDTO(
+                0L,
+                createDto.cep(),
+                createDto.logradouro(),
+                createDto.complemento(),
+                createDto.bairro(),
+                createDto.cidade(),
+                createDto.uf(),
+                createDto.numero(),
+                false, 
+                usuarioId
+            )
+        );
+
+        // se novo endereço for marcado como principal, desmarca anteriores
+        if (createDto.principal()) {
+            List<Endereco> atuais = enderecoRepository.findByUsuarioId(usuarioId);
+            for (Endereco e : atuais) {
+                if (Boolean.TRUE.equals(e.isPrincipal())) {
+                    e.setPrincipal(false);
+                    enderecoRepository.save(e);
+                }
+            }
+        }
+
+        Endereco novo = new Endereco();
+        novo.setUsuario(usuario);
+        novo.setTipoEndereco(com.canek.canek.models.enums.TipoEndereco.ENTREGA); // ou conforme seleção
+        novo.setCep(dtoPreenchido.cep());
+        novo.setLogradouro(dtoPreenchido.logradouro());
+        novo.setNumero(dtoPreenchido.numero());
+        novo.setComplemento(dtoPreenchido.complemento());
+        novo.setBairro(dtoPreenchido.bairro());
+        novo.setCidade(dtoPreenchido.cidade());
+        novo.setEstado(dtoPreenchido.uf());
+        novo.setPrincipal(createDto.principal());
+
+        return enderecoRepository.save(novo);
+    }
+
+    
     public List<Usuario> listarTodos() {
         return repository.findAll();
     }
 }
-// ...existing code...

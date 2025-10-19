@@ -19,6 +19,7 @@ public record EnderecoDTO(
     String uf,
     @NotBlank(message = "O número é obrigatório")
     String numero,
+    boolean principal,
     long usuarioId)
  {
     public static EnderecoDTO fromEndereco(Endereco endereco) {
@@ -31,6 +32,7 @@ public record EnderecoDTO(
             endereco.getCidade(),
             endereco.getEstado(),
             endereco.getNumero(),
+            endereco.isPrincipal(),
             endereco.getUsuario().getId()
         );
     }

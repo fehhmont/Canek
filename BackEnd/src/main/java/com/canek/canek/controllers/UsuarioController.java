@@ -1,7 +1,9 @@
 // ...existing code...
 package com.canek.canek.controllers;
 
+import com.canek.canek.dtos.EnderecoDTO;
 import com.canek.canek.dtos.AuthDTOs.CadastroUsuarioDTO;
+import com.canek.canek.models.Endereco;
 import com.canek.canek.services.UsuarioService;
 
 import jakarta.validation.Valid;
@@ -31,5 +33,11 @@ public class UsuarioController {
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Erro interno"));
         }
+    }
+
+     @PostMapping("/{usuarioId}/enderecos")
+    public ResponseEntity<?> adicionarEndereco(@PathVariable Long usuarioId, @RequestBody @Valid EnderecoDTO dto) {
+        Endereco salvo = usuarioService.adicionarEndereco(usuarioId, dto);
+        return ResponseEntity.status(201).body(salvo);
     }
 }

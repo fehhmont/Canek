@@ -51,6 +51,9 @@ public class Endereco {
   @Column(nullable = false)
     private String numero;
 
+    
+    private boolean principal;
+
      @ManyToOne
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
