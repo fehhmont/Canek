@@ -3,6 +3,8 @@ CREATE DATABASE IF NOT EXISTS canek;
 
 USE canek;
 
+
+
 CREATE TABLE usuarios (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     nome_completo VARCHAR(255) NOT NULL,
@@ -28,6 +30,7 @@ CREATE TABLE enderecos (
     bairro VARCHAR(100) NOT NULL,
     cidade VARCHAR(100) NOT NULL,
     uf VARCHAR(5) NOT NULL,
+    principal BOOLEAN NOT NULL DEFAULT FALSE,
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
 

@@ -1,6 +1,7 @@
-// ...existing code...
+
 package com.canek.canek.services;
 
+import com.canek.canek.dtos.AuthDTOs;
 import com.canek.canek.dtos.AuthDTOs.CadastroUsuarioDTO;
 import com.canek.canek.dtos.EnderecoDTO;
 import com.canek.canek.models.Usuario;
@@ -14,7 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.ArrayList;
-// ...existing code...
+
+
 
 @Service
 public class UsuarioService {
@@ -31,7 +33,7 @@ public class UsuarioService {
     @Autowired
     private CepService cepService;
     
-// ...existing code...
+
     @Transactional
     public Usuario cadastrar(CadastroUsuarioDTO data) {
         if (repository.findByEmail(data.email()) != null) {
@@ -99,14 +101,23 @@ public class UsuarioService {
         return salvo;
     }
 
-    public Usuario atualizarUsuario(Usuario usuario) {
-        Usuario existente = repository.findById(usuario.getId())
+    @Transactional
+    public Usuario atualizarUsuario(Long usuarioId, AuthDTOs.AtualizacaoUsuarioDTO data) {
+        Usuario existente = repository.findById(usuarioId)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
-        // Atualiza os campos necessários
-        existente.setNomeCompleto(usuario.getNomeCompleto());
-        existente.setDataNascimento(usuario.getDataNascimento());
-        existente.setGenero(usuario.getGenero());
-        // Salva as alterações
+
+        // Atualiza os campos de dados pessoais
+        existente.setNomeCompleto(data.nomeCompleto());
+        existente.setDataNascimento(data.dataNascimento());
+        existente.setGenero(data.genero());
+
+        // Verifica se uma nova senha foi fornecida e a atualiza
+        if (data.novaSenha() != null && !data.novaSenha().isBlank()) {
+            String senhaCriptografada = passwordEncoder.encode(data.novaSenha());
+            existente.setSenhaHash(senhaCriptografada);
+        }
+
+        // Salva as alterações no banco de dados
         return repository.save(existente);
     }
 

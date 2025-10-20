@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ArrowLeft, Package, Plus, Search, Eye, Edit, ToggleLeft, ToggleRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import './css/GerenciarProductPage.css'; 
+import { useAuth } from '../../components/AuthContext';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import ProductDetailModal from '../../components/ProductDetailModal'; // Importe o novo componente
 
@@ -13,6 +14,11 @@ function GerenciarProductPage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const productsPerPage = 10;
+    // Busca os dados do usuário logado (nome, cargo, etc.)
+        const { user } = useAuth();
+        
+        // Verifica se o usuário é um Administrador
+        const isAdmin = user?.cargo === 'ADMIN';
 
     // Estados para o modal
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -108,9 +114,10 @@ function GerenciarProductPage() {
                             <button onClick={() => navigate(-1)} className="back-button"><ArrowLeft className="icon-sm" /></button>
                             <div className="header-title"><Package className="icon-md primary-color" /><h1 className="page-title">Gerenciamento de Produtos</h1></div>
                             <button onClick={handleLogout}>Sair</button>
-                            <button onClick={() => navigate('/ProductFormPage')} className="btn-primary">
+                            {isAdmin && (<button onClick={() => navigate('/ProductFormPage')} className="btn-primary">
                                 <Plus className="icon-sm" /> Adicionar Produto
-                            </button>
+                            </button>)}
+                            
                         </div>
                     </div>
                     <div className="card-content">
@@ -139,9 +146,10 @@ function GerenciarProductPage() {
                                                 <div className="action-buttons">
                                                     <button onClick={() => handleViewProduct(product.id)} className="action-btn view" title="Visualizar"><Eye className="icon-xs" /></button>
                                                     <button onClick={() => navigate(`/product/edit/${product.id}`)} className="action-btn edit" title="Editar"><Edit className="icon-xs" /></button>
-                                                    <button onClick={() => handleToggleStatus(product.id, product.status)} className={`action-btn ${product.status ? 'delete' : 'edit'}`} title={product.status ? 'Inativar' : 'Ativar'}>
+                                                    {isAdmin && (<button onClick={() => handleToggleStatus(product.id, product.status)} className={`action-btn ${product.status ? 'delete' : 'edit'}`} title={product.status ? 'Inativar' : 'Ativar'}>
                                                         {product.status ? <ToggleLeft className="icon-xs" /> : <ToggleRight className="icon-xs" />}
-                                                    </button>
+                                                    </button>)}
+                                                    
                                                 </div>
                                             </td>
                                         </tr>

@@ -47,6 +47,21 @@ public class AuthDTOs {
 
         boolean copiarFaturamentoParaEntrega
     ) {}
+
+    public record AtualizacaoUsuarioDTO(
+    @NotBlank(message = "O nome completo é obrigatório")
+    @Pattern(regexp = "^[\\p{L}]{3,}(?:\\s+[\\p{L}]{3,})+$",
+             message = "Nome deve ter pelo menos 2 palavras, cada uma com mínimo 3 letras")
+    String nomeCompleto,
+
+    String dataNascimento,
+
+    String genero,
+
+    // A senha é opcional, mas se for fornecida, deve ter no mínimo 6 caracteres
+    // @Size(min = 6, message = "A nova senha deve ter no mínimo 6 caracteres")
+    String novaSenha
+) {}
     
     public record LoginDTO(
         @NotBlank
