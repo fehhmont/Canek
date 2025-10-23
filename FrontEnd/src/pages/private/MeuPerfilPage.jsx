@@ -1,3 +1,5 @@
+// FrontEnd/src/pages/private/MeuPerfilPage.jsx
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -5,21 +7,27 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useAuth } from '../../components/AuthContext';
 import { ArrowLeft, User, MapPin, Plus, X } from 'lucide-react';
-import { buscarCep } from '../../utils/cepService'; 
+import { buscarCep } from '../../utils/cepService';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
-import './css/MeuPerfilPage.css'; 
+import './css/MeuPerfilPage.css';
 
-// --- SCHEMAS (permanecem os mesmos) ---
+// Esquema de validação com a lógica de senha corrigida e mais robusta
 const profileSchema = yup.object().shape({
     nomeCompleto: yup.string().required('O nome completo é obrigatório'),
-    dataNascimento: yup.string().required('Data de nascimento é obrigatória'), // Alterado para string para simplicidade
+    dataNascimento: yup.string().required('Data de nascimento é obrigatória'),
     genero: yup.string().oneOf(['Masculino', 'Feminino', 'Outro'], 'Gênero inválido').required('Gênero é obrigatório'),
-    novaSenha: yup.string().nullable().notRequired().min(6, 'A nova senha deve ter no mínimo 6 caracteres'),
-    confirmarSenha: yup.string().nullable().when('novaSenha', {
-        is: (val) => val && val.length > 0,
-        then: (schema) => schema.oneOf([yup.ref('novaSenha')], 'As senhas devem ser iguais').required('Confirmação de senha é obrigatória'),
-        otherwise: (schema) => schema.notRequired(),
-    }),
+    novaSenha: yup.string()
+        .transform(value => value || null)
+        .nullable(),
+        // .min(6, 'A nova senha deve ter no mínimo 6 caracteres'),
+    confirmarSenha: yup.string()
+        .transform(value => value || null)
+        .nullable()
+        .when('novaSenha', (novaSenha, schema) => {
+            return novaSenha[0]
+                ? schema.required('A confirmação de senha é obrigatória').oneOf([yup.ref('novaSenha')], 'As senhas devem ser iguais')
+                : schema;
+        }),
 });
 
 const newAddressSchema = yup.object().shape({
@@ -46,17 +54,15 @@ function MeuPerfilPage() {
     const { register: registerProfile, handleSubmit: handleSubmitProfile, reset: resetProfile, formState: { errors: errorsProfile, isSubmitting: isSubmittingProfile } } = useForm({ resolver: yupResolver(profileSchema) });
     const { register: registerAddress, handleSubmit: handleSubmitAddress, reset: resetAddress, setValue: setValueAddress, formState: { errors: errorsAddress } } = useForm({ resolver: yupResolver(newAddressSchema) });
 
-    // ATUALIZADO: Função para buscar dados do usuário
     const fetchUserData = async () => {
         setLoading(true);
         const token = localStorage.getItem('userToken');
         if (!token) {
-            logout(); // Se não há token, desloga
+            logout();
             return;
         }
 
         try {
-            // Chama o novo endpoint que não precisa de ID
             const response = await fetch(`http://localhost:8080/auth/usuario/me`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -66,11 +72,11 @@ function MeuPerfilPage() {
             }
 
             const data = await response.json();
-            setUserData(data);
+            setUserData(data); // Armazena os dados completos, incluindo o ID
 
             resetProfile({
                 nomeCompleto: data.nomeCompleto || '',
-                dataNascimento: data.dataNascimento || '', 
+                dataNascimento: data.dataNascimento || '',
                 genero: data.genero || '',
                 novaSenha: '',
                 confirmarSenha: '',
@@ -79,7 +85,6 @@ function MeuPerfilPage() {
         } catch (error) {
             setMensagemApi(error.message);
             setIsError(true);
-            // Se houver erro (ex: token inválido), desloga o usuário
             setTimeout(logout, 3000);
         } finally {
             setLoading(false);
@@ -88,25 +93,31 @@ function MeuPerfilPage() {
 
     useEffect(() => {
         fetchUserData();
-    }, []); // Executa apenas uma vez ao montar o componente
+    }, []);
 
-    // ... (o restante do seu componente, como onSubmitProfile, onSearchCep, etc., permanece igual) ...
-
-    // RESTANTE DO COMPONENTE...
     const onSubmitProfile = async (data) => {
         setMensagemApi("");
         setIsError(false);
+
+        // Garante que temos os dados do usuário antes de prosseguir
+        if (!userData || !userData.id) {
+            setMensagemApi("Erro: Não foi possível identificar o usuário. Tente recarregar a página.");
+            setIsError(true);
+            return;
+        }
 
         const payload = {
             nomeCompleto: data.nomeCompleto,
             dataNascimento: data.dataNascimento,
             genero: data.genero,
-            novaSenha: data.novaSenha || null,
+            novaSenha: (data.novaSenha && data.novaSenha.length > 0) ? data.novaSenha : null,
         };
 
         try {
             const token = localStorage.getItem('userToken');
-            const response = await fetch(`http://localhost:8080/auth/usuario/atualizar/${user.id}`, {
+            // *** CORREÇÃO PRINCIPAL APLICADA AQUI ***
+            // Usa o ID do 'userData' (estado do componente) em vez do 'user' (contexto)
+            const response = await fetch(`http://localhost:8080/auth/usuario/atualizar/${userData.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify(payload)
@@ -116,7 +127,7 @@ function MeuPerfilPage() {
                 setMensagemApi("Perfil atualizado com sucesso!");
                 setIsError(false);
                 resetProfile((prev) => ({ ...prev, novaSenha: '', confirmarSenha: '' }));
-                fetchUserData(); // Re-busca os dados para atualizar a tela
+                fetchUserData();
             } else {
                 const erroTexto = await response.text();
                 setMensagemApi(erroTexto || "Erro ao atualizar perfil.");
@@ -137,7 +148,6 @@ function MeuPerfilPage() {
             setValueAddress('cidade', localidade || '');
             setValueAddress('uf', uf || '');
         } catch (err) {
-            // Limpa os campos se o CEP for inválido
             setValueAddress('logradouro', '');
             setValueAddress('bairro', '');
             setValueAddress('cidade', '');
@@ -150,12 +160,19 @@ function MeuPerfilPage() {
         setMensagemApi("");
         setIsError(false);
         setIsSubmittingAddress(true);
+        
+        if (!userData || !userData.id) {
+            setMensagemApi("Erro: Não foi possível identificar o usuário. Tente recarregar a página.");
+            setIsError(true);
+            setIsSubmittingAddress(false);
+            return;
+        }
 
         const payload = { ...data, cep: data.cep.replace(/\D/g, '') };
 
         try {
             const token = localStorage.getItem('userToken');
-            const response = await fetch(`http://localhost:8080/auth/usuario/${user.id}/enderecos`, {
+            const response = await fetch(`http://localhost:8080/auth/usuario/${userData.id}/enderecos`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify(payload)
@@ -181,12 +198,13 @@ function MeuPerfilPage() {
     };
     
     const handleSetPrincipal = async (enderecoId) => {
+        if (!userData || !userData.id) return;
         setMensagemApi("");
         setIsError(false);
 
         try {
             const token = localStorage.getItem('userToken');
-            const response = await fetch(`http://localhost:8080/auth/usuario/${user.id}/enderecos/${enderecoId}/principal`, {
+            const response = await fetch(`http://localhost:8080/auth/usuario/${userData.id}/enderecos/${enderecoId}/principal`, {
                 method: 'PUT',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -215,7 +233,6 @@ function MeuPerfilPage() {
         return <div className="perfil-bg"><LoadingSpinner message="Carregando seu perfil..." /></div>;
     }
     
-    // Filtra e separa os endereços
     const faturamentoAddress = userData?.enderecos?.find(e => e.tipoEndereco === 'FATURAMENTO');
     const entregaAddresses = userData?.enderecos?.filter(e => e.tipoEndereco === 'ENTREGA');
 
@@ -230,12 +247,9 @@ function MeuPerfilPage() {
             </div>
             
             <div className="perfil-card-container">
-                {/* Seção 1: Dados Pessoais e Senha */}
                 <div className="perfil-card">
                     <h2 className="card-title"><User size={20} /> Dados Pessoais e Acesso</h2>
                     <form onSubmit={handleSubmitProfile(onSubmitProfile)}>
-                        
-                        {/* Campos de Dados Pessoais */}
                         <div className="form-section-grid">
                             <div className="form-group">
                                 <label className="perfil-label">Nome Completo</label>
@@ -257,8 +271,6 @@ function MeuPerfilPage() {
                                 </select>
                                 {errorsProfile.genero && <p className="perfil-error">{errorsProfile.genero.message}</p>}
                             </div>
-                            
-                            {/* Campos de Senha */}
                             <div className="form-group">
                                 <label className="perfil-label">Nova Senha (opcional)</label>
                                 <input type="password" {...registerProfile("novaSenha")} className="perfil-input" />
@@ -270,23 +282,16 @@ function MeuPerfilPage() {
                                 {errorsProfile.confirmarSenha && <p className="perfil-error">{errorsProfile.confirmarSenha.message}</p>}
                             </div>
                         </div>
-
-                        {/* Mensagem da API */}
                         {mensagemApi && !isAddingAddress && (
                             <p className={`api-message ${isError ? 'error' : 'success'}`}>{mensagemApi}</p>
                         )}
-                        
                         <button type="submit" disabled={isSubmittingProfile} className="perfil-btn-primary">
                             {isSubmittingProfile ? "Salvando..." : "Salvar Dados Pessoais"}
                         </button>
                     </form>
                 </div>
-
-                {/* Seção 2: Endereços */}
                 <div className="perfil-card">
                     <h2 className="card-title"><MapPin size={20} /> Endereços</h2>
-                    
-                    {/* Endereço de Faturamento */}
                     <div className="address-section">
                         <h4>Endereço de Faturamento (Não Editável)</h4>
                         {faturamentoAddress ? (
@@ -298,18 +303,14 @@ function MeuPerfilPage() {
                              </div>
                         ) : (<p className="text-muted">Endereço de faturamento não encontrado.</p>)}
                     </div>
-
-                    {/* Endereços de Entrega */}
                     <div className="address-section">
                         <div className="address-list-header">
                             <h4>Endereços de Entrega</h4>
                             <button onClick={() => setIsAddingAddress(prev => !prev)} className="btn-add-address">
-                                {isAddingAddress ? <X size={16} /> : <Plus size={16} />} 
+                                {isAddingAddress ? <X size={16} /> : <Plus size={16} />}
                                 {isAddingAddress ? "Cancelar" : "Adicionar Novo"}
                             </button>
                         </div>
-                        
-                        {/* Formulário de Adição de Endereço */}
                         {isAddingAddress && (
                             <div className="address-form-card">
                                 <form onSubmit={handleSubmitAddress(onSubmitAddress)} className="form-section-grid">
@@ -361,8 +362,6 @@ function MeuPerfilPage() {
                                 </form>
                             </div>
                         )}
-                        
-                        {/* Lista de Endereços de Entrega */}
                         {entregaAddresses?.length > 0 ? (
                             <div className="address-list">
                                 {entregaAddresses.map((addr) => (

@@ -1,6 +1,6 @@
 package com.canek.canek.models;
 
-
+import com.fasterxml.jackson.annotation.JsonManagedReference; // NOVO IMPORT
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,34 +9,28 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.ArrayList; // NOVO IMPORT
 import java.util.Collection;
 import java.util.List;
 
+@Entity(name = "Usuario")
+@Table(name = "usuarios")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Usuario implements UserDetails {
 
-
-@Entity(name = "Usuario") // 1. Indica que esta classe é uma entidade JPA
-@Table(name = "usuarios")  // 2. Mapeia esta classe para a tabela "usuarios" no banco
-@Data                      // 3. Lombok: Gera getters, setters, toString, equals, hashCode
-@NoArgsConstructor         // 4. Lombok: Gera um construtor sem argumentos
-@AllArgsConstructor        // 5. Lombok: Gera um construtor com todos os argumentos
-public class Usuario implements UserDetails { // 6. Implementa UserDetails para integração com Spring Security
-
-   
-
-    @Id 
-    @GeneratedValue(strategy = GenerationType.IDENTITY) 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    
     @Column(name = "nome_completo", nullable = false)
     private String nomeCompleto;
 
     @Column(unique = true, length = 14)
     private String cpf;
 
-    
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -54,40 +48,37 @@ public class Usuario implements UserDetails { // 6. Implementa UserDetails para 
 
     @Column(name = "data_cadastro", updatable = false)
     private Timestamp dataCadastro;
-
     
+    // --- CORREÇÃO APLICADA AQUI ---
+    // 1. Adiciona a relação One-to-Many com a entidade Endereco.
+    //    'mappedBy = "usuario"' indica que a entidade Endereco gerencia a chave estrangeira.
+    //    'cascade = CascadeType.ALL' garante que os endereços sejam salvos/excluídos junto com o usuário.
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference // Ajuda a evitar loops infinitos ao converter para JSON
+    private List<Endereco> enderecos = new ArrayList<>();
+
     @PrePersist
     protected void onCreate() {
         dataCadastro = new Timestamp(System.currentTimeMillis());
         if (tipoUsuario == null || tipoUsuario.isEmpty()) {
-            tipoUsuario = "cliente"; // Define um valor padrão
+            tipoUsuario = "cliente";
         }
     }
 
-    
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     @Override
     public String getPassword() {
-        // O Spring Security vai chamar este método para pegar a senha (já criptografada)
         return this.senhaHash;
     }
 
-
-
     @Override
     public String getUsername() {
-        // O Spring Security usa este método para obter o "nome de usuário" para login.
-        // No nosso caso, o login será feito com o email.
         return this.email;
     }
-    
-    // Os métodos abaixo controlam o status da conta. Deixando todos como 'true',
-    // significa que as contas estão sempre ativas por padrão.
 
     @Override
     public boolean isAccountNonExpired() {
@@ -108,10 +99,7 @@ public class Usuario implements UserDetails { // 6. Implementa UserDetails para 
     public boolean isEnabled() {
         return true;
     }
-
-
-    public List<Endereco> getEnderecos() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getEnderecos'");
-    }
+    
+    // 2. O método quebrado "getEnderecos()" foi removido.
+    //    O Lombok (@Data) criará automaticamente o getter correto para o campo "enderecos".
 }

@@ -28,12 +28,16 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const login = (userData) => {
-        // ATUALIZADO: userData agora contém { token, tipoUsuario, id }
-        const userToStore = { 
-            token: userData.token, 
-            tipoUsuario: userData.tipoUsuario, 
-            id: userData.id // Armazena o ID
+        // --- CORREÇÃO APLICADA AQUI ---
+        // Garante que tanto 'tipoUsuario' quanto 'cargo' sejam armazenados
+        const userToStore = {
+            token: userData.token,
+            tipoUsuario: userData.tipoUsuario, // Para clientes
+            id: userData.id,                 // Para clientes
+            cargo: userData.cargo,           // Para administradores
+            nomeCompleto: userData.nomeCompleto // Adicionado para saudação no dashboard
         };
+        
         localStorage.setItem('userToken', userToStore.token);
         localStorage.setItem('userData', JSON.stringify(userToStore));
         setUser(userToStore);

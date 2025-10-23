@@ -60,6 +60,7 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
                     .requestMatchers(HttpMethod.POST, "/auth/produto/calcularFrete").permitAll()
                     .requestMatchers("/auth/usuario/cadastrarUsuario").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/auth/usuario/me").hasRole("USER")
                     .requestMatchers(HttpMethod.GET, "/auth/usuario/{usuarioId}").hasAnyRole("USER") 
                     .requestMatchers(HttpMethod.PUT, "/auth/usuario/atualizar/{id}").hasAnyRole("USER")
                     .requestMatchers(HttpMethod.POST, "/auth/usuario/{usuarioId}/enderecos").hasAnyRole("USER") 

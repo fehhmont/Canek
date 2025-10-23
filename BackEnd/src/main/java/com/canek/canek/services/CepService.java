@@ -34,7 +34,10 @@ public class CepService {
     public EnderecoDTO preencherEndereco(EnderecoDTO dto) {
         Map<String, Object> resp = consultarMapa(dto.cep());
 
-        String cep = resp.getOrDefault("cep", dto.cep()).toString();
+        // --- CORREÇÃO APLICADA AQUI ---
+        // Remove a formatação (hífen) do CEP retornado pela API ViaCEP
+        String cep = resp.getOrDefault("cep", dto.cep()).toString().replaceAll("\\D", "");
+        
         String logradouro = isBlank(dto.logradouro()) ? (String) resp.get("logradouro") : dto.logradouro();
         String complemento = isBlank(dto.complemento()) ? (String) resp.get("complemento") : dto.complemento();
         String bairro = isBlank(dto.bairro()) ? (String) resp.get("bairro") : dto.bairro();
