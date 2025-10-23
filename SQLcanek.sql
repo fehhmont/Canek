@@ -10,7 +10,7 @@ CREATE TABLE usuarios (
     nome_completo VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     cpf VARCHAR(14) NOT NULL UNIQUE,
-    data_nascimento VARCHAR(10),
+    data_nascimento VARCHAR(15),
     genero VARCHAR(50),
     senha_hash VARCHAR(255) NOT NULL,
     tipo_usuario VARCHAR(50) DEFAULT 'cliente',

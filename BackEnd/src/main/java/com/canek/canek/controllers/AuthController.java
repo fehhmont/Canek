@@ -34,10 +34,13 @@ public class AuthController {
         var auth = this.authenticationManager.authenticate(usernamePassword);
         var usuario = (Usuario) auth.getPrincipal();
         var token = tokenService.gerarToken(usuario);
-        if ( usuario == null) {
+        
+        if (usuario == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return ResponseEntity.ok(new LoginResponseDTO(token, usuario.getTipoUsuario()));
+        
+        // ATUALIZADO: Passa o ID do usuário para o DTO de resposta
+        return ResponseEntity.ok(new LoginResponseDTO(token, usuario.getTipoUsuario(), usuario.getId()));
     }
 
     @PostMapping("/cadastro")

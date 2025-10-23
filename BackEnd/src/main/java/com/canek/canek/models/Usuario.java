@@ -108,4 +108,10 @@ public class Usuario implements UserDetails { // 6. Implementa UserDetails para 
     public boolean isEnabled() {
         return true;
     }
+
+
+    public List<Endereco> getEnderecos() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getEnderecos'");
+    }
 }

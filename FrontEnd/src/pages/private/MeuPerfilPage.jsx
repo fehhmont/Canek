@@ -9,10 +9,10 @@ import { buscarCep } from '../../utils/cepService';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import './css/MeuPerfilPage.css'; 
 
-// --- SCHEMAS DE VALIDAÇÃO ---
+// --- SCHEMAS (permanecem os mesmos) ---
 const profileSchema = yup.object().shape({
     nomeCompleto: yup.string().required('O nome completo é obrigatório'),
-    dataNascimento: yup.date().max(new Date(), 'Data de nascimento inválida').required('Data de nascimento é obrigatória'),
+    dataNascimento: yup.string().required('Data de nascimento é obrigatória'), // Alterado para string para simplicidade
     genero: yup.string().oneOf(['Masculino', 'Feminino', 'Outro'], 'Gênero inválido').required('Gênero é obrigatório'),
     novaSenha: yup.string().nullable().notRequired().min(6, 'A nova senha deve ter no mínimo 6 caracteres'),
     confirmarSenha: yup.string().nullable().when('novaSenha', {
@@ -33,7 +33,6 @@ const newAddressSchema = yup.object().shape({
     principal: yup.boolean().optional(),
 });
 
-// --- COMPONENTE PRINCIPAL ---
 function MeuPerfilPage() {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
@@ -44,65 +43,33 @@ function MeuPerfilPage() {
     const [isAddingAddress, setIsAddingAddress] = useState(false);
     const [isSubmittingAddress, setIsSubmittingAddress] = useState(false);
 
-    // Formulário de Perfil
-    const {
-        register: registerProfile,
-        handleSubmit: handleSubmitProfile,
-        reset: resetProfile,
-        formState: { errors: errorsProfile, isSubmitting: isSubmittingProfile },
-    } = useForm({
-        resolver: yupResolver(profileSchema),
-    });
+    const { register: registerProfile, handleSubmit: handleSubmitProfile, reset: resetProfile, formState: { errors: errorsProfile, isSubmitting: isSubmittingProfile } } = useForm({ resolver: yupResolver(profileSchema) });
+    const { register: registerAddress, handleSubmit: handleSubmitAddress, reset: resetAddress, setValue: setValueAddress, formState: { errors: errorsAddress } } = useForm({ resolver: yupResolver(newAddressSchema) });
 
-    // Formulário de Novo Endereço
-    const {
-        register: registerAddress,
-        handleSubmit: handleSubmitAddress,
-        reset: resetAddress,
-        setValue: setValueAddress,
-        formState: { errors: errorsAddress },
-    } = useForm({
-        resolver: yupResolver(newAddressSchema),
-    });
-
-    // Função para buscar dados do usuário
+    // ATUALIZADO: Função para buscar dados do usuário
     const fetchUserData = async () => {
-        // Assume que o ID está no objeto user do AuthContext
-        if (!user || !user.id) {
-            // Tenta carregar o ID do localStorage, se o AuthContext estiver desatualizado
-            const storedUser = JSON.parse(localStorage.getItem('userData'));
-            if (!storedUser || !storedUser.id) {
-                setMensagemApi("ID do usuário não encontrado. Faça login novamente.");
-                setIsError(true);
-                setLoading(false);
-                return;
-            }
-            user.id = storedUser.id;
+        setLoading(true);
+        const token = localStorage.getItem('userToken');
+        if (!token) {
+            logout(); // Se não há token, desloga
+            return;
         }
 
-        const token = localStorage.getItem('userToken');
-        
-        setLoading(true);
-        setMensagemApi("");
-        setIsError(false);
-
         try {
-            // Endpoint GET /auth/usuario/{usuarioId}
-            const profileResponse = await fetch(`http://localhost:8080/auth/usuario/${user.id}`, {
+            // Chama o novo endpoint que não precisa de ID
+            const response = await fetch(`http://localhost:8080/auth/usuario/me`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
-            if (!profileResponse.ok) {
-                throw new Error('Falha ao buscar dados do perfil.');
+            if (!response.ok) {
+                throw new Error('Falha ao buscar dados do perfil. Sua sessão pode ter expirado.');
             }
 
-            const data = await profileResponse.json();
+            const data = await response.json();
             setUserData(data);
 
-            // Preenche o formulário de perfil com os dados atuais
             resetProfile({
                 nomeCompleto: data.nomeCompleto || '',
-                // O backend retorna String, mas o input date espera 'yyyy-MM-dd'
                 dataNascimento: data.dataNascimento || '', 
                 genero: data.genero || '',
                 novaSenha: '',
@@ -112,6 +79,8 @@ function MeuPerfilPage() {
         } catch (error) {
             setMensagemApi(error.message);
             setIsError(true);
+            // Se houver erro (ex: token inválido), desloga o usuário
+            setTimeout(logout, 3000);
         } finally {
             setLoading(false);
         }
@@ -119,10 +88,11 @@ function MeuPerfilPage() {
 
     useEffect(() => {
         fetchUserData();
-    }, [user?.id]); 
+    }, []); // Executa apenas uma vez ao montar o componente
 
-    // --- HANDLERS DE PERFIL ---
+    // ... (o restante do seu componente, como onSubmitProfile, onSearchCep, etc., permanece igual) ...
 
+    // RESTANTE DO COMPONENTE...
     const onSubmitProfile = async (data) => {
         setMensagemApi("");
         setIsError(false);
@@ -136,21 +106,17 @@ function MeuPerfilPage() {
 
         try {
             const token = localStorage.getItem('userToken');
-            // Endpoint PUT /auth/usuario/atualizar/{id}
             const response = await fetch(`http://localhost:8080/auth/usuario/atualizar/${user.id}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify(payload)
             });
 
             if (response.ok) {
                 setMensagemApi("Perfil atualizado com sucesso!");
                 setIsError(false);
-                // Limpa os campos de senha após sucesso
-                resetProfile((prev) => ({ ...prev, novaSenha: '', confirmarSenha: '' })); 
+                resetProfile((prev) => ({ ...prev, novaSenha: '', confirmarSenha: '' }));
+                fetchUserData(); // Re-busca os dados para atualizar a tela
             } else {
                 const erroTexto = await response.text();
                 setMensagemApi(erroTexto || "Erro ao atualizar perfil.");
@@ -162,8 +128,6 @@ function MeuPerfilPage() {
         }
     };
 
-    // --- HANDLERS DE ENDEREÇO ---
-
     const onSearchCep = async (e) => {
         const cep = e.target.value;
         try {
@@ -173,6 +137,7 @@ function MeuPerfilPage() {
             setValueAddress('cidade', localidade || '');
             setValueAddress('uf', uf || '');
         } catch (err) {
+            // Limpa os campos se o CEP for inválido
             setValueAddress('logradouro', '');
             setValueAddress('bairro', '');
             setValueAddress('cidade', '');
@@ -186,22 +151,13 @@ function MeuPerfilPage() {
         setIsError(false);
         setIsSubmittingAddress(true);
 
-        const payload = {
-            ...data,
-            cep: data.cep.replace(/\D/g, ''), // Limpa o CEP para envio
-            usuarioId: user.id,
-            // O tipo é desnecessário no DTO, mas garantimos que o back-end o define como 'ENTREGA'
-        };
+        const payload = { ...data, cep: data.cep.replace(/\D/g, '') };
 
         try {
             const token = localStorage.getItem('userToken');
-            // Endpoint POST /auth/usuario/{usuarioId}/enderecos
             const response = await fetch(`http://localhost:8080/auth/usuario/${user.id}/enderecos`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify(payload)
             });
 
@@ -210,7 +166,7 @@ function MeuPerfilPage() {
                 setIsError(false);
                 resetAddress({ cep: '', logradouro: '', numero: '', complemento: '', bairro: '', cidade: '', uf: '', principal: false });
                 setIsAddingAddress(false);
-                fetchUserData(); // Recarrega a lista de endereços
+                fetchUserData();
             } else {
                 const erroTexto = await response.text();
                 setMensagemApi(erroTexto || "Erro ao adicionar endereço.");
@@ -223,14 +179,13 @@ function MeuPerfilPage() {
             setIsSubmittingAddress(false);
         }
     };
-
+    
     const handleSetPrincipal = async (enderecoId) => {
         setMensagemApi("");
         setIsError(false);
 
         try {
             const token = localStorage.getItem('userToken');
-            // Endpoint PUT /auth/usuario/{usuarioId}/enderecos/{enderecoId}/principal
             const response = await fetch(`http://localhost:8080/auth/usuario/${user.id}/enderecos/${enderecoId}/principal`, {
                 method: 'PUT',
                 headers: { 'Authorization': `Bearer ${token}` }
@@ -239,7 +194,7 @@ function MeuPerfilPage() {
             if (response.ok) {
                 setMensagemApi("Endereço definido como padrão para entrega.");
                 setIsError(false);
-                fetchUserData(); // Recarrega a lista de endereços
+                fetchUserData();
             } else {
                 const erroTexto = await response.text();
                 setMensagemApi(erroTexto || "Erro ao definir endereço padrão.");

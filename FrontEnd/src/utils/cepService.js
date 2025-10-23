@@ -1,4 +1,4 @@
-// fehhmont/canek/Canek-82e5d062fa88cfef1a7459bb3efc8a2a5094b16b/FrontEnd/src/utils/cepService.js
+
 export const buscarCep = async (cep) => {
     const raw = cep.replace(/\D/g, '');
     if (raw.length !== 8) throw new Error("CEP inválido");

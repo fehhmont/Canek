@@ -9,6 +9,7 @@ import com.canek.canek.models.Endereco;
 import com.canek.canek.repositories.UsuarioRepository;
 import com.canek.canek.repositories.EnderecoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -159,6 +160,17 @@ public class UsuarioService {
 
         // Salva as alterações no banco de dados
         return repository.save(existente);
+    }
+
+    @Transactional(readOnly = true)
+    public Usuario getUsuarioByEmail(String email) {
+        Usuario usuario = repository.findUsuarioByEmail(email)
+            .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o email: " + email));
+        
+        // Garante que os endereços sejam carregados
+        usuario.getEnderecos().size(); // Acessa a coleção para forçar o carregamento LAZY
+        
+        return usuario;
     }
 
     
