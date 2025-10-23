@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, Lock } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../components/AuthContext.jsx';
 import './css/LoginPage.css';
 
@@ -84,6 +85,10 @@ function LoginPage() {
                         {carregando ? "Entrando..." : "Entrar"}
                     </button>
                 </form>
+                <div style={{ textAlign: 'center', marginTop: 12 }}>
+                    <span>Não tem conta? </span>
+                    <Link to="/CadastroPage" className="login-link">Cadastrar-se</Link>
+                </div>
             </div>
         </div>
     );

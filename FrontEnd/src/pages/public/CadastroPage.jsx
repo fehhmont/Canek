@@ -22,6 +22,10 @@ function CadastroPage() {
         resolver: yupResolver(cadastroSchema)
     });
 
+  // Campos dinâmicos de endereços de entrega
+  const [enderecosEntrega, setEnderecosEntrega] = useState([{ cep: '', logradouro: '', numero: '', complemento: '', bairro: '', cidade: '', uf: '', principal: false }]);
+  const [copiarFaturamentoParaEntrega, setCopiarFaturamentoParaEntrega] = useState(false);
+
     const handleTelefoneChange = (e) => {
         const input = e.target.value;
         const digits = input.replace(/\D/g, '');
@@ -48,18 +52,97 @@ function CadastroPage() {
         setValue('cpf', masked, { shouldValidate: true });
     };
 
+  // Função para consultar ViaCEP e preencher campos
+  const buscarCep = async (cep, tipo = 'faturamento', index = 0) => {
+    const raw = cep.replace(/\D/g, '');
+    if (raw.length !== 8) return;
+    try {
+      const res = await fetch(`https://viacep.com.br/ws/${raw}/json/`);
+      if (!res.ok) return;
+      const js = await res.json();
+      if (js.erro) return;
+      if (tipo === 'faturamento') {
+        setValue('enderecoFaturamento.logradouro', js.logradouro || '');
+        setValue('enderecoFaturamento.bairro', js.bairro || '');
+        setValue('enderecoFaturamento.cidade', js.localidade || '');
+        setValue('enderecoFaturamento.uf', js.uf || '');
+      } else {
+        // endereço de entrega específico
+        const novos = [...enderecosEntrega];
+        novos[index] = { ...novos[index], logradouro: js.logradouro || '', bairro: js.bairro || '', cidade: js.localidade || '', uf: js.uf || '' };
+        setEnderecosEntrega(novos);
+      }
+      } catch {
+        // silently fail
+      }
+  };
+
+  // Funções para manipular endereços de entrega (escopo do componente)
+  const handleAddEntrega = () => {
+    setEnderecosEntrega(prev => [...prev, { cep: '', logradouro: '', numero: '', complemento: '', bairro: '', cidade: '', uf: '', principal: false }]);
+  };
+
+  const handleRemoveEntrega = (i) => {
+    setEnderecosEntrega(prev => prev.filter((_, idx) => idx !== i));
+  };
+
+  const handleEntregaChange = (i, field, value) => {
+    setEnderecosEntrega(prev => {
+      const copy = [...prev];
+      copy[i] = { ...copy[i], [field]: value };
+      return copy;
+    });
+  };
+
     // CORREÇÃO 2: Ajuste na função de submit para limpar o CPF também
     const onSubmit = async (data) => {
         setMensagemApi("");
 
-        const dataToSend = {
-            ...data,
-            telefone: data.telefone.replace(/\D/g, ''),
-            cpf: data.cpf.replace(/\D/g, '') // Remove a formatação do CPF
-        };
+    // Proteções para campos aninhados
+    const faturamento = data.enderecoFaturamento || {};
+    const sanitizeCep = (v) => (v ? String(v).replace(/\D/g, '') : '');
+    const enderecoFaturamento = {
+      cep: sanitizeCep(faturamento.cep),
+      logradouro: faturamento.logradouro || '',
+      numero: faturamento.numero || '',
+      complemento: faturamento.complemento || '',
+      bairro: faturamento.bairro || '',
+      cidade: faturamento.cidade || '',
+      uf: faturamento.uf || '',
+      principal: true
+    };
+
+    const sanitizeEntrega = (e) => ({
+      cep: sanitizeCep(e.cep),
+      logradouro: e.logradouro || '',
+      numero: e.numero || '',
+      complemento: e.complemento || '',
+      bairro: e.bairro || '',
+      cidade: e.cidade || '',
+      uf: e.uf || '',
+      principal: e.principal || false
+    });
+
+    const enderecos = copiarFaturamentoParaEntrega
+      ? [enderecoFaturamento]
+      : enderecosEntrega.map(sanitizeEntrega);
+
+    const dataToSend = {
+      nomeCompleto: data.nomeCompleto || '',
+      email: data.email || '',
+      cpf: data.cpf ? String(data.cpf).replace(/\D/g, '') : '',
+      dataNascimento: data.dataNascimento || '',
+      genero: data.genero || '',
+      senha: data.senha || '',
+      telefone: data.telefone ? String(data.telefone).replace(/\D/g, '') : '',
+      copiarFaturamentoParaEntrega: copiarFaturamentoParaEntrega,
+      enderecoFaturamento: enderecoFaturamento,
+      enderecosEntrega: enderecos
+    };
+
 
         try {
-            const response = await fetch("http://localhost:8080/auth/cadastro", {
+      const response = await fetch("http://localhost:8080/auth/usuario/cadastrarUsuario", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(dataToSend),
@@ -67,7 +150,7 @@ function CadastroPage() {
 
             if (response.ok) {
                 setMensagemApi("Cadastro realizado com sucesso! Redirecionando...");
-                setTimeout(() => navigate("/LoginPage"), 2000);
+        setTimeout(() => navigate("/LoginPage"), 2000);
             } else {
                 const erroTexto = await response.text();
                 setMensagemApi(erroTexto || "Ocorreu um erro ao cadastrar.");
@@ -89,6 +172,28 @@ function CadastroPage() {
         <div className="cadastro-card">
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="cadastro-form-grid">
+              <div className="cadastro-form-group">
+                <label htmlFor="dataNascimento" className="cadastro-label">Data de Nascimento:</label>
+                <input
+                  type="date"
+                  id="dataNascimento"
+                  {...register("dataNascimento")}
+                  className="cadastro-input"
+                />
+                {errors.dataNascimento && <p className="cadastro-error">{errors.dataNascimento.message}</p>}
+              </div>
+
+              <div className="cadastro-form-group">
+                <label htmlFor="genero" className="cadastro-label">Gênero:</label>
+                <select id="genero" {...register('genero')} className="cadastro-input">
+                  <option value="">Selecione</option>
+                  <option value="Masculino">Masculino</option>
+                  <option value="Feminino">Feminino</option>
+                  <option value="Outro">Outro</option>
+                </select>
+                {errors.genero && <p className="cadastro-error">{errors.genero.message}</p>}
+              </div>
+
               <div className="cadastro-form-group">
                 <label htmlFor="nomeCompleto" className="cadastro-label">Nome:</label>
                 <input
@@ -165,6 +270,83 @@ function CadastroPage() {
                   placeholder="Repita a senha"
                 />
                 {errors.confirmarSenha && <p className="cadastro-error">{errors.confirmarSenha.message}</p>}
+              </div>
+
+              {/* Endereço de Faturamento (obrigatório) */}
+              <div className="cadastro-form-group cadastro-secao-endereco">
+                <h3>Endereço de Faturamento (obrigatório)</h3>
+                <label className="cadastro-label">CEP</label>
+                <input
+                  type="text"
+                  {...register('enderecoFaturamento.cep')}
+                  className="cadastro-input"
+                  onBlur={(e) => buscarCep(e.target.value, 'faturamento')}
+                />
+                {errors.enderecoFaturamento?.cep && <p className="cadastro-error">{errors.enderecoFaturamento.cep.message}</p>}
+
+                <label className="cadastro-label">Logradouro</label>
+                <input type="text" {...register('enderecoFaturamento.logradouro')} className="cadastro-input" />
+                {errors.enderecoFaturamento?.logradouro && <p className="cadastro-error">{errors.enderecoFaturamento.logradouro.message}</p>}
+
+                <label className="cadastro-label">Número</label>
+                <input type="text" {...register('enderecoFaturamento.numero')} className="cadastro-input" />
+                {errors.enderecoFaturamento?.numero && <p className="cadastro-error">{errors.enderecoFaturamento.numero.message}</p>}
+
+                <label className="cadastro-label">Complemento</label>
+                <input type="text" {...register('enderecoFaturamento.complemento')} className="cadastro-input" />
+
+                <label className="cadastro-label">Bairro</label>
+                <input type="text" {...register('enderecoFaturamento.bairro')} className="cadastro-input" />
+                {errors.enderecoFaturamento?.bairro && <p className="cadastro-error">{errors.enderecoFaturamento.bairro.message}</p>}
+
+                <label className="cadastro-label">Cidade</label>
+                <input type="text" {...register('enderecoFaturamento.cidade')} className="cadastro-input" />
+                {errors.enderecoFaturamento?.cidade && <p className="cadastro-error">{errors.enderecoFaturamento.cidade.message}</p>}
+
+                <label className="cadastro-label">UF</label>
+                <input type="text" {...register('enderecoFaturamento.uf')} className="cadastro-input" maxLength={2} />
+                {errors.enderecoFaturamento?.uf && <p className="cadastro-error">{errors.enderecoFaturamento.uf.message}</p>}
+              </div>
+
+              {/* Copiar faturamento para entrega */}
+              <div className="cadastro-form-group">
+                <label className="cadastro-label">Copiar faturamento para entrega</label>
+                <input type="checkbox" checked={copiarFaturamentoParaEntrega} onChange={(e) => setCopiarFaturamentoParaEntrega(e.target.checked)} />
+              </div>
+
+              {/* Endereços de entrega (múltiplos) */}
+              <div className="cadastro-form-group cadastro-secao-endereco">
+                <h3>Endereços de Entrega</h3>
+                {enderecosEntrega.map((end, idx) => (
+                  <div key={idx} style={{ border: '1px solid #eee', padding: 8, marginBottom: 8 }}>
+                    <label className="cadastro-label">CEP</label>
+                    <input type="text" value={end.cep} onChange={(e) => handleEntregaChange(idx, 'cep', e.target.value)} onBlur={(e) => buscarCep(e.target.value, 'entrega', idx)} className="cadastro-input" />
+
+                    <label className="cadastro-label">Logradouro</label>
+                    <input type="text" value={end.logradouro} onChange={(e) => handleEntregaChange(idx, 'logradouro', e.target.value)} className="cadastro-input" />
+
+                    <label className="cadastro-label">Número</label>
+                    <input type="text" value={end.numero} onChange={(e) => handleEntregaChange(idx, 'numero', e.target.value)} className="cadastro-input" />
+
+                    <label className="cadastro-label">Complemento</label>
+                    <input type="text" value={end.complemento} onChange={(e) => handleEntregaChange(idx, 'complemento', e.target.value)} className="cadastro-input" />
+
+                    <label className="cadastro-label">Bairro</label>
+                    <input type="text" value={end.bairro} onChange={(e) => handleEntregaChange(idx, 'bairro', e.target.value)} className="cadastro-input" />
+
+                    <label className="cadastro-label">Cidade</label>
+                    <input type="text" value={end.cidade} onChange={(e) => handleEntregaChange(idx, 'cidade', e.target.value)} className="cadastro-input" />
+
+                    <label className="cadastro-label">UF</label>
+                    <input type="text" value={end.uf} onChange={(e) => handleEntregaChange(idx, 'uf', e.target.value)} className="cadastro-input" maxLength={2} />
+
+                    <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+                      <button type="button" onClick={() => handleRemoveEntrega(idx)} className="cadastro-btn small">Remover</button>
+                    </div>
+                  </div>
+                ))}
+
+                <button type="button" onClick={handleAddEntrega} className="cadastro-btn small">Adicionar endereço de entrega</button>
               </div>
             </div>
             {mensagemApi && <p style={{ color: '#52658F', textAlign: 'center', marginTop: 12 }}>{mensagemApi}</p>}
