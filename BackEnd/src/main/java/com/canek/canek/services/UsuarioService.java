@@ -1,4 +1,3 @@
-
 package com.canek.canek.services;
 
 import com.canek.canek.dtos.AuthDTOs;
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.ArrayList;
-
+import java.util.Optional;
 
 
 @Service
@@ -33,6 +32,47 @@ public class UsuarioService {
     @Autowired
     private CepService cepService;
     
+    // NOVO: Método para buscar usuário completo (incluindo endereços)
+    @Transactional(readOnly = true)
+    public Usuario getUsuarioComEnderecos(Long id) {
+        // Busca o usuário pelo ID. Presume que o mapeamento de endereços está na Entidade Usuario.
+        Usuario usuario = repository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+        
+        // Garante o carregamento dos endereços dentro do contexto transacional
+        // (Apenas necessário se a relação for LAZY e não houver um fetch JOIN)
+        List<Endereco> enderecos = enderecoRepository.findByUsuarioId(id);
+        
+        return usuario;
+    }
+
+    @Transactional
+    public void setEnderecoPrincipal(Long usuarioId, Long enderecoId) {
+        Endereco endereco = enderecoRepository.findById(enderecoId)
+            .orElseThrow(() -> new RuntimeException("Endereço não encontrado."));
+
+        if (!endereco.getUsuario().getId().equals(usuarioId)) {
+             throw new RuntimeException("Endereço não pertence ao usuário.");
+        }
+        
+        // Deve ser um endereço de entrega para ser definido como principal de entrega
+        if (endereco.getTipoEndereco() != TipoEndereco.ENTREGA) {
+            throw new RuntimeException("Apenas endereços de entrega podem ser definidos como principal.");
+        }
+        
+        // 1. Desmarcar todos os endereços de entrega anteriores como principal
+        List<Endereco> atuais = enderecoRepository.findByUsuarioId(usuarioId);
+        for (Endereco e : atuais) {
+            if (e.getTipoEndereco() == TipoEndereco.ENTREGA && Boolean.TRUE.equals(e.isPrincipal())) {
+                e.setPrincipal(false);
+                enderecoRepository.save(e);
+            }
+        }
+
+        // 2. Marcar o novo endereço como principal
+        endereco.setPrincipal(true);
+        enderecoRepository.save(endereco);
+    }
 
     @Transactional
     public Usuario cadastrar(CadastroUsuarioDTO data) {
@@ -138,16 +178,16 @@ public class UsuarioService {
                 createDto.cidade(),
                 createDto.uf(),
                 createDto.numero(),
-                false, 
+                createDto.principal(), 
                 usuarioId
             )
         );
 
-        // se novo endereço for marcado como principal, desmarca anteriores
+        // se novo endereço for marcado como principal, desmarca anteriores (apenas para entrega)
         if (createDto.principal()) {
             List<Endereco> atuais = enderecoRepository.findByUsuarioId(usuarioId);
             for (Endereco e : atuais) {
-                if (Boolean.TRUE.equals(e.isPrincipal())) {
+                if (e.getTipoEndereco() == TipoEndereco.ENTREGA && Boolean.TRUE.equals(e.isPrincipal())) {
                     e.setPrincipal(false);
                     enderecoRepository.save(e);
                 }
@@ -156,7 +196,7 @@ public class UsuarioService {
 
         Endereco novo = new Endereco();
         novo.setUsuario(usuario);
-        novo.setTipoEndereco(com.canek.canek.models.enums.TipoEndereco.ENTREGA); // ou conforme seleção
+        novo.setTipoEndereco(com.canek.canek.models.enums.TipoEndereco.ENTREGA); // Novo endereço é sempre de entrega
         novo.setCep(dtoPreenchido.cep());
         novo.setLogradouro(dtoPreenchido.logradouro());
         novo.setNumero(dtoPreenchido.numero());

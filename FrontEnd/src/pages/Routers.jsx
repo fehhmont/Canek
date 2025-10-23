@@ -8,6 +8,7 @@ function Routers() {
         { path: '/LoginPageBackOffice', name: 'Login BackOffice' },
         { path: '/LoginPage', name: 'Login Usuário' },
         { path: '/CadastroPage', name: 'Cadastro' },
+        { path: '/minha-conta', name: 'Meu Perfil (Protegida)' }, // NOVA ROTA
         { path: '/DashboardPage', name: 'Dashboard (Protegida)' },
         { path: '/AdminDashboardPage', name: 'Dashboard Admin' },
         { path: '/UserManagementPage', name: 'Gerenciar Usuários' },
@@ -69,4 +70,3 @@ function Routers() {
 }
 
 export default Routers;
-

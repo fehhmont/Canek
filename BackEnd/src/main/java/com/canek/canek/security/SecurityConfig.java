@@ -54,8 +54,15 @@ public class SecurityConfig {
                     .requestMatchers("/auth/produto/{id}").permitAll()
                     .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
                     .requestMatchers(HttpMethod.POST, "/auth/produto/calcularFrete").permitAll()
-                    .requestMatchers("/auth/usuario/**").permitAll()
+                    .requestMatchers("/auth/usuario/cadastrarUsuario").permitAll()
 
+
+                    // --- 1.1 ROTAS DE USUÁRIO (Cliente) PROTEGIDAS (ROLE_USER) ---
+                    // Adicionadas permissões para a tela de perfil
+                    .requestMatchers(HttpMethod.GET, "/auth/usuario/{usuarioId}").hasAnyRole("USER") 
+                    .requestMatchers(HttpMethod.PUT, "/auth/usuario/atualizar/{id}").hasAnyRole("USER")
+                    .requestMatchers(HttpMethod.POST, "/auth/usuario/{usuarioId}/enderecos").hasAnyRole("USER") 
+                    .requestMatchers(HttpMethod.PUT, "/auth/usuario/{usuarioId}/enderecos/{enderecoId}/principal").hasAnyRole("USER") 
 
                     // --- 2. ROTAS DE ADMINISTRADOR (Acesso restrito) ---
                     // Qualquer outra requisição para estas rotas exigirá um dos cargos.

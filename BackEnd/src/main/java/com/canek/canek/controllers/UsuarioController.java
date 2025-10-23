@@ -1,4 +1,3 @@
-// ...existing code...
 package com.canek.canek.controllers;
 
 import com.canek.canek.dtos.EnderecoDTO;
@@ -44,6 +43,30 @@ public class UsuarioController {
         Endereco salvo = usuarioService.adicionarEndereco(usuarioId, dto);
         return ResponseEntity.status(201).body(salvo);
     }
+
+    // NOVO ENDPOINT: Buscar dados do usuário com endereços (necessário para a tela de perfil)
+    @GetMapping("/{usuarioId}")
+    public ResponseEntity<Usuario> getUsuarioById(@PathVariable Long usuarioId) {
+        try {
+            // O serviço deve carregar o usuário e a lista de endereços
+            Usuario usuario = usuarioService.getUsuarioComEnderecos(usuarioId);
+            return ResponseEntity.ok(usuario);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+    
+    // NOVO ENDPOINT: Setar endereço como principal (para endereços de ENTREGA existentes)
+    @PutMapping("/{usuarioId}/enderecos/{enderecoId}/principal")
+    public ResponseEntity<?> setEnderecoPrincipal(@PathVariable Long usuarioId, @PathVariable Long enderecoId) {
+        try {
+            usuarioService.setEnderecoPrincipal(usuarioId, enderecoId);
+            return ResponseEntity.ok(Map.of("message", "Endereço definido como principal com sucesso."));
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", ex.getMessage()));
+        }
+    }
+
     @PutMapping("/atualizar/{id}")
     public ResponseEntity<?> atualizarUsuario(@PathVariable Long id, @RequestBody @Valid AuthDTOs.AtualizacaoUsuarioDTO dto) {
         try {
