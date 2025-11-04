@@ -367,3 +367,54 @@
         top: 10px;
     }
 }
+.shipping-options-checkout {
+    margin-bottom: 1.5rem; /* Espaço antes da seção de pagamento */
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.shipping-option {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.shipping-option:hover {
+  border-color: #52658F;
+}
+
+.shipping-option.selected {
+    border-color: #52658F;
+    box-shadow: 0 0 0 3px rgba(82, 101, 143, 0.2);
+}
+
+.shipping-option input[type="radio"] {
+  margin-right: 1rem;
+}
+
+.shipping-details {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.shipping-details .transportadora {
+  font-weight: 600;
+  color: #374151;
+}
+
+.shipping-details .prazo {
+  font-size: 0.85em;
+  color: #6b7280;
+}
+
+.shipping-option .valor { /* Corrigido para aplicar ao filho de .shipping-option */
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #1f2937;
+}

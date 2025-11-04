@@ -75,6 +75,7 @@ public class SecurityConfig {
 
                     // --- VERIFIQUE ESTAS LINHAS ---
                     .requestMatchers(HttpMethod.POST, "/auth/pedidos/carrinho").hasRole("USER")
+                    .requestMatchers(HttpMethod.GET, "/auth/pedidos/meus-pedidos").hasRole("USER")
                     .requestMatchers(HttpMethod.PUT, "/auth/pedidos/{pedidoId}/endereco/{usuarioId}").hasRole("USER")
                     .requestMatchers(HttpMethod.PUT, "/auth/pedidos/{pedidoId}/finalizar").hasRole("USER")
                     // --- FIM DA VERIFICAÇÃO ---

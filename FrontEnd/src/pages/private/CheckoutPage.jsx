@@ -9,7 +9,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { buscarCep } from '../../utils/cepService';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
-import { MapPin, CreditCard, CheckCircle, Plus, X, ArrowLeft, ArrowRight, DollarSign } from 'lucide-react'; // Importar DollarSign
+import { MapPin, CreditCard, CheckCircle, Plus, X, ArrowLeft, ArrowRight, DollarSign } from 'lucide-react';
 import './css/CheckoutPage.css';
 
 // ... (Esquemas de validação permanecem os mesmos) ...
@@ -33,7 +33,6 @@ const cardSchema = yup.object().shape({
 
 
 function CheckoutPage() {
-    // ... (Estados permanecem os mesmos) ...
     const [step, setStep] = useState('endereco'); // endereco -> pagamento -> resumo -> sucesso
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -43,9 +42,14 @@ function CheckoutPage() {
     const [selectedAddress, setSelectedAddress] = useState(null);
     const [paymentMethod, setPaymentMethod] = useState(null);
     
+    // --- 1. ADICIONAR NOVOS ESTADOS PARA FRETE ---
+    const [shippingOptions, setShippingOptions] = useState([]);
+    const [selectedShipping, setSelectedShipping] = useState(null); // Para controlar o rádio button
+    
     const [showAddAddressForm, setShowAddAddressForm] = useState(false);
     
     const { user } = useAuth();
+    // Pegar getFrete e getTotal do context
     const { cart, getSubtotal, getFrete, getTotal, clearCart, setShippingOption } = useCart();
     const navigate = useNavigate();
 
@@ -83,7 +87,7 @@ function CheckoutPage() {
     }, [user, navigate, cart]);
 
 
-    // --- FUNÇÃO 'handleAddressSubmit' MODIFICADA ---
+    // --- 2. ATUALIZAR handleAddressSubmit ---
     const handleAddressSubmit = async () => {
         if (!selectedAddress) {
             setError("Selecione um endereço de entrega.");
@@ -121,10 +125,17 @@ function CheckoutPage() {
             
             const { pedido: pedidoAtualizado, opcoesFrete } = await response.json();
 
-            // 3. Atualizar o carrinho com o frete
+            // 2.1 Salvar opções de frete no estado
+            setShippingOptions(opcoesFrete || []);
+            
+            // 2.2 Definir o frete padrão (o primeiro da lista)
             const freteEscolhido = opcoesFrete?.[0];
             if (freteEscolhido) {
-                setShippingOption(freteEscolhido.valor);
+                setShippingOption(freteEscolhido.valor); // Atualiza o CartContext
+                setSelectedShipping(freteEscolhido);     // Atualiza o estado local (para o radio button)
+            } else {
+                setShippingOption(0); // Garante que é zero se não houver frete
+                setSelectedShipping(null);
             }
 
             setPedido(pedidoAtualizado);
@@ -135,12 +146,13 @@ function CheckoutPage() {
             setLoading(false);
         }
     };
-
-    // ... (handlePaymentSubmit, handleFinalizarPedido, handleCepBlur, handleAddNewAddress e a renderização permanecem os mesmos) ...
-    // ... (exceto pela adição da opção "DINHEIRO") ...
     
-    // (O resto do ficheiro permanece igual ao que enviei anteriormente)
-    // ...
+    // --- 3. ADICIONAR handleSelectShipping ---
+    const handleSelectShipping = (option) => {
+        setSelectedShipping(option);
+        setShippingOption(option.valor); // Atualiza o valor no CartContext
+    };
+
     const handlePaymentSubmit = (cardData) => {
         if (paymentMethod === 'CARTAO') {
             console.log("Dados do Cartão:", cardData);
@@ -148,15 +160,26 @@ function CheckoutPage() {
         setStep('resumo');
     };
 
+    // --- 4. ATUALIZAR handleFinalizarPedido ---
     const handleFinalizarPedido = async () => {
         setLoading(true);
         setError(null);
         const token = localStorage.getItem('userToken');
+        
+        // 4.1. Preparar o payload com os totais FINAIS
+        const finalTotals = {
+            totalFrete: getFrete(), // Pega o valor atualizado do CartContext
+            valorTotal: getTotal()  // Pega o valor total atualizado do CartContext
+        };
 
         try {
             const response = await fetch(`http://localhost:8080/auth/pedidos/${pedido.id}/finalizar?formaPagamento=${paymentMethod}`, {
                 method: "PUT",
-                headers: { "Authorization": `Bearer ${token}` }
+                headers: { 
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json" // 4.2. Adicionar Content-Type
+                },
+                body: JSON.stringify(finalTotals) // 4.3. Enviar os totais no corpo
             });
 
             if (!response.ok) throw new Error("Falha ao finalizar o pedido.");
@@ -164,7 +187,7 @@ function CheckoutPage() {
             const pedidoFinalizado = await response.json();
             setPedido(pedidoFinalizado);
             clearCart();
-            setShippingOption(0);
+            setShippingOption(0); // Limpa o frete do context
             setStep('sucesso');
         } catch (err) {
             setError(err.message);
@@ -172,7 +195,7 @@ function CheckoutPage() {
             setLoading(false);
         }
     };
-
+    
     const handleCepBlur = async (e) => {
         const cep = e.target.value;
         try {
@@ -208,14 +231,15 @@ function CheckoutPage() {
             setLoading(false);
         }
     };
-
+    
     if (loading && step === 'endereco' && !userData) {
         return <div className="checkout-bg"><LoadingSpinner message="Carregando seu perfil..." /></div>;
     }
-
+    
     const formatCep = (cep) => cep?.replace(/^(\d{5})(\d{3})$/, '$1-$2');
     const enderecosEntrega = userData?.enderecos.filter(e => e.tipoEndereco === 'ENTREGA') || [];
-    // ...
+
+    // --- 5. ATUALIZAR RENDERIZAÇÃO ---
     return (
         <div className="checkout-bg">
             <div className="checkout-card">
@@ -237,7 +261,7 @@ function CheckoutPage() {
 
                 {error && <p className="checkout-error">{error}</p>}
 
-                {/* ETAPA 1: ENDEREÇO */}
+                {/* ETAPA 1: ENDEREÇO (Sem mudanças) */}
                 {step === 'endereco' && (
                     <div className="checkout-step-content">
                         <h3>1. Selecione o Endereço de Entrega</h3>
@@ -296,10 +320,36 @@ function CheckoutPage() {
                     </div>
                 )}
 
-                {/* ETAPA 2: PAGAMENTO */}
+                {/* ETAPA 2: PAGAMENTO (Com Seção de Frete) */}
                 {step === 'pagamento' && (
                     <div className="checkout-step-content">
-                        <h3>2. Escolha a Forma de Pagamento</h3>
+                        
+                        {/* --- 5.1. ADICIONAR SEÇÃO DE FRETE --- */}
+                        <h3>2. Escolha o Frete</h3>
+                        <div className="shipping-options-checkout">
+                            {shippingOptions.length > 0 ? (
+                                shippingOptions.map((option, index) => (
+                                  <label key={index} className={`shipping-option ${selectedShipping?.transportadora === option.transportadora ? 'selected' : ''}`}>
+                                    <input 
+                                      type="radio" 
+                                      name="shipping" 
+                                      checked={selectedShipping?.transportadora === option.transportadora}
+                                      onChange={() => handleSelectShipping(option)} 
+                                    />
+                                    <div className="shipping-details">
+                                      <span className="transportadora">{option.transportadora}</span>
+                                      <span className="prazo">{option.prazoEstimado}</span>
+                                    </div>
+                                    <span className="valor">R$ {option.valor.toFixed(2).replace('.', ',')}</span>
+                                  </label>
+                                ))
+                            ) : (
+                                <p>Nenhuma opção de frete disponível para este endereço.</p>
+                            )}
+                        </div>
+                        {/* --- FIM DA SEÇÃO DE FRETE --- */}
+
+                        <h3>3. Escolha a Forma de Pagamento</h3>
                         <div className="payment-options">
                             <label className={`payment-option ${paymentMethod === 'BOLETO' ? 'selected' : ''}`}>
                                 <input type="radio" name="pagamento" value="BOLETO" onChange={(e) => setPaymentMethod(e.target.value)} />
@@ -309,7 +359,6 @@ function CheckoutPage() {
                                 <input type="radio" name="pagamento" value="CARTAO" onChange={(e) => setPaymentMethod(e.target.value)} />
                                 Cartão de Crédito
                             </label>
-                            {/* --- ADICIONADO PAGAMENTO EM DINHEIRO --- */}
                             <label className={`payment-option ${paymentMethod === 'DINHEIRO' ? 'selected' : ''}`}>
                                 <input type="radio" name="pagamento" value="DINHEIRO" onChange={(e) => setPaymentMethod(e.target.value)} />
                                 <DollarSign size={18} style={{marginRight: "8px"}} />
@@ -330,9 +379,9 @@ function CheckoutPage() {
                                 {errorsCard.dataVencimento && <p className="form-error">{errorsCard.dataVencimento.message}</p>}
                                 {errorsCard.cvv && <p className="form-error">{errorsCard.cvv.message}</p>}
                                 <select {...registerCard('parcelas')}>
-                                    <option value="1">1x de R$ {getTotal().toFixed(2)}</option>
-                                    <option value="2">2x de R$ {(getTotal() / 2).toFixed(2)}</option>
-                                    <option value="3">3x de R$ {(getTotal() / 3).toFixed(2)}</option>
+                                    <option value="1">1x de R$ {getTotal().toFixed(2).replace('.', ',')}</option>
+                                    <option value="2">2x de R$ {(getTotal() / 2).toFixed(2).replace('.', ',')}</option>
+                                    <option value="3">3x de R$ {(getTotal() / 3).toFixed(2).replace('.', ',')}</option>
                                 </select>
                             </form>
                         )}
@@ -354,16 +403,16 @@ function CheckoutPage() {
                     </div>
                 )}
 
-                {/* ETAPA 3: RESUMO */}
+                {/* ETAPA 3: RESUMO (Agora exibe o frete selecionado) */}
                 {step === 'resumo' && (
                     <div className="checkout-step-content">
-                        <h3>3. Resumo do Pedido</h3>
+                        <h3>4. Resumo do Pedido</h3>
                         <div className="resumo-section">
                             <h4>Produtos</h4>
                             {cart.map(item => (
                                 <div key={item.id} className="resumo-item">
                                     <span>{item.quantity}x {item.name}</span>
-                                    <span>R$ {(item.price * item.quantity).toFixed(2)}</span>
+                                    <span>R$ {(item.price * item.quantity).toFixed(2).replace('.', ',')}</span>
                                 </div>
                             ))}
                         </div>
@@ -371,15 +420,15 @@ function CheckoutPage() {
                             <h4>Valores</h4>
                             <div className="resumo-item">
                                 <span>Subtotal:</span>
-                                <span>R$ {getSubtotal().toFixed(2)}</span>
+                                <span>R$ {getSubtotal().toFixed(2).replace('.', ',')}</span>
                             </div>
                             <div className="resumo-item">
-                                <span>Frete:</span>
-                                <span>R$ {getFrete().toFixed(2)}</span>
+                                <span>Frete ({selectedShipping?.transportadora || 'N/A'}):</span>
+                                <span>R$ {getFrete().toFixed(2).replace('.', ',')}</span>
                             </div>
                             <div className="resumo-item total">
                                 <span>Total:</span>
-                                <span>R$ {getTotal().toFixed(2)}</span>
+                                <span>R$ {getTotal().toFixed(2).replace('.', ',')}</span>
                             </div>
                         </div>
                         <div className="resumo-section">
@@ -405,14 +454,14 @@ function CheckoutPage() {
                     </div>
                 )}
 
-                {/* ETAPA 4: SUCESSO */}
+                {/* ETAPA 4: SUCESSO (Sem mudanças) */}
                 {step === 'sucesso' && (
                     <div className="checkout-step-content success-step">
                         <CheckCircle size={60} className="success-icon" />
                         <h3>Pedido realizado com sucesso!</h3>
                         <p>Obrigado pela sua compra.</p>
                         <p>O número do seu pedido é: <strong>{pedido?.numeroPedido}</strong></p>
-                        <p>Valor Total: <strong>R$ {pedido?.valorTotal.toFixed(2)}</strong></p>
+                        <p>Valor Total: <strong>R$ {pedido?.valorTotal.toFixed(2).replace('.', ',')}</strong></p>
                         <button onClick={() => navigate('/')} className="btn-primary">
                             Voltar para a Página Inicial
                         </button>
