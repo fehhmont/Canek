@@ -18,7 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-// --- NOVOS IMPORTS ---
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -43,11 +42,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                .cors(withDefaults()) // <-- 1. ADICIONE ESTA LINHA PARA ATIVAR O CORS NA CADEIA DE SEGURANÇA
+                .cors(withDefaults()) 
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                    // Suas regras de autorização permanecem as mesmas
+                    // ... (outras regras)
                     .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                     .requestMatchers(HttpMethod.POST, "/auth/cadastro").permitAll()
                     .requestMatchers(HttpMethod.POST, "/auth/administrador/login").permitAll()
@@ -73,31 +72,33 @@ public class SecurityConfig {
                     .requestMatchers("/auth/produto/deletar/{id}").hasAnyRole("ADMIN", "ESTOQUISTA")
                     .requestMatchers("/auth/produto/{id}/status").hasAnyRole("ADMIN")
                     .requestMatchers("/auth/upload/**").permitAll()
-                    .requestMatchers("/auth/pedidos/carrinho").permitAll()
+
+                    // --- VERIFIQUE ESTAS LINHAS ---
+                    .requestMatchers(HttpMethod.POST, "/auth/pedidos/carrinho").hasRole("USER")
+                    .requestMatchers(HttpMethod.PUT, "/auth/pedidos/{pedidoId}/endereco/{usuarioId}").hasRole("USER")
+                    .requestMatchers(HttpMethod.PUT, "/auth/pedidos/{pedidoId}/finalizar").hasRole("USER")
+                    // --- FIM DA VERIFICAÇÃO ---
+
                     .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
     
-    // --- 2. ADICIONE ESTE BEAN PARA CONFIGURAR O CORS DE FORMA CENTRALIZADA ---
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Define a origem permitida (seu frontend)
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
-        // Define os métodos HTTP permitidos
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        // Define os cabeçalhos permitidos (essencial para autenticação e JSON)
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        // Aplica esta configuração a todos os endpoints da sua API ("/**")
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 
-    // O restante dos seus beans (DaoAuthenticationProvider, AuthenticationManager, etc.) permanece igual.
+    // ... (restante dos beans: passwordEncoder, managers, etc.) ...
+    
     @Bean
     public DaoAuthenticationProvider usuarioAuthenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();

@@ -1,5 +1,6 @@
 package com.canek.canek.controllers;
 
+import com.canek.canek.dtos.CriarPedidoDTO;
 import com.canek.canek.dtos.FreteDTO;
 import com.canek.canek.models.*;
 import com.canek.canek.models.enums.FormaPagamento;
@@ -9,6 +10,9 @@ import com.canek.canek.repositories.ProdutoRepository;
 import com.canek.canek.repositories.UsuarioRepository;
 import com.canek.canek.services.PedidoService;
 import com.canek.canek.services.ProdutoService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,15 +40,26 @@ public class PedidoController {
 
 
     @PostMapping("/carrinho")
-    public Pedido criarCarrinho(@RequestBody List<Map<String, Object>> itens) {
+    public Map<String, Object> criarCarrinho(@RequestBody @Valid CriarPedidoDTO pedidoDTO) {
+        
+        Usuario usuario = usuarioRepository.findById(pedidoDTO.usuarioId())
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        
+        Endereco endereco = usuario.getEnderecos().stream()
+                .filter(e -> e.getId().equals(pedidoDTO.enderecoId()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Endereço não pertence ao usuário ou não foi encontrado"));
+
         Pedido pedido = new Pedido();
         pedido.setStatus(StatusPedido.AGUARDANDO_PAGAMENTO);
         pedido.setTotalFrete(BigDecimal.ZERO);
+        pedido.setUsuario(usuario);
+        pedido.setEndereco(endereco);
 
         List<PedidoProduto> produtos = new ArrayList<>();
         BigDecimal totalProdutos = BigDecimal.ZERO;
 
-        for (Map<String, Object> item : itens) {
+        for (Map<String, Object> item : pedidoDTO.itens()) {
             Long produtoId = Long.parseLong(item.get("produtoId").toString());
             Integer quantidade = Integer.parseInt(item.get("quantidade").toString());
 
@@ -55,46 +70,44 @@ public class PedidoController {
             pedidoProduto.setProduto(produto);
             pedidoProduto.setQuantidade(quantidade);
             pedidoProduto.setPrecoUnitario(produto.getPreco());
-            pedidoProduto.calcularPrecoTotal();
+            
+            // --- ALTERAÇÃO AQUI ---
+            // 1. Defina o pai (Pedido) no filho (PedidoProduto) IMEDIATAMENTE
+            pedidoProduto.setPedido(pedido);
+            // --- FIM DA ALTERAÇÃO ---
 
             produtos.add(pedidoProduto);
-            totalProdutos = totalProdutos.add(pedidoProduto.getPrecoTotal());
+            totalProdutos = totalProdutos.add(produto.getPreco().multiply(BigDecimal.valueOf(quantidade)));
         }
 
-        pedido.setProdutos(produtos);
+        pedido.setProdutos(produtos); // Define a lista de filhos no pai
         pedido.setTotalProdutos(totalProdutos);
-        pedido.setValorTotal(totalProdutos);
-
-        Pedido salvo = pedidoRepository.save(pedido);
-        salvo.setNumeroPedido(String.format("%08d", salvo.getId()));
-        return pedidoRepository.save(salvo);
-    }
-
-    @PutMapping("/{pedidoId}/endereco/{usuarioId}")
-    public Map<String, Object> escolherEndereco(
-            @PathVariable Long pedidoId,
-            @PathVariable Long usuarioId,
-            @RequestBody Endereco endereco) {
-
-        Pedido pedido = pedidoRepository.findById(pedidoId)
-                .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
-        Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-
-        pedido.setUsuario(usuario);
-        pedido.setEndereco(endereco);
-        pedido.setStatus(StatusPedido.AGUARDANDO_PAGAMENTO);
-
-        // Calcula opções de frete pelo CEP
+        
         List<FreteDTO> opcoesFrete = produtoService.calcularFrete(endereco.getCep());
+        
+        if (!opcoesFrete.isEmpty()) {
+            pedido.setTotalFrete(opcoesFrete.get(0).valor());
+        }
+
+        pedido.setValorTotal(totalProdutos.add(pedido.getTotalFrete()));
+
+        // --- ALTERAÇÃO AQUI ---
+        // 2. Salve o pedido (pai) UMA SÓ VEZ.
+        // O CascadeType.ALL irá salvar os filhos (PedidoProduto) automaticamente,
+        // e como já definimos o 'pedido' neles, o 'pedido_id' não será nulo.
+        Pedido pedidoSalvo = pedidoRepository.save(pedido);
+        
+        // 3. Defina o número do pedido e salve novamente (apenas para atualizar esta coluna)
+        pedidoSalvo.setNumeroPedido(String.format("%08d", pedidoSalvo.getId()));
+        Pedido pedidoFinal = pedidoRepository.save(pedidoSalvo);
+        // --- FIM DA ALTERAÇÃO ---
 
         Map<String, Object> resposta = new HashMap<>();
-        resposta.put("pedido", pedido);
+        resposta.put("pedido", pedidoFinal);
         resposta.put("opcoesFrete", opcoesFrete);
-
-        pedidoRepository.save(pedido);
         return resposta;
     }
+
 
     @PutMapping("/{pedidoId}/finalizar")
     public Pedido finalizarPedido(

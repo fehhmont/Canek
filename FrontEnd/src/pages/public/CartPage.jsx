@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import { useCart } from "../../components/CartContext.jsx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../components/AuthContext.jsx";
 import './css/CartPage.css';
 
 function CartPage() {
@@ -15,18 +16,21 @@ function CartPage() {
     getFrete,
     getTotal,
     clearCart,
-    setShippingOption, // Importe a nova função
+    setShippingOption,
   } = useCart();
 
-  // Estados para o cálculo de frete
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  // ... (estados e funções de frete permanecem os mesmos) ...
   const [cep, setCep] = useState('');
   const [shippingOptions, setShippingOptions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
   const handleCepChange = (e) => {
-    const value = e.target.value.replace(/\D/g, ''); // Remove tudo que não é dígito
-    setCep(value.slice(0, 8)); // Limita a 8 dígitos
+    const value = e.target.value.replace(/\D/g, '');
+    setCep(value.slice(0, 8));
   };
 
   const handleCalculateShipping = async () => {
@@ -37,7 +41,7 @@ function CartPage() {
     setError('');
     setIsLoading(true);
     setShippingOptions([]);
-    setShippingOption(0); // Reseta o frete anterior
+    setShippingOption(0); 
 
     try {
       const response = await fetch("http://localhost:8080/auth/produto/calcularFrete", {
@@ -63,6 +67,17 @@ function CartPage() {
     setShippingOption(option.valor);
   };
 
+  // *** ALTERAÇÃO APLICADA AQUI ***
+  const handleFinalizarCompra = () => {
+    if (isAuthenticated) {
+      // Se estiver logado, vai para a nova página de checkout
+      navigate("/checkout");
+    } else {
+      // Se não estiver logado, vai para o login
+      navigate("/LoginPage");
+    }
+  };
+
 
   if (cart.length === 0) {
     return (
@@ -80,8 +95,8 @@ function CartPage() {
       <div className="cart-card">
         <h2 className="cart-title">Meu Carrinho</h2>
         <table className="cart-table">
-          {/* ... seu a a tabela do carrinho continua igual ... */}
-          <thead>
+          {/* ... (tabela do carrinho) ... */}
+           <thead>
             <tr>
               <th>Produto</th>
               <th>Preço</th>
@@ -108,7 +123,7 @@ function CartPage() {
         </table>
         
         <div className="cart-bottom-section">
-          {/* Seção de Cálculo de Frete */}
+          {/* ... (cálculo de frete) ... */}
           <div className="shipping-calculator">
             <h4>Calcular Frete</h4>
             <div className="shipping-input-group">
@@ -125,7 +140,6 @@ function CartPage() {
             </div>
             {error && <p className="shipping-error">{error}</p>}
             
-            {/* Seção de Opções de Frete */}
             {shippingOptions.length > 0 && (
               <div className="shipping-options">
                 {shippingOptions.map((option, index) => (
@@ -146,7 +160,7 @@ function CartPage() {
             )}
           </div>
 
-          {/* Resumo do Pedido */}
+          {/* ... (resumo do pedido) ... */}
           <div className="cart-summary">
             <h3>Resumo do Pedido</h3>
             <p>Subtotal: <strong>R$ {getSubtotal().toFixed(2).replace('.', ',')}</strong></p>
@@ -157,7 +171,8 @@ function CartPage() {
 
         <div className="cart-actions">
           <button className="cart-clear-btn" onClick={clearCart}>Limpar Carrinho</button>
-          <button className="cart-buy-btn" onClick={() => alert('Compra finalizada!')}>Finalizar Compra</button>
+          {/* Botão atualizado */}
+          <button className="cart-buy-btn" onClick={handleFinalizarCompra}>Finalizar Compra</button>
           <Link to="/" className="cart-back-btn">Continuar comprando</Link>
         </div>
       </div>

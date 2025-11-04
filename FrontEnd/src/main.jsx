@@ -21,7 +21,8 @@ import ProductFormPage from './pages/admin/ProductFormPage';
 import ProductDetailPage from './pages/public/ProductDetailPage';
 import CartPage from './pages/public/CartPage';
 import Routers from './pages/Routers';
-import MeuPerfilPage from './pages/private/MeuPerfilPage'; // NOVO IMPORT
+import MeuPerfilPage from './pages/private/MeuPerfilPage';
+import CheckoutPage from './pages/private/CheckoutPage'; // --- 1. IMPORTAR A NOVA PÁGINA ---
 
 import './index.css';
 
@@ -45,7 +46,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               {/* Rotas Protegidas para QUALQUER usuário logado */}
               <Route element={<ProtectedRoute />}>
                 <Route path="DashboardPage" element={<DashboardPage />} />
-                <Route path="minha-conta" element={<MeuPerfilPage />} /> {/* NOVA ROTA */}
+                <Route path="minha-conta" element={<MeuPerfilPage />} />
+                <Route path="checkout" element={<CheckoutPage />} /> {/* --- 2. ADICIONAR A ROTA DE CHECKOUT --- */}
               </Route>
 
               {/* ROTAS PROTEGIDAS APENAS PARA ADMINS E ESTOQUISTAS */}

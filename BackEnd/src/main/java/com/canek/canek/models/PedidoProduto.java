@@ -1,5 +1,8 @@
 package com.canek.canek.models;
 
+// --- 1. IMPORTAR A ANOTAÇÃO ---
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,8 +21,10 @@ public class PedidoProduto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // --- 2. ADICIONAR A ANOTAÇÃO AQUI ---
     @ManyToOne
     @JoinColumn(name = "pedido_id", nullable = false)
+    @JsonBackReference // Diz ao JSON: "Este é o 'filho', não serialize o pai novamente."
     private Pedido pedido;
 
     @ManyToOne
@@ -32,14 +37,7 @@ public class PedidoProduto {
     @Column(name = "preco_unitario", nullable = false)
     private BigDecimal precoUnitario;
 
-    @Column(name = "preco_total", nullable = false)
+    @Column(name = "preco_total", insertable = false, updatable = false)
     private BigDecimal precoTotal;
 
-    @PrePersist
-    @PreUpdate
-    public void calcularPrecoTotal() {
-        if (precoUnitario != null && quantidade != null) {
-            precoTotal = precoUnitario.multiply(BigDecimal.valueOf(quantidade));
-        }
-    }
 }

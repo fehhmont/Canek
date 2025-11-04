@@ -103,7 +103,9 @@ function CadastroPage() {
 
             if (response.ok) {
                 setMensagemApi("Cadastro realizado com sucesso! Redirecionando...");
-                setTimeout(() => navigate("/LoginPage"), 2000);
+                // *** ALTERAÇÃO APLICADA AQUI ***
+                // Redireciona para o carrinho após o cadastro
+                setTimeout(() => navigate("/carrinho"), 2000);
             } else {
                 // Tenta interpretar como JSON, se falhar, usa o texto puro
                 try {

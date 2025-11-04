@@ -1,5 +1,8 @@
 package com.canek.canek.models;
 
+// --- 1. IMPORTAR A ANOTAÇÃO ---
+import com.fasterxml.jackson.annotation.JsonManagedReference; 
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,6 +22,7 @@ import com.canek.canek.models.enums.StatusPedido;
 @AllArgsConstructor
 public class Pedido {
 
+    // ... (outros campos: id, usuario, endereco, etc. permanecem iguais) ...
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,7 +36,7 @@ public class Pedido {
     private Endereco endereco;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "forma_pagamento", nullable = false)
+    @Column(name = "forma_pagamento", nullable = true)
     private FormaPagamento formaPagamento;
 
     @Enumerated(EnumType.STRING)
@@ -54,9 +58,11 @@ public class Pedido {
     @Column(name = "data_conclusao")
     private LocalDateTime dataConclusao;
 
-    @Column(name = "numero_pedido", unique = true, nullable = false)
+    @Column(name = "numero_pedido", unique = true, nullable = true)
     private String numeroPedido;
 
+    // --- 2. ADICIONAR A ANOTAÇÃO AQUI ---
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference // Diz ao JSON: "Este é o 'pai', serialize os filhos."
     private List<PedidoProduto> produtos;
 }

@@ -3,8 +3,6 @@ CREATE DATABASE IF NOT EXISTS canek;
 
 USE canek;
 
-
-
 CREATE TABLE usuarios (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     nome_completo VARCHAR(255) NOT NULL,
@@ -19,6 +17,7 @@ CREATE TABLE usuarios (
     UNIQUE (email),
     UNIQUE (cpf)
 );
+
 CREATE TABLE enderecos (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     usuario_id BIGINT NOT NULL,
@@ -61,5 +60,32 @@ CREATE TABLE produto_imagens (
     produto_id BIGINT NOT NULL,
     caminho_imagem VARCHAR(255) NOT NULL,
     principal BOOLEAN NOT NULL DEFAULT FALSE,
+    FOREIGN KEY (produto_id) REFERENCES produtos(id) ON DELETE CASCADE
+);
+
+CREATE TABLE pedidos (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    usuario_id BIGINT NULL, 
+    endereco_id BIGINT NULL,
+    forma_pagamento ENUM('BOLETO', 'CARTAO', 'PIX', 'DINHEIRO') NULL,
+    status ENUM('AGUARDANDO_PAGAMENTO', 'PAGO', 'CANCELADO', 'ENVIADO', 'ENTREGUE') DEFAULT 'AGUARDANDO_PAGAMENTO',
+    total_produtos DECIMAL(10,2) NOT NULL,
+    total_frete DECIMAL(10,2) DEFAULT 0.00,
+    valor_total DECIMAL(10,2) NOT NULL,
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_conclusao TIMESTAMP NULL,
+    numero_pedido VARCHAR(20) UNIQUE NULL, 
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+    FOREIGN KEY (endereco_id) REFERENCES enderecos(id) ON DELETE CASCADE
+);
+
+CREATE TABLE pedido_produtos (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    pedido_id BIGINT NOT NULL,
+    produto_id BIGINT NOT NULL,
+    quantidade INT NOT NULL,
+    preco_unitario DECIMAL(10,2) NOT NULL,
+    preco_total DECIMAL(10,2) NOT NULL, /* <-- CORREÇÃO AQUI: Removida a geração automática */
+    FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE,
     FOREIGN KEY (produto_id) REFERENCES produtos(id) ON DELETE CASCADE
 );
