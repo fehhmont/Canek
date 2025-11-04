@@ -11,6 +11,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity(name = "ImagemProduto") // 1. JPA: Define que esta classe é uma entidade JPA.
 @Table(name = "produto_imagens")    
@@ -31,6 +32,7 @@ public class ImagemProduto {
 
     @ManyToOne
     @JoinColumn(name = "produto_id")
+    @JsonBackReference
     private Produto produto;
 
   
