@@ -24,6 +24,7 @@ import Routers from './pages/Routers';
 import MeuPerfilPage from './pages/private/MeuPerfilPage';
 import CheckoutPage from './pages/private/CheckoutPage'; // --- 1. IMPORTAR A NOVA PÁGINA ---
 
+
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(

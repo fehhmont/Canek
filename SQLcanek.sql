@@ -50,7 +50,7 @@ CREATE TABLE produtos (
     nome VARCHAR(255) NOT NULL,
     avaliacao DECIMAL(3, 1),
     descricao_detalhada TEXT,
-    preco DECIMAL(10, 2) NOT NULL,
+    preco DECIMAL(10, 2),
     qtd_estoque INT NOT NULL,
     status BOOLEAN DEFAULT TRUE
 );

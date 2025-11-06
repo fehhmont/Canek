@@ -69,13 +69,11 @@ function Header() {
                                     <Link to="/Routers" className="nav-button">
                                         Rotas
                                     </Link>
-                                    <Link to="/carrinho" className="cart-indicator">
-                                        🛒 Carrinho ({totalItems})
-                                    </Link>
+                                    
                                 </>
                             )}
                         </nav>
-
+                        <Link to="/carrinho">
                         <button className="cart-button">
                             <ShoppingCart className="h-6 w-6" />
                             {totalItems > 0 && (
@@ -84,6 +82,7 @@ function Header() {
                                 </span>
                             )}
                         </button>
+                        </Link>
                     </div>
                 </div>
             </div>

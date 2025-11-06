@@ -362,7 +362,7 @@ function CheckoutPage() {
                             <label className={`payment-option ${paymentMethod === 'DINHEIRO' ? 'selected' : ''}`}>
                                 <input type="radio" name="pagamento" value="DINHEIRO" onChange={(e) => setPaymentMethod(e.target.value)} />
                                 <DollarSign size={18} style={{marginRight: "8px"}} />
-                                Dinheiro
+                               PIX
                             </label>
                         </div>
 
