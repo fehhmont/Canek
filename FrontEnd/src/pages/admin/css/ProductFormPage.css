@@ -1,0 +1,290 @@
+/* Fundo e Container Principal */
+.product-page-bg {
+    min-height: 100vh;
+    background: #f8f9fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    box-sizing: border-box;
+}
+
+.product-container {
+    background: white;
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    max-width: 900px;
+    width: 100%;
+    border: 1px solid #e5e7eb;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.98); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Cabeçalho */
+.product-title {
+    text-align: center;
+    color: #1f2937;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.product-title .primary-color {
+    color: #52658F;
+}
+
+/* Layout do Formulário */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+/* Campos do Formulário */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-label {
+    display: block;
+    color: #4b5563;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.form-input, .form-textarea {
+    width: 100%;
+    padding: 12px;
+    background: #f9fafb;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    color: #1f2937;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.form-input:focus, .form-textarea:focus {
+    border-color: #52658F;
+    box-shadow: 0 0 0 3px rgba(82, 101, 143, 0.2);
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.form-error {
+    color: #ef4444;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Seção da Imagem */
+.image-upload-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 1.5rem;
+}
+
+.image-preview {
+    width: 100%;
+    max-width: 300px;
+    height: 250px;
+    background: #f9fafb;
+    border: 2px dashed #d1d5db;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.image-preview:hover {
+    border-color: #52658F;
+    background: #eef2ff;
+}
+
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-placeholder {
+    color: #9ca3af;
+    text-align: center;
+}
+
+.image-placeholder-icon {
+    margin-bottom: 1rem;
+}
+
+.file-input {
+    display: none;
+}
+
+/* Seção de Botões */
+.buttons-section {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background: #52658F;
+    color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: #415172;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(82, 101, 143, 0.2);
+}
+
+.btn-secondary {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.btn-secondary:hover {
+    background: #d1d5db;
+}
+
+.btn:disabled {
+    background: #d1d5db;
+    cursor: not-allowed;
+}
+
+/* Estilos para a lista de imagens */
+.image-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+    width: 100%;
+}
+
+.image-list-item {
+    position: relative;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 100px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: border-color 0.2s;
+}
+
+.image-list-item[data-principal="true"] {
+    border-color: #52658F;
+}
+
+.image-list-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-list-item .image-actions {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.image-list-item .action-btn-principal,
+.image-list-item .action-btn-remove {
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+    padding: 0; /* Garante que não haja padding extra */
+}
+
+/* --- CORREÇÃO APLICADA AQUI --- */
+/* Garante que o ícone SVG dentro do botão seja exibido corretamente */
+.image-list-item .action-btn-principal svg,
+.image-list-item .action-btn-remove svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+}
+/* --- FIM DA CORREÇÃO --- */
+
+
+.image-list-item .action-btn-principal:hover:not(:disabled) {
+    background-color: #007bff;
+    transform: scale(1.1);
+}
+
+.image-list-item .action-btn-remove:hover {
+    background-color: #dc3545;
+    transform: scale(1.1);
+}
+
+.image-list-item .action-btn-principal:disabled {
+    background-color: #ffc107;
+    cursor: default;
+}
+
+/* Mensagem da API */
+.api-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    font-weight: 500;
+    margin-top: 1rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+}
+
+.api-message.success {
+    color: #155724;
+    background-color: #d4edda;
+}
+
+.api-message.error {
+    color: #721c24;
+    background-color: #f8d7da;
+}

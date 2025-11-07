@@ -1,63 +1,74 @@
+// FrontEnd/src/components/AuthContext.jsx
+
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// 1. Cria o Contexto
-// O contexto é como um "armazém global" para o estado de autenticação.
 const AuthContext = createContext(null);
 
-// 2. Cria o Componente Provedor
-// Este componente irá "envolver" sua aplicação, disponibilizando o estado e as funções de autenticação para todos os componentes filhos.
 export const AuthProvider = ({ children }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
-    // Este `useEffect` é executado apenas uma vez, quando o aplicativo carrega.
-    // Ele verifica se já existe um token no localStorage para manter o usuário logado entre as sessões.
     useEffect(() => {
-        const token = localStorage.getItem('userToken');
-        if (token) {
-            setIsAuthenticated(true);
+        try {
+            const storedToken = localStorage.getItem('userToken');
+            const storedUser = localStorage.getItem('userData');
+            if (storedToken && storedUser) {
+                setUser(JSON.parse(storedUser));
+            }
+        } catch (error) {
+            console.error("Falha ao carregar dados do usuário:", error);
+            localStorage.removeItem('userToken');
+            localStorage.removeItem('userData');
+            setUser(null);
+        } finally {
+            setLoading(false);
         }
     }, []);
 
-    // Função para realizar o login
-    const login = (token, tipoUsuario) => {
-        // Salva o token recebido da API no localStorage
-        localStorage.setItem('userToken', token);
-        // Atualiza o estado global para indicar que o usuário está autenticado
-        setIsAuthenticated(true);
+    const login = (userData) => {
+        // --- CORREÇÃO APLICADA AQUI ---
+        // Garante que tanto 'tipoUsuario' quanto 'cargo' sejam armazenados
+        const userToStore = {
+            token: userData.token,
+            tipoUsuario: userData.tipoUsuario, // Para clientes
+            id: userData.id,                 // Para clientes
+            cargo: userData.cargo,           // Para administradores
+            nomeCompleto: userData.nomeCompleto // Adicionado para saudação no dashboard
+        };
+        
+        localStorage.setItem('userToken', userToStore.token);
+        localStorage.setItem('userData', JSON.stringify(userToStore));
+        setUser(userToStore);
 
-        // Redireciona o usuário com base no seu tipo, conforme definido na API
-        switch (tipoUsuario) {
-            case 'admin':
-                navigate("/UserManagementPage");
+        const role = userData.cargo || userData.tipoUsuario;
+
+        switch (role) {
+            case 'ADMIN':
+            case 'ESTOQUISTA':
+                navigate("/AdminDashboardPage");
                 break;
             case 'cliente':
-                navigate("/"); // Redireciona clientes para a HomePage
-                break;
-            case 'estoquista':
-                navigate("/EstoquePage"); // Exemplo para estoquista
+                navigate("/");
                 break;
             default:
-                // Se o tipo for desconhecido, envia para a página inicial por segurança
                 navigate("/");
                 break;
         }
     };
 
-    // Função para realizar o logout
     const logout = () => {
-        // Remove o token do localStorage
         localStorage.removeItem('userToken');
-        // Atualiza o estado para indicar que o usuário não está mais autenticado
-        setIsAuthenticated(false);
-        // Redireciona o usuário para a página inicial/login
-        navigate('/'); 
+        localStorage.removeItem('userData');
+        setUser(null);
+        navigate('/');
     };
 
-    // Objeto contendo o estado e as funções que queremos disponibilizar para a aplicação
     const value = {
-        isAuthenticated,
+        isAuthenticated: !!user,
+        user,
+        loading,
         login,
         logout
     };
@@ -65,10 +76,6 @@ export const AuthProvider = ({ children }) => {
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-// 3. Cria um Hook customizado
-// Este hook `useAuth` é um atalho para que outros componentes possam acessar facilmente o contexto
-// sem precisar importar `useContext` e `AuthContext` toda vez.
 export const useAuth = () => {
     return useContext(AuthContext);
 };
-

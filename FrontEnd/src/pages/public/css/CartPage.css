@@ -1,0 +1,133 @@
+/* ... (Seu CSS existente) ... */
+
+/* Adicione estes estilos no final do arquivo */
+.cart-qty-input {
+  display: none; /* Esconde o input numérico, se ainda existir */
+}
+
+.cart-qty-text {
+  padding: 0 10px;
+  font-weight: 500;
+}
+
+.cart-bottom-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  align-items: flex-start;
+}
+
+.shipping-calculator h4 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.shipping-input-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.shipping-cep-input {
+  flex-grow: 1;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #bbb;
+}
+
+.shipping-calc-btn {
+  background: #5a67d8;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+.shipping-calc-btn:disabled {
+  background: #b0b8c9;
+  cursor: not-allowed;
+}
+
+.shipping-error {
+  color: #d32f2f;
+  font-size: 0.9em;
+  margin-top: 0.5rem;
+}
+
+.shipping-options {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.shipping-option {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.shipping-option:hover {
+  border-color: #52658F;
+}
+
+.shipping-option input[type="radio"] {
+  margin-right: 1rem;
+}
+
+.shipping-details {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.shipping-details .transportadora {
+  font-weight: 600;
+}
+
+.shipping-details .prazo {
+  font-size: 0.85em;
+  color: #666;
+}
+
+.shipping-details .valor {
+  font-weight: 600;
+}
+
+.cart-summary {
+  border-left: 1px solid #e0e0e0;
+  padding-left: 2rem;
+}
+
+.cart-summary h3 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-top: 0;
+}
+
+.cart-summary .total-price {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .cart-bottom-section {
+    grid-template-columns: 1fr;
+  }
+  .cart-summary {
+    border-left: none;
+    border-top: 1px solid #e0e0e0;
+    padding-left: 0;
+    padding-top: 2rem;
+  }
+}

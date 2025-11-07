@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import './Header.css';
+import { useCart } from '../../components/CartContext.jsx';
 import { Search, ShoppingBag, ShoppingCart } from 'lucide-react';
 import { Link } from "react-router-dom";
 import { useAuth } from '../AuthContext.jsx';
 
 function Header() {
     const [searchTerm, setSearchTerm] = useState('');
-    const [cartItemCount, setCartItemCount] = useState(0); 
     const { isAuthenticated, logout } = useAuth();
+    const { cart } = useCart();
+    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
     const onSearchChange = (value) => {
         setSearchTerm(value);
@@ -55,24 +57,32 @@ function Header() {
                             ) : (
                                 // Se o usuário NÃO ESTÁ logado
                                 <>
-                                    <Link to="/cadastro" className="nav-button">
+                                    <Link to="/CadastroPage" className="nav-button">
                                         Crie sua conta
                                     </Link>
-                                    <Link to="/login" className="nav-button">
+                                    <Link to="/LoginPageBackOffice" className="nav-button">
+                                        Login BackOffice
+                                    </Link>
+                                    <Link to="/LoginPage" className="nav-button">
                                         Login
                                     </Link>
+                                    <Link to="/Routers" className="nav-button">
+                                        Rotas
+                                    </Link>
+                                    
                                 </>
                             )}
                         </nav>
-
+                        <Link to="/carrinho">
                         <button className="cart-button">
                             <ShoppingCart className="h-6 w-6" />
-                            {cartItemCount > 0 && (
+                            {totalItems > 0 && (
                                 <span className="cart-badge">
-                                    {cartItemCount}
+                                    {totalItems}
                                 </span>
                             )}
                         </button>
+                        </Link>
                     </div>
                 </div>
             </div>

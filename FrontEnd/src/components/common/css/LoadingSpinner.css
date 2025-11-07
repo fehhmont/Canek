@@ -1,0 +1,43 @@
+/* Centraliza o spinner na tela inteira */
+.spinner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.8); /* Fundo branco semitransparente */
+    backdrop-filter: blur(4px); /* Efeito de desfoque moderno */
+    z-index: 1000;
+}
+
+/* O elemento que vai girar */
+.spinner-container {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3; /* Cinza claro */
+    border-top: 5px solid #52658F; /* Cor principal do seu tema */
+    border-radius: 50%;
+    animation: spin 1s linear infinite; /* A animação */
+}
+
+/* A mensagem abaixo do spinner */
+.spinner-message {
+    margin-top: 20px;
+    color: #52658F;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+/* A animação que faz o elemento girar */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
