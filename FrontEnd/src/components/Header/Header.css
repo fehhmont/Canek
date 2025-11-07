@@ -1,19 +1,58 @@
 .header {
-  background-color: var(--color-fresh);
-  border-bottom: 2px solid var(--color-clean);
+  /* Fundo principal do header: cor consistente com o site */
+  background-color: #52658F;
+  /* Sem bordas e sem espaços em branco visíveis na área do header */
+  border-bottom: none;
+  padding: 0; /* garante que o background preencha toda a área do header */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  position: relative;
+  width: 100%;
+  z-index: 1000; /* garante sobreposição sobre elementos adjacentes */
+}
+
+/* Reset mínimo para evitar gaps e overflows */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body, #root, .app {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden; /* evita scroll horizontal causado por elementos full-bleed */
+}
+
+/* Forçar escopo: garante que qualquer outra regra global .nav-button seja sobrescrita dentro do header */
+.header .navigation .nav-button,
+.header .nav-button {
+  background: rgba(255,255,255,0.06) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  box-shadow: none !important; /* remover caixas brancas sombreadas vindas de regras globais */
+  padding: 0.45rem 0.85rem !important;
+  border-radius: 8px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  text-decoration: none !important;
+}
+
+/* Ajuste específico para evitar que links com classes .nav-button herdem estilos de páginas admin */
+.header .navigation .nav-button.products-btn,
+.header .navigation .nav-button.users-btn,
+.header .navigation .nav-button.orders-btn {
+  background: rgba(255,255,255,0.06) !important;
 }
 
 .header-container {
-  max-width: 80rem;
+  max-width: 1200px; /* mais largo para aparência profissional */
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 1rem; /* espaçamento interno, sem afetar o background que ocupa toda a largura */
 }
 
 .header-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 4rem;
+  height: 72px; /* altura um pouco maior para um visual mais confortável */
 }
 
 .logo-section {
@@ -23,26 +62,29 @@
 }
 
 .logo-icon {
-  background-color: var(--color-vermillion);
+  background-color: rgba(255,255,255,0.12);
   padding: 0.5rem;
-  border-radius: 0.5rem;
-  color: var(--color-fresh);
+  border-radius: 8px;
+  color: #ffffff;
 }
 
 .logo-text {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--color-vermillion);
+  color: #ffffff; /* texto da logo em branco para contraste */
 }
 
 .search-section {
   flex: 1;
-  max-width: 28rem;
-  margin: 0 2rem;
+  max-width: 36rem;
+  margin: 0 1.5rem;
 }
 
 .search-container {
   position: relative;
+  display: flex;
+  align-items: center; /* centraliza verticalmente o input dentro do header */
+  height: 100%;
 }
 
 .search-icon {
@@ -57,79 +99,98 @@
 .search-input {
   display: block;
   width: 100%;
-  padding: 0.5rem 0.75rem 0.5rem 2.5rem;
-  border: 1px solid var(--color-clean);
-  border-radius: 0.5rem;
-  background-color: var(--color-white);
-  color: var(--color-vermillion);
+  padding: 0.5rem 0.75rem 0.5rem 2.8rem;
+  border: none;
+  height: 44px; /* altura fixa para alinhar com os botões */
+  border-radius: 10px;
+  background-color: rgba(255,255,255,0.09);
+  color: #ffffff;
   font-family: inherit;
-  transition: all 0.2s ease-in-out;
+  font-size: 0.95rem;
+  line-height: 1;
+  transition: box-shadow 0.15s ease-in-out, transform 0.12s;
+  /* deslocamento vertical para alinhar visualmente com os botões */
+  transform: translateY(8px);
 }
 
 .search-input::placeholder {
-  color: var(--color-sunshine);
+  color: rgba(255,255,255,0.7);
 }
 
 .search-input:focus {
   outline: none;
-  box-shadow: 0 0 0 2px var(--color-sunshine);
-  border-color: transparent;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  /* manter o comportamento de "levantar" quando focado, relativo ao deslocamento base */
+  transform: translateY(4px);
 }
 
 .nav-section {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem; /* Este 'gap' separa os botões */
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* Este 'gap' separa os botões */
 }
 
 /* Adicionando um 'gap' também para a navegação interna */
 .navigation {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .nav-button {
-  color: var(--color-vermillion);
-  font-weight: 500;
-  background: none;
-  border: none;
+  color: #ffffff;
+  font-weight: 600;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.08);
   cursor: pointer;
-  transition: color 0.2s ease-in-out;
+  transition: background-color 0.15s ease, transform 0.12s ease;
+  padding: 0 0.85rem;
+  height: 44px; /* padroniza altura dos botões com o input */
+  display: inline-flex;
+  align-items: center;
+  border-radius: 10px; /* estilo 'quadrado' com cantos levemente arredondados */
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
 
 .nav-button:hover {
-  color: var(--color-sunshine);
+  background: rgba(255,255,255,0.12);
+  transform: translateY(-2px);
 }
 
 .cart-button {
   position: relative;
-  padding: 0.5rem;
-  color: var(--color-vermillion);
-  background: none;
-  border: none;
+  padding: 0 0.6rem;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: #ffffff;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
   cursor: pointer;
-  transition: color 0.2s ease-in-out;
+  transition: background 0.12s ease, transform 0.12s;
 }
 
 .cart-button:hover {
-  color: var(--color-sunshine);
+  background: rgba(255,255,255,0.14);
+  transform: translateY(-2px);
 }
 
 .cart-badge {
   position: absolute;
-  top: -0.5rem;
-  right: -0.5rem;
-  background-color: var(--color-sunshine);
-  color: var(--color-white);
+  top: -6px;
+  right: -6px;
+  background-color: #ffcc00;
+  color: #222;
   font-size: 0.75rem;
   border-radius: 9999px;
-  height: 1.25rem;
-  width: 1.25rem;
-  display: flex;
+  height: 20px;
+  min-width: 20px;
+  padding: 0 5px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-weight: 500;
+  font-weight: 700;
 }
 
 @media (min-width: 640px) {
@@ -142,4 +203,30 @@
   .header-container {
     padding: 0 2rem;
   }
+}
+
+/* Responsividade: reduzir elementos e evitar overflow em telas pequenas */
+@media (max-width: 768px) {
+  .header-content {
+    height: 56px;
+    gap: 0.5rem;
+  }
+
+  .logo-text { font-size: 1rem; }
+
+  /* Esconder a barra de pesquisa em telas pequenas para ganhar espaço */
+  .search-section { display: none; }
+
+  /* Compactar botões de navegação horizontalmente e permitir wrapping */
+  .navigation { gap: 0.5rem; flex-wrap: wrap; }
+
+  .nav-button { padding: 0.35rem 0.6rem; font-size: 0.9rem; border-radius: 8px; }
+
+  .header-container { padding: 0 0.75rem; }
+}
+
+@media (max-width: 420px) {
+  .header-content { height: 52px; }
+  .logo-icon { padding: 0.35rem; }
+  .nav-button { font-size: 0.85rem; padding: 0.25rem 0.5rem; }
 }

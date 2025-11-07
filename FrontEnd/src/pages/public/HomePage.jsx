@@ -128,6 +128,8 @@ function HomePage() {
                     </>
                 )}
                 
+                </main>
+                {/* Footer fora do main para permitir full-bleed background e evitar duplicação */}
                 <footer className="footer">
                     <div className="footer-content">
                         <h3 className="footer-title">
@@ -142,8 +144,7 @@ function HomePage() {
                         </div>
                     </div>
                 </footer>
-            </main>
-        </div>
+            </div>
     );
 }
 
