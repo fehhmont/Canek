@@ -59,9 +59,13 @@ public class PedidoController {
 
     @PostMapping("/carrinho")
     public Map<String, Object> criarCarrinho(@RequestBody @Valid CriarPedidoDTO pedidoDTO) {
-        
+
+   
+  
         Usuario usuario = usuarioRepository.findById(pedidoDTO.usuarioId())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+
         
         Endereco endereco = usuario.getEnderecos().stream()
                 .filter(e -> e.getId().equals(pedidoDTO.enderecoId()))
@@ -106,8 +110,19 @@ public class PedidoController {
 
         pedido.setValorTotal(totalProdutos.add(pedido.getTotalFrete()));
 
+       System.out.println("🚀 Salvando pedido...");
+        System.out.println("🧾 Usuário: " + (pedido.getUsuario() != null ? pedido.getUsuario().getId() : "null"));
+        System.out.println("📍 Endereço: " + (pedido.getEndereco() != null ? pedido.getEndereco().getId() : "null"));
+        System.out.println("💰 Total de produtos: " + pedido.getTotalProdutos());
+        System.out.println("🚚 Total de frete: " + pedido.getTotalFrete());
+        System.out.println("💸 Valor total: " + pedido.getValorTotal());
+        System.out.println("🛒 Quantidade de itens: " + (pedido.getProdutos() != null ? pedido.getProdutos().size() : "null"));
+
+ 
         Pedido pedidoSalvo = pedidoRepository.save(pedido);
-        
+
+
+     
         pedidoSalvo.setNumeroPedido(String.format("%08d", pedidoSalvo.getId()));
         Pedido pedidoFinal = pedidoRepository.save(pedidoSalvo);
 
@@ -145,4 +160,37 @@ public class PedidoController {
 
         return pedidoRepository.save(pedido);
     }
+
+
+    @GetMapping("/{pedidoId}")
+public ResponseEntity<Pedido> getPedidoById(@PathVariable Long pedidoId) {
+    try {
+        Pedido pedido = pedidoService.buscarPorId(pedidoId);
+        return ResponseEntity.ok(pedido);
+    } catch (RuntimeException e) {
+        return ResponseEntity.notFound().build();
+    }
+}
+
+// Endpoint para estoquista listar todos os pedidos (ordenados por data decrescente)
+@GetMapping("/todos")
+public ResponseEntity<List<Pedido>> listarTodosPedidos() {
+    List<Pedido> pedidos = pedidoRepository.findAllByOrderByDataCriacaoDesc();
+    return ResponseEntity.ok(pedidos);
+}
+
+// Endpoint para estoquista alterar status do pedido
+@PutMapping("/{pedidoId}/status")
+public ResponseEntity<Pedido> alterarStatusPedido(
+        @PathVariable Long pedidoId,
+        @RequestParam("status") StatusPedido status) {
+    try {
+        Pedido pedido = pedidoService.buscarPorId(pedidoId);
+        pedido.setStatus(status);
+        Pedido atualizado = pedidoRepository.save(pedido);
+        return ResponseEntity.ok(atualizado);
+    } catch (RuntimeException e) {
+        return ResponseEntity.notFound().build();
+    }
+}
 }

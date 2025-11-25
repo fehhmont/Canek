@@ -9,6 +9,7 @@ import com.canek.canek.models.Pedido;
 public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 
     List<Pedido> findByUsuarioId(Long usuarioId);
+    List<Pedido> findAllByOrderByDataCriacaoDesc();
 
     
 } 

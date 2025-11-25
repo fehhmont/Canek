@@ -36,7 +36,7 @@ public class Pedido {
     private Endereco endereco;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "forma_pagamento", nullable = true)
+    @Column(name = "forma_pagamento")
     private FormaPagamento formaPagamento;
 
     @Enumerated(EnumType.STRING)
