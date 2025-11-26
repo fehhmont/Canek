@@ -1,0 +1,155 @@
+/* Overlay de fundo (Fundo escuro com desfoque) */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1100; /* Acima do header e outros elementos */
+    animation: fadeIn 0.3s ease;
+}
+
+/* Conteúdo do Modal (Card Branco) */
+.modal-content {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow-y: auto; /* Permite rolar se o pedido for longo */
+    position: relative;
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Botão de Fechar (X) */
+.modal-close-btn {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: #f3f4f6;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #6b7280;
+    transition: all 0.2s;
+}
+
+.modal-close-btn:hover {
+    background-color: #e5e7eb;
+    color: #374151;
+    transform: rotate(90deg);
+}
+
+/* Títulos */
+.modal-content h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #52658F; /* Cor primária do projeto */
+    margin-bottom: 1.5rem;
+    padding-right: 40px; /* Espaço para o botão fechar */
+}
+
+.resumo-section h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Seções de Conteúdo */
+.resumo-section {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.resumo-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+/* Lista de Itens do Pedido */
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px dashed #e5e7eb;
+    font-size: 0.95rem;
+    color: #4b5563;
+}
+
+.order-item:last-child {
+    border-bottom: none;
+}
+
+.order-item span:first-child {
+    font-weight: 500;
+}
+
+/* Bloco de Resumo Financeiro (Fundo cinza claro) */
+.financial-summary {
+    background-color: #f9fafb;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    color: #6b7280;
+    font-size: 0.95rem;
+}
+
+.summary-row.total {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 2px solid #e5e7eb;
+    color: #1f2937;
+    font-weight: 800;
+    font-size: 1.2rem;
+}
+
+.summary-row.total span:last-child {
+    color: #52658F; /* Destaque no valor total */
+}
+
+/* Responsividade */
+@media (max-width: 640px) {
+    .modal-content {
+        padding: 1.5rem;
+    }
+    
+    .modal-content h2 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Animações */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}

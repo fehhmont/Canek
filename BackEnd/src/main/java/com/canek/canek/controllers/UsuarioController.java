@@ -25,7 +25,7 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
-    // NOVO ENDPOINT PARA BUSCAR DADOS DO USUÁRIO LOGADO
+    //ENDPOINT PARA BUSCAR DADOS DO USUÁRIO LOGADO
     @GetMapping("/me")
     public ResponseEntity<Usuario> getMeuPerfil(@AuthenticationPrincipal UserDetails userDetails) {
         try {
@@ -57,7 +57,6 @@ public class UsuarioController {
         return ResponseEntity.status(201).body(salvo);
     }
     
-    // Este endpoint pode ser mantido para administradores ou outros casos de uso
     @GetMapping("/{usuarioId}")
     public ResponseEntity<Usuario> getUsuarioById(@PathVariable Long usuarioId) {
         try {

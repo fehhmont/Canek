@@ -21,9 +21,7 @@ import com. canek.canek.models.ImagemProduto ;
 public class ProdutoController {
 
     @Autowired
-    private ProdutoService produtoService; // Apenas um serviço é necessário agora
-
-    // ... (todos os outros endpoints de produto permanecem iguais)
+    private ProdutoService produtoService;
 
     @GetMapping("/listar")
     public ResponseEntity<List<ProdutoDTO>> listarTodosProdutos() {

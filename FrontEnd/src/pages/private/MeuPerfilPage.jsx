@@ -10,6 +10,7 @@ import { useAuth } from '../../components/AuthContext';
 import { ArrowLeft, User, MapPin, Plus, X, ClipboardList, Package } from 'lucide-react';
 import { buscarCep } from '../../utils/cepService';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
+import OrderDetailsModal from '../../components/OrderDetailsModal';
 import './css/MeuPerfilPage.css';
 
 // ... (Schemas de validação permanecem os mesmos)
@@ -29,6 +30,8 @@ const profileSchema = yup.object().shape({
                 : schema;
         }),
 });
+
+
 
 const newAddressSchema = yup.object().shape({
     cep: yup.string().required('CEP é obrigatório'),
@@ -52,6 +55,7 @@ function MeuPerfilPage() {
     const [isError, setIsError] = useState(false);
     const [isAddingAddress, setIsAddingAddress] = useState(false);
     const [isSubmittingAddress, setIsSubmittingAddress] = useState(false);
+    const [selectedOrder, setSelectedOrder] = useState(null);
 
     // ... (useForm hooks permanecem os mesmos)
     const { register: registerProfile, handleSubmit: handleSubmitProfile, reset: resetProfile, formState: { errors: errorsProfile, isSubmitting: isSubmittingProfile } } = useForm({ resolver: yupResolver(profileSchema) });
@@ -368,10 +372,9 @@ function MeuPerfilPage() {
                                             </td>
                                             <td data-label="Total">R$ {pedido.valorTotal.toFixed(2).replace('.', ',')}</td>
                                             <td data-label="Ações">
-                                                <button className="btn-detalhes">
-                                                    <Package size={16} />
-                                                    Detalhes
-                                                </button>
+                                                <button className="btn-detalhes" onClick={() => setSelectedOrder(pedido)}>
+    <Package size={16} /> Detalhes
+</button>
                                             </td>
                                         </tr>
                                     ))}
@@ -476,6 +479,12 @@ function MeuPerfilPage() {
                         ) : (!isAddingAddress && <p className="text-muted">Nenhum endereço de entrega cadastrado.</p>)}
                     </div>
                 </div>
+                {selectedOrder && (
+    <OrderDetailsModal 
+        pedido={selectedOrder} 
+        onClose={() => setSelectedOrder(null)} 
+    />
+)}
             </div>
         </div>
     );

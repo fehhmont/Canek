@@ -85,7 +85,7 @@ CREATE TABLE pedido_produtos (
     produto_id BIGINT NOT NULL,
     quantidade INT NOT NULL,
     preco_unitario DECIMAL(10,2) NOT NULL,
-    preco_total DECIMAL(10,2) NOT NULL, /* <-- CORREÇÃO AQUI: Removida a geração automática */
+    preco_total DECIMAL(10,2) NOT NULL,
     FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE,
     FOREIGN KEY (produto_id) REFERENCES produtos(id) ON DELETE CASCADE
 );

@@ -19,11 +19,11 @@
     public class AuthController {
 
         @Autowired
-        @Qualifier("userAuthenticationManager") // Nome do bean definido na configuração de segurança
+        @Qualifier("userAuthenticationManager")
         private AuthenticationManager authenticationManager;
 
         @Autowired
-        private UsuarioService usuarioService; // Agora usamos o serviço
+        private UsuarioService usuarioService;
 
         @Autowired
         private TokenService tokenService;
@@ -39,14 +39,12 @@
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
             
-            // ATUALIZADO: Passa o ID do usuário para o DTO de resposta
             return ResponseEntity.ok(new LoginResponseDTO(token, usuario.getTipoUsuario(), usuario.getId()));
         }
 
         @PostMapping("/cadastro")
         public ResponseEntity<Void> cadastrar(@RequestBody @Valid CadastroUsuarioDTO data) {
             try {
-                // A lógica agora é delegada para o serviço, que usa o PasswordEncoder central
                 usuarioService.cadastrar(data);
                 return ResponseEntity.status(HttpStatus.CREATED).build();
             } catch (RuntimeException e) {

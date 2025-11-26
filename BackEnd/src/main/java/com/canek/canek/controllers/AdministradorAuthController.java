@@ -21,7 +21,7 @@ import java.util.List;
 public class AdministradorAuthController {
 
     @Autowired
-    @Qualifier("adminAuthenticationManager") // Nome do bean definido na configuração de segurança
+    @Qualifier("adminAuthenticationManager")
     private AuthenticationManager authenticationManager;
     
     @Autowired
@@ -60,7 +60,6 @@ public class AdministradorAuthController {
         return ResponseEntity.ok(usuarios);
     }
 
-    // --- CORREÇÃO APLICADA AQUI ---
     @GetMapping("/{id}")
     public ResponseEntity<DadosUsuarioDTO> findById(@PathVariable Long id) {
         try {
@@ -81,16 +80,14 @@ public class AdministradorAuthController {
         }
     }
 
-    // --- CORREÇÃO APLICADA AQUI ---
-    // Atualizar administrador
     @PutMapping("/{id}")
     public ResponseEntity<DadosUsuarioDTO> atualizarAdministrador(@PathVariable Long id, @RequestBody @Valid AtualizacaoAdministradorDTO data) {
         try {
             Administrador adminAtualizado = adminService.atualizar(id, data);
             return ResponseEntity.ok(DadosUsuarioDTO.fromAdministrador(adminAtualizado));
         } catch (RuntimeException e) {
-            // Se o usuário não for encontrado ou o email já existir, retorna erro
-            return ResponseEntity.badRequest().build(); // Simplificado
+
+            return ResponseEntity.badRequest().build();
         }
     }
 }

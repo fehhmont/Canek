@@ -10,14 +10,14 @@ import com.canek.canek.repositories.ProdutoRepository;
 import com.canek.canek.repositories.UsuarioRepository;
 import com.canek.canek.services.PedidoService;
 import com.canek.canek.services.ProdutoService;
-import com.canek.canek.services.UsuarioService; // Importei
+import com.canek.canek.services.UsuarioService;
 
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity; // Importei
-import org.springframework.security.core.annotation.AuthenticationPrincipal; // Importei
-import org.springframework.security.core.userdetails.UserDetails; // Importei
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -43,7 +43,7 @@ public class PedidoController {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private UsuarioService usuarioService; // Injetei
+    private UsuarioService usuarioService;
 
     @GetMapping("/meus-pedidos")
     public ResponseEntity<List<Pedido>> getMeusPedidos(@AuthenticationPrincipal UserDetails userDetails) {
@@ -109,19 +109,8 @@ public class PedidoController {
         }
 
         pedido.setValorTotal(totalProdutos.add(pedido.getTotalFrete()));
-
-       System.out.println("🚀 Salvando pedido...");
-        System.out.println("🧾 Usuário: " + (pedido.getUsuario() != null ? pedido.getUsuario().getId() : "null"));
-        System.out.println("📍 Endereço: " + (pedido.getEndereco() != null ? pedido.getEndereco().getId() : "null"));
-        System.out.println("💰 Total de produtos: " + pedido.getTotalProdutos());
-        System.out.println("🚚 Total de frete: " + pedido.getTotalFrete());
-        System.out.println("💸 Valor total: " + pedido.getValorTotal());
-        System.out.println("🛒 Quantidade de itens: " + (pedido.getProdutos() != null ? pedido.getProdutos().size() : "null"));
-
  
         Pedido pedidoSalvo = pedidoRepository.save(pedido);
-
-
      
         pedidoSalvo.setNumeroPedido(String.format("%08d", pedidoSalvo.getId()));
         Pedido pedidoFinal = pedidoRepository.save(pedidoSalvo);
@@ -132,13 +121,10 @@ public class PedidoController {
         return resposta;
     }
 
-
-    // --- MÉTODO ATUALIZADO ---
     @PutMapping("/{pedidoId}/finalizar")
     public Pedido finalizarPedido(
             @PathVariable Long pedidoId,
             @RequestParam FormaPagamento formaPagamento,
-            // 1. Recebe os totais finais via RequestBody
             @RequestBody Map<String, BigDecimal> totals) {
 
         Pedido pedido = pedidoRepository.findById(pedidoId)
@@ -148,9 +134,8 @@ public class PedidoController {
         BigDecimal valorTotal = totals.get("valorTotal");
 
         pedido.setFormaPagamento(formaPagamento);
-        pedido.setStatus(StatusPedido.PAGO);
+        pedido.setStatus(StatusPedido.PAGAMENTO_COM_SUCESSO);
 
-        // 2. Atualiza os totais do pedido com os valores recebidos
         if (totalFrete != null) {
             pedido.setTotalFrete(totalFrete);
         }
@@ -172,14 +157,12 @@ public ResponseEntity<Pedido> getPedidoById(@PathVariable Long pedidoId) {
     }
 }
 
-// Endpoint para estoquista listar todos os pedidos (ordenados por data decrescente)
 @GetMapping("/todos")
 public ResponseEntity<List<Pedido>> listarTodosPedidos() {
     List<Pedido> pedidos = pedidoRepository.findAllByOrderByDataCriacaoDesc();
     return ResponseEntity.ok(pedidos);
 }
 
-// Endpoint para estoquista alterar status do pedido
 @PutMapping("/{pedidoId}/status")
 public ResponseEntity<Pedido> alterarStatusPedido(
         @PathVariable Long pedidoId,

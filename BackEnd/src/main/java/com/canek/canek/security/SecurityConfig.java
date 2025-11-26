@@ -46,7 +46,6 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                    // ... (outras regras)
                     .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                     .requestMatchers(HttpMethod.POST, "/auth/cadastro").permitAll()
                     .requestMatchers(HttpMethod.POST, "/auth/administrador/login").permitAll()
@@ -73,12 +72,13 @@ public class SecurityConfig {
                     .requestMatchers("/auth/produto/{id}/status").hasAnyRole("ADMIN")
                     .requestMatchers("/auth/upload/**").permitAll()
 
-                    // --- VERIFIQUE ESTAS LINHAS ---
+
                     .requestMatchers(HttpMethod.POST, "/auth/pedidos/carrinho").hasRole("USER")
                     .requestMatchers(HttpMethod.GET, "/auth/pedidos/meus-pedidos").hasRole("USER")
-                    .requestMatchers(HttpMethod.PUT, "/auth/pedidos/{pedidoId}/endereco/{usuarioId}").hasRole("USER")
-                    .requestMatchers(HttpMethod.PUT, "/auth/pedidos/{pedidoId}/finalizar").hasRole("USER")
-                    // --- FIM DA VERIFICAÇÃO ---
+                    .requestMatchers(HttpMethod.PUT, "/auth/pedidos/*/endereco/*").hasRole("USER")
+                    .requestMatchers(HttpMethod.PUT, "/auth/pedidos/*/finalizar").hasAnyRole("USER", "ADMIN", "ESTOQUISTA")
+                    .requestMatchers(HttpMethod.PUT, "/auth/pedidos/*/status").hasAnyRole("ADMIN", "ESTOQUISTA")
+
 
                     .anyRequest().authenticated()
                 )
@@ -89,7 +89,7 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5175"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
 
