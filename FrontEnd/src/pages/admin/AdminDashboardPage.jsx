@@ -64,10 +64,11 @@ function AdminDashboardPage() {
                                 <div className="button-arrow">
                                     <ChevronRight size={20} />
                                 </div>
+                                
                             </Link>
                             
-                            {/* Botão para Listar Pedidos */}
-                            <Link to="/" className="nav-button orders-btn">
+                            {/* Botão para Listar Pedidos (CORRIGIDO AQUI) */}
+                            <Link to="/GerenciarPedidosPage" className="nav-button orders-btn">
                                 <div className="button-icon">
                                     <ClipboardList size={24} />
                                 </div>

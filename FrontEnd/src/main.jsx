@@ -22,7 +22,8 @@ import ProductDetailPage from './pages/public/ProductDetailPage';
 import CartPage from './pages/public/CartPage';
 import Routers from './pages/Routers';
 import MeuPerfilPage from './pages/private/MeuPerfilPage';
-import CheckoutPage from './pages/private/CheckoutPage'; // --- 1. IMPORTAR A NOVA PÁGINA ---
+import CheckoutPage from './pages/private/CheckoutPage';
+import GerenciarPedidosPage from './pages/admin/GerenciarPedidosPage';
 
 
 import './index.css';
@@ -59,6 +60,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                 <Route path="UserManagementPage/edit/:userId" element={<EditAdminPage />} />
                 <Route path="GerenciarProductPage" element={<GerenciarProductPage />} />
                 <Route path="ProductFormPage" element={<ProductFormPage />} />
+                <Route path="GerenciarPedidosPage" element={<GerenciarPedidosPage />} />
 
                 {/* Novas rotas para criar e editar produtos */}
                 <Route path="product/new" element={<ProductFormPage />} />

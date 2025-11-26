@@ -1,7 +1,7 @@
 package com.canek.canek.models;
 
-// --- 1. IMPORTAR A ANOTAÇÃO ---
-import com.fasterxml.jackson.annotation.JsonManagedReference; 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -22,21 +22,24 @@ import com.canek.canek.models.enums.StatusPedido;
 @AllArgsConstructor
 public class Pedido {
 
-    // ... (outros campos: id, usuario, endereco, etc. permanecem iguais) ...
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
+    // 2. CORREÇÃO: Ignora os campos do proxy do Hibernate para evitar o erro de serialização
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Usuario usuario;
 
     @ManyToOne
     @JoinColumn(name = "endereco_id", nullable = false)
+    // 3. CORREÇÃO: Aplicado aqui também por precaução
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Endereco endereco;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "forma_pagamento", nullable = true)
+    @Column(name = "forma_pagamento")
     private FormaPagamento formaPagamento;
 
     @Enumerated(EnumType.STRING)
@@ -61,8 +64,7 @@ public class Pedido {
     @Column(name = "numero_pedido", unique = true, nullable = true)
     private String numeroPedido;
 
-    // --- 2. ADICIONAR A ANOTAÇÃO AQUI ---
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference // Diz ao JSON: "Este é o 'pai', serialize os filhos."
+    @JsonManagedReference
     private List<PedidoProduto> produtos;
 }

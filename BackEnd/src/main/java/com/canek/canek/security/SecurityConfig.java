@@ -46,39 +46,58 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                    // ... (outras regras)
+                    // Rotas Públicas de Autenticação
                     .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                     .requestMatchers(HttpMethod.POST, "/auth/cadastro").permitAll()
                     .requestMatchers(HttpMethod.POST, "/auth/administrador/login").permitAll()
                     .requestMatchers(HttpMethod.POST, "/auth/administrador/cadastro").permitAll()
+                    
+                    // Rotas Públicas de Produtos
                     .requestMatchers(HttpMethod.GET, "/auth/produto/listar").permitAll()
                     .requestMatchers(HttpMethod.GET, "/auth/produto/listarTodosAtivos/true").permitAll()
-                    .requestMatchers( "/auth/produto/listarPorNome/{nome}").permitAll()
+                    .requestMatchers("/auth/produto/listarPorNome/{nome}").permitAll()
                     .requestMatchers(HttpMethod.GET,"/auth/produto/listarTodos").permitAll()
                     .requestMatchers("/auth/produto/{id}").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/uploads/**").permitAll()
                     .requestMatchers(HttpMethod.POST, "/auth/produto/calcularFrete").permitAll()
+                    
+                    // Rotas Públicas de Arquivos e Uploads (Imagens)
+                    // Use ** para garantir que subpastas ou arquivos sejam acessíveis
+                    .requestMatchers("/uploads/**").permitAll() 
+                    .requestMatchers("/auth/upload/**").permitAll()
+
+                    // Cadastro de Usuário
                     .requestMatchers("/auth/usuario/cadastrarUsuario").permitAll()
+                    
+                    // Rotas de Usuário (Cliente)
                     .requestMatchers(HttpMethod.GET, "/auth/usuario/me").hasRole("USER")
                     .requestMatchers(HttpMethod.GET, "/auth/usuario/{usuarioId}").hasAnyRole("USER") 
                     .requestMatchers(HttpMethod.PUT, "/auth/usuario/atualizar/{id}").hasAnyRole("USER")
                     .requestMatchers(HttpMethod.POST, "/auth/usuario/{usuarioId}/enderecos").hasAnyRole("USER") 
                     .requestMatchers(HttpMethod.PUT, "/auth/usuario/{usuarioId}/enderecos/{enderecoId}/principal").hasAnyRole("USER") 
+                    
+                    // Rotas de Admin / Estoquista (Gestão)
                     .requestMatchers("/auth/administrador/findAll/").hasAnyRole("ADMIN")
                     .requestMatchers("/auth/administrador/**").hasAnyRole("ADMIN")
                     .requestMatchers("/auth/produto/atualizar/{id}").hasAnyRole("ADMIN", "ESTOQUISTA")
-                    .requestMatchers( "/auth/produto/listarTodosAtivos").hasAnyRole("ADMIN", "ESTOQUISTA")
+                    .requestMatchers("/auth/produto/listarTodosAtivos").hasAnyRole("ADMIN", "ESTOQUISTA")
                     .requestMatchers("/auth/produto/cadastrar").hasAnyRole("ADMIN")
                     .requestMatchers("/auth/produto/deletar/{id}").hasAnyRole("ADMIN", "ESTOQUISTA")
                     .requestMatchers("/auth/produto/{id}/status").hasAnyRole("ADMIN")
-                    .requestMatchers("/auth/upload/**").permitAll()
 
-                    // --- VERIFIQUE ESTAS LINHAS ---
+                    // Rotas de Pedidos (Cliente)
                     .requestMatchers(HttpMethod.POST, "/auth/pedidos/carrinho").hasRole("USER")
                     .requestMatchers(HttpMethod.GET, "/auth/pedidos/meus-pedidos").hasRole("USER")
-                    .requestMatchers(HttpMethod.PUT, "/auth/pedidos/{pedidoId}/endereco/{usuarioId}").hasRole("USER")
-                    .requestMatchers(HttpMethod.PUT, "/auth/pedidos/{pedidoId}/finalizar").hasRole("USER")
-                    // --- FIM DA VERIFICAÇÃO ---
+                    .requestMatchers(HttpMethod.PUT, "/auth/pedidos/{id}/endereco/**").hasRole("USER")
+                    
+                    // Rotas de Pedidos (Processamento e Gestão)
+                    // CORREÇÃO 1: Permite finalizar pedido (User, Admin, Estoquista)
+                    .requestMatchers(HttpMethod.PUT, "/auth/pedidos/{id}/finalizar").hasAnyRole("USER", "ADMIN", "ESTOQUISTA")
+                    
+                    // CORREÇÃO 2: Permite alterar status (Admin, Estoquista)
+                    .requestMatchers(HttpMethod.PUT, "/auth/pedidos/{id}/status").hasAnyRole("ADMIN", "ESTOQUISTA")
+                    
+                    // CORREÇÃO 3: NOVA ROTA -> Permite listar TODOS os pedidos (Admin, Estoquista)
+                    .requestMatchers(HttpMethod.GET, "/auth/pedidos/todos").hasAnyRole("ADMIN", "ESTOQUISTA")
 
                     .anyRequest().authenticated()
                 )
@@ -98,15 +117,12 @@ public class SecurityConfig {
         return source;
     }
 
-    // ... (restante dos beans: passwordEncoder, managers, etc.) ...
-    
     @Bean
     public DaoAuthenticationProvider usuarioAuthenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(usuarioAuthService);
         provider.setPasswordEncoder(passwordEncoder());
         provider.setHideUserNotFoundExceptions(false);
-        
         return provider;
     }
 

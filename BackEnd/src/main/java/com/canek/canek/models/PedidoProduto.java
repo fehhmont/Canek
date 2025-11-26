@@ -37,7 +37,7 @@ public class PedidoProduto {
     @Column(name = "preco_unitario", nullable = false)
     private BigDecimal precoUnitario;
 
-    @Column(name = "preco_total", insertable = false, updatable = false)
+    @Column(name = "preco_total", nullable = false)
     private BigDecimal precoTotal;
 
 }

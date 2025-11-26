@@ -5,6 +5,9 @@ import com.canek.canek.models.PedidoProduto;
 import com.canek.canek.models.Usuario;
 import com.canek.canek.models.enums.StatusPedido;
 import com.canek.canek.repositories.PedidoRepository;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,13 +59,12 @@ public class PedidoService {
         }
 
         pedido.setFormaPagamento(dadosAtualizados.getFormaPagamento());
-        pedido.setStatus(StatusPedido.PAGO);
+        pedido.setStatus(StatusPedido.PAGAMENTO_COM_SUCESSO);
         pedido.setDataConclusao(LocalDateTime.now());
 
         return pedidoRepository.save(pedido);
     }
 
-    
     public List<Pedido> listarPorUsuario(Usuario usuario) {
         return pedidoRepository.findByUsuarioId(usuario.getId());
     }
@@ -71,5 +73,15 @@ public class PedidoService {
     public Pedido buscarPorId(Long id) {
         return pedidoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
+    }
+
+    public List<Pedido> listarTodosPedidos() {
+         return pedidoRepository.findAllByOrderByDataCriacaoDesc();
+    }
+
+public Pedido alterarStatus(Long pedidoId, StatusPedido status) {
+        Pedido pedido = buscarPorId(pedidoId);
+        pedido.setStatus(status);
+        return pedidoRepository.save(pedido);
     }
 }
