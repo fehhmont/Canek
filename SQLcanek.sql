@@ -17,6 +17,9 @@ CREATE TABLE `administradores` (
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+INSERT INTO `administradores` (`id`, `nome_completo`, `email`, `cpf`, `senha_hash`, `cargo`, `status`) VALUES 
+(1,'Felipe Anthony Monteiro','admin@admin.com','45303131823','$2a$10$YFkOR.KPz3I45yNz1uDX9.di2Dv5bliIXEOstoijnUaGGCylfB72e','ADMIN',1);
+
 CREATE TABLE `usuarios` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `nome_completo` varchar(255) NOT NULL,
@@ -99,7 +102,7 @@ CREATE TABLE `pedido_produtos` (
   `produto_id` bigint NOT NULL,
   `quantidade` int NOT NULL,
   `preco_unitario` decimal(10,2) NOT NULL,
-  `preco_total` decimal(10,2) DEFAULT NULL,
+  `preco_total` decimal(10,2),
   PRIMARY KEY (`id`),
   KEY `pedido_id` (`pedido_id`),
   KEY `produto_id` (`produto_id`),
